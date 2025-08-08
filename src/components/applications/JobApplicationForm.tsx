@@ -9,7 +9,7 @@ import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { DocumentUpload, UploadedDocument } from '@/components/ui/document-upload';
 import { ResumeSelector } from '@/components/resumes/ResumeSelector';
-import { CalendarIcon, Plus } from 'lucide-react';
+import { CalendarIcon, Plus, FileText, AlertCircle } from 'lucide-react';
 import { format } from 'date-fns';
 import { JobApplication, JobApplicationInsert, JobApplicationService } from '@/services/jobApplications';
 import { useAuth } from '@/contexts/AuthContext';
@@ -204,50 +204,53 @@ export const JobApplicationForm: React.FC<JobApplicationFormProps> = ({
           </Button>
         )}
       </DialogTrigger>
-      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="mx-4 max-w-sm sm:mx-auto sm:max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>
+          <DialogTitle className="text-lg sm:text-xl">
             {application ? 'Edit Application' : 'Add New Application'}
           </DialogTitle>
         </DialogHeader>
-        <form onSubmit={handleSubmit} className="space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="company_name">Company *</Label>
+              <Label htmlFor="company_name" className="text-sm font-medium">Company *</Label>
               <Input
                 id="company_name"
                 value={formData.company_name}
                 onChange={(e) => setFormData({ ...formData, company_name: e.target.value })}
                 placeholder="Company name"
                 required
+                className="h-10"
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="role">Role *</Label>
+              <Label htmlFor="role" className="text-sm font-medium">Role *</Label>
               <Input
                 id="role"
                 value={formData.role}
                 onChange={(e) => setFormData({ ...formData, role: e.target.value })}
                 placeholder="Job title"
                 required
+                className="h-10"
               />
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="location">Location</Label>
+              <Label htmlFor="location" className="text-sm font-medium">Location</Label>
               <Input
                 id="location"
                 value={formData.location}
                 onChange={(e) => setFormData({ ...formData, location: e.target.value })}
                 placeholder="City, State or Remote"
+                className="h-10"
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="status">Status *</Label>
+              <Label htmlFor="status" className="text-sm font-medium">Status *</Label>
               <Select value={formData.status} onValueChange={(value: any) => setFormData({ ...formData, status: value })}>
-                <SelectTrigger>
+                <SelectTrigger className="h-10">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -260,15 +263,16 @@ export const JobApplicationForm: React.FC<JobApplicationFormProps> = ({
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label>Applied Date *</Label>
+              <Label className="text-sm font-medium">Applied Date *</Label>
               <Popover>
                 <PopoverTrigger asChild>
                   <Button
+                    type="button"
                     variant="outline"
                     className={cn(
-                      "w-full justify-start text-left font-normal",
+                      "w-full h-10 justify-start text-left font-normal",
                       !appliedDate && "text-muted-foreground"
                     )}
                   >
@@ -276,7 +280,7 @@ export const JobApplicationForm: React.FC<JobApplicationFormProps> = ({
                     {appliedDate ? format(appliedDate, "PPP") : <span>Pick a date</span>}
                   </Button>
                 </PopoverTrigger>
-                <PopoverContent className="w-auto p-0">
+                <PopoverContent className="w-auto p-0" align="start">
                   <Calendar
                     mode="single"
                     selected={appliedDate}
@@ -286,29 +290,33 @@ export const JobApplicationForm: React.FC<JobApplicationFormProps> = ({
                 </PopoverContent>
               </Popover>
             </div>
-            <div className="space-y-2">
-              <Label>Resume *</Label>
-              <ResumeSelector 
-                value={formData.resume_id}
-                onValueChange={(resumeId) => setFormData({ ...formData, resume_id: resumeId })}
-                placeholder="Select a resume for this application"
-              />
-              {!formData.resume_id && (
-                <p className="text-xs text-muted-foreground">
-                  Selecting a resume helps you track which version was used for this application
-                </p>
-              )}
-            </div>
+          </div>
+
+          {/* Resume Section - On its own line */}
+          <div className="sm:col-span-2">
+            <Label htmlFor="resume" className="text-sm font-medium mb-2 block">
+              Resume <span className="text-red-500">*</span>
+            </Label>
+            <ResumeSelector
+              value={formData.resume_id}
+              onValueChange={(value) => setFormData({...formData, resume_id: value})}
+              placeholder="Choose a resume for this application"
+              compact={true}
+            />
+            <p className="text-xs text-muted-foreground mt-1">
+              Select the resume you want to submit with this application
+            </p>
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="notes">Notes</Label>
+            <Label htmlFor="notes" className="text-sm font-medium">Notes</Label>
             <Textarea
               id="notes"
               value={formData.notes}
               onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
               placeholder="Additional notes, interview feedback, etc."
               rows={3}
+              className="resize-none"
             />
           </div>
 
@@ -320,14 +328,19 @@ export const JobApplicationForm: React.FC<JobApplicationFormProps> = ({
             maxFiles={3}
           />
 
-          <div className="flex justify-end space-x-2">
-            <Button type="button" variant="outline" onClick={() => setOpen(false)}>
+          <div className="flex flex-col-reverse sm:flex-row gap-3 sm:justify-end pt-4 border-t">
+            <Button 
+              type="button" 
+              variant="outline" 
+              onClick={() => setOpen(false)}
+              className="w-full sm:w-auto"
+            >
               Cancel
             </Button>
             <Button 
               type="submit" 
               disabled={loading || (!application && !formData.resume_id)}
-              className="min-w-[120px]"
+              className="w-full sm:w-auto min-w-[120px]"
             >
               {loading ? (
                 <div className="flex items-center gap-2">

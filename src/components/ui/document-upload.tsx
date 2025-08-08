@@ -151,6 +151,7 @@ export function DocumentUpload({
         {/* Upload Button */}
         <div className="flex items-center justify-between">
           <Button 
+            type="button"
             onClick={handleUploadClick}
             disabled={uploading || documents.length >= maxFiles}
             variant="outline"
@@ -190,6 +191,7 @@ export function DocumentUpload({
 
                 <div className="flex items-center gap-2">
                   <Button
+                    type="button"
                     variant="ghost"
                     size="sm"
                     onClick={() => window.open(doc.url, '_blank')}
@@ -199,6 +201,7 @@ export function DocumentUpload({
                   </Button>
                   
                   <Button
+                    type="button"
                     variant="ghost"
                     size="sm"
                     onClick={() => handleDeleteDocument(doc)}

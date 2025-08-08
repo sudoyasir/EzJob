@@ -3,7 +3,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
-import { FileText, Star, Download, Upload, CheckCircle2, AlertCircle } from "lucide-react";
+import { FileText, Star, Download, Upload, CheckCircle2, AlertCircle, Check } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -15,6 +15,7 @@ interface Resume {
   description?: string;
   file_name: string;
   file_url: string;
+  file_path: string;
   file_size: number;
   is_default: boolean;
   created_at: string;
@@ -25,13 +26,15 @@ interface ResumeSelectorProps {
   onValueChange: (resumeId: string) => void;
   placeholder?: string;
   disabled?: boolean;
+  compact?: boolean; // New prop for compact form mode
 }
 
 export function ResumeSelector({ 
   value, 
   onValueChange, 
   placeholder = "Select a resume",
-  disabled = false 
+  disabled = false,
+  compact = false 
 }: ResumeSelectorProps) {
   const { user } = useAuth();
   const [resumes, setResumes] = useState<Resume[]>([]);
@@ -55,7 +58,6 @@ export function ResumeSelector({
 
   const fetchResumes = async () => {
     try {
-      // Use proper types now that migration is applied
       const { data, error } = await supabase
         .from('resumes')
         .select('*')
@@ -84,14 +86,64 @@ export function ResumeSelector({
     onValueChange(resumeId);
   };
 
-  const downloadResume = (resume: Resume) => {
-    window.open(resume.file_url, '_blank');
+  const downloadResume = async (resume: Resume) => {
+    try {
+      // Try downloading using the stored file path from resumes bucket
+      const { data, error } = await supabase.storage
+        .from('resumes')
+        .download(resume.file_path);
+
+      if (error) {
+        // If download fails, try documents bucket as fallback for old files
+        const { data: fallbackData, error: fallbackError } = await supabase.storage
+          .from('documents')
+          .download(resume.file_path);
+          
+        if (fallbackError) {
+          throw new Error(`Failed to download file: ${fallbackError.message}`);
+        }
+        
+        // Create download link
+        const blob = new Blob([fallbackData], { type: 'application/octet-stream' });
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = resume.file_name;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(url);
+        
+        toast.success(`Downloaded "${resume.name}" successfully!`);
+        return;
+      }
+
+      // Create blob URL and trigger download
+      const blob = new Blob([data], { type: 'application/octet-stream' });
+      const url = window.URL.createObjectURL(blob);
+      
+      // Create temporary link and trigger download
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = resume.file_name;
+      document.body.appendChild(link);
+      link.click();
+      
+      // Cleanup
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+      
+      toast.success(`Downloaded "${resume.name}" successfully!`);
+    } catch (error: any) {
+      console.error('Download failed:', error);
+      toast.error('Failed to download resume: ' + error.message);
+    }
   };
 
   if (loading) {
     return (
-      <div className="flex items-center gap-2 text-sm text-muted-foreground">
-        <FileText className="h-4 w-4" />
+      <div className="flex items-center gap-2 text-sm text-muted-foreground p-3">
+        <FileText className="h-4 w-4 animate-pulse" />
         Loading resumes...
       </div>
     );
@@ -100,21 +152,22 @@ export function ResumeSelector({
   if (resumes.length === 0) {
     return (
       <Card className="border-2 border-dashed border-amber-200 bg-amber-50 dark:border-amber-800 dark:bg-amber-950/20">
-        <div className="p-6 text-center">
-          <div className="mx-auto w-12 h-12 bg-amber-100 dark:bg-amber-900/30 rounded-full flex items-center justify-center mb-3">
-            <AlertCircle className="h-6 w-6 text-amber-600 dark:text-amber-400" />
+        <div className="p-4 text-center">
+          <div className="mx-auto w-10 h-10 bg-amber-100 dark:bg-amber-900/30 rounded-full flex items-center justify-center mb-2">
+            <AlertCircle className="h-5 w-5 text-amber-600 dark:text-amber-400" />
           </div>
-          <h3 className="font-medium text-amber-800 dark:text-amber-200 mb-1">No resumes available</h3>
-          <p className="text-sm text-amber-600 dark:text-amber-300 mb-4">
-            You need to upload at least one resume before creating a job application
+          <h3 className="font-medium text-amber-800 dark:text-amber-200 mb-1 text-sm">No resumes available</h3>
+          <p className="text-xs text-amber-600 dark:text-amber-300 mb-3">
+            Upload a resume first to create job applications
           </p>
           <Button 
+            type="button"
             variant="outline" 
             size="sm"
-            className="border-amber-300 text-amber-700 hover:bg-amber-100 dark:border-amber-700 dark:text-amber-300 dark:hover:bg-amber-900/30"
+            className="border-amber-300 text-amber-700 hover:bg-amber-100 dark:border-amber-700 dark:text-amber-300 dark:hover:bg-amber-900/30 text-xs"
             onClick={() => window.open('/resumes', '_blank')}
           >
-            <Upload className="h-4 w-4 mr-2" />
+            <Upload className="h-3 w-3 mr-1" />
             Upload Resume
           </Button>
         </div>
@@ -122,6 +175,79 @@ export function ResumeSelector({
     );
   }
 
+  // Compact version for forms
+  if (compact) {
+    return (
+      <div className="space-y-3">
+        <Select value={value} onValueChange={handleResumeSelect} disabled={disabled}>
+          <SelectTrigger className="w-full h-10">
+            <SelectValue placeholder={
+              <div className="flex items-center gap-2 text-muted-foreground">
+                <FileText className="h-4 w-4" />
+                {placeholder}
+              </div>
+            } />
+          </SelectTrigger>
+          <SelectContent className="w-full">
+            {resumes.map((resume) => (
+              <SelectItem 
+                key={resume.id} 
+                value={resume.id} 
+                className="p-2 pl-2 mb-1 hover:bg-blue-100 dark:hover:bg-blue-950/20 data-[state=checked]:bg-blue-100 dark:data-[state=checked]:bg-blue-950/20 focus:bg-blue-100 dark:focus:bg-blue-950/20 focus:text-current [&>span:first-child]:hidden"
+              >
+                <div className="flex items-center gap-2 w-full">
+                  <FileText className="h-4 w-4 text-primary shrink-0" />
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2">
+                      <span className="font-medium truncate text-sm">{resume.name}</span>
+                      {resume.is_default && (
+                        <Badge variant="secondary" className="text-xs bg-yellow-100 text-yellow-800 px-1 py-0">
+                          <Star className="h-2 w-2 mr-0.5 fill-current" />
+                          Default
+                        </Badge>
+                      )}
+                    </div>
+                    <div className="text-xs text-muted-foreground truncate">
+                      {resume.file_name} • {formatFileSize(resume.file_size)}
+                    </div>
+                  </div>
+                  {value === resume.id && (
+                    <Check className="h-4 w-4 text-blue-600 dark:text-blue-400 shrink-0" />
+                  )}
+                </div>
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+
+        {/* Selected Resume Info - Compact */}
+        {selectedResume && (
+          <div className="flex items-center gap-3 p-4 bg-green-50 dark:bg-green-950/20 border border-green-200 dark:border-green-800 rounded-md">
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-medium text-green-800 dark:text-green-200 truncate">
+                {selectedResume.name}
+              </p>
+              <p className="text-xs text-green-600 dark:text-green-400 truncate">
+                {selectedResume.file_name} • {formatFileSize(selectedResume.file_size)}
+              </p>
+            </div>
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              onClick={() => downloadResume(selectedResume)}
+              title="Download resume"
+              className="h-8 w-8 p-0 hover:bg-green-100 hover:text-green-800 dark:hover:bg-green-900/30 dark:hover:text-green-200 shrink-0"
+            >
+              <Download className="h-3 w-3" />
+            </Button>
+          </div>
+        )}
+      </div>
+    );
+  }
+
+  // Full version for dedicated resume management
   return (
     <div className="space-y-4">
       <div className="relative">
@@ -134,9 +260,13 @@ export function ResumeSelector({
               </div>
             } />
           </SelectTrigger>
-          <SelectContent className="max-w-[400px]">
+          <SelectContent className="w-full">
             {resumes.map((resume) => (
-              <SelectItem key={resume.id} value={resume.id} className="p-3">
+              <SelectItem 
+                key={resume.id} 
+                value={resume.id} 
+                className="p-3 pl-3 mb-1 hover:bg-blue-100 dark:hover:bg-blue-950/20 data-[state=checked]:bg-blue-100 dark:data-[state=checked]:bg-blue-950/20 focus:bg-blue-100 dark:focus:bg-blue-950/20 focus:text-current [&>span:first-child]:hidden"
+              >
                 <div className="flex items-center gap-3 w-full">
                   <div className="p-2 rounded-md bg-primary/10 shrink-0">
                     <FileText className="h-4 w-4 text-primary" />
@@ -157,6 +287,9 @@ export function ResumeSelector({
                       <span>{formatFileSize(resume.file_size)}</span>
                     </div>
                   </div>
+                  {value === resume.id && (
+                    <Check className="h-5 w-5 text-blue-600 dark:text-blue-400 shrink-0" />
+                  )}
                 </div>
               </SelectItem>
             ))}
@@ -170,7 +303,7 @@ export function ResumeSelector({
         )}
       </div>
 
-      {/* Selected Resume Preview */}
+      {/* Selected Resume Preview - Full */}
       {selectedResume && (
         <Card className="border-2 border-green-200 bg-green-50 dark:border-green-800 dark:bg-green-950/20">
           <div className="p-4">
@@ -211,6 +344,7 @@ export function ResumeSelector({
               </div>
 
               <Button
+                type="button"
                 variant="ghost"
                 size="sm"
                 onClick={() => downloadResume(selectedResume)}
