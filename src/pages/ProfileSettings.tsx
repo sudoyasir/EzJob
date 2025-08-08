@@ -118,7 +118,7 @@ const ProfileSettings = () => {
     <div className="min-h-screen bg-background">
       {/* Navigation */}
       <nav className="border-b bg-card/50 backdrop-blur-sm sticky top-0 z-50">
-        <div className="container mx-auto px-6 py-4">
+        <div className="container mx-auto px-8 lg:px-12 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-6">
               <Button
@@ -202,7 +202,7 @@ const ProfileSettings = () => {
         </div>
       </nav>
 
-      <div className="container mx-auto px-6 py-8 max-w-4xl">
+      <div className="container mx-auto px-8 lg:px-12 py-8 max-w-4xl">
         {/* Header */}
         <div className="mb-8">
           <h1 className="text-3xl font-bold mb-2 bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">

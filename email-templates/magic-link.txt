@@ -1,0 +1,18 @@
+✨ Sign in to EzJob - Magic Link
+
+Hi there!
+
+Click the link below to securely sign in to your EzJob account. No password required!
+
+{{ .ConfirmationURL }}
+
+This magic link will log you in automatically and get you back to managing your job search.
+
+🔒 SECURITY NOTICE: This sign-in link will expire in 1 hour. If you didn't request this link, you can safely ignore this email.
+
+Need help? Contact us at support@ezjob.app
+
+© 2025 EzJob. Making job searches easier, one application at a time.
+
+---
+EzJob - Your Job Search Companion

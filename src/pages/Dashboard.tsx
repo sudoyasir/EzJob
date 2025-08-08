@@ -16,6 +16,7 @@ import { format } from "date-fns";
 import { ApplicationCardSkeleton } from "@/components/skeletons/ApplicationCardSkeleton";
 import { StatsCardSkeleton } from "@/components/skeletons/StatsCardSkeleton";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useAuth } from "@/contexts/AuthContext";
 
 const Dashboard = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -33,6 +34,20 @@ const Dashboard = () => {
     responseRate: 0,
   });
   const navigate = useNavigate();
+  const { user } = useAuth();
+
+  // Get user's first name for greeting
+  const getUserName = () => {
+    if (user?.user_metadata?.full_name) {
+      return user.user_metadata.full_name.split(' ')[0];
+    }
+    return user?.email?.split('@')[0] || 'there';
+  };
+
+  // Get simple greeting
+  const getTimeBasedGreeting = () => {
+    return 'Hello';
+  };
 
   // Save view mode to localStorage
   useEffect(() => {
@@ -109,110 +124,110 @@ const Dashboard = () => {
     <div className="min-h-screen bg-gradient-to-br from-background via-muted/10 to-background">
       <Navbar currentStreak={7} longestStreak={12} />
 
-      <div className="container mx-auto px-6 py-12">
-        {/* Enhanced Header */}
-        <div className="flex flex-col lg:flex-row lg:items-center justify-between mb-12">
+      <div className="container mx-auto px-4 sm:px-8 lg:px-12 py-8 sm:py-12">
+        {/* Personal Greeting */}
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between mb-8 sm:mb-12">
           <div className="mb-6 lg:mb-0">
-            <h1 className="text-4xl lg:text-5xl font-bold mb-4 bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent">
-              Your Job Search Command Center
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-bold mb-4 bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent leading-tight">
+              {getTimeBasedGreeting()}, {getUserName()}!
             </h1>
-            <p className="text-xl text-muted-foreground max-w-2xl">
-              Track applications, analyze performance, and accelerate your career journey with intelligent insights
+            <p className="text-base sm:text-lg lg:text-xl text-muted-foreground max-w-2xl">
+              Ready to take your career to the next level?
             </p>
           </div>
-          <div className="flex flex-col sm:flex-row gap-3">
+          <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
             <JobApplicationForm 
               onSuccess={loadApplications}
               trigger={
-                <Button className="bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 px-6 py-3 text-base font-semibold">
-                  <Plus className="h-5 w-5 mr-2" />
+                <Button className="bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 px-4 sm:px-6 py-2 sm:py-3 text-sm sm:text-base font-semibold w-full sm:w-auto">
+                  <Plus className="h-4 w-4 sm:h-5 sm:w-5 mr-2" />
                   Add Application
                 </Button>
               }
             />
-            <Button variant="outline" className="border-border text-foreground hover:bg-accent hover:text-accent-foreground px-6 py-3 text-base font-medium" onClick={() => navigate("/analytics")}>
-              <TrendingUp className="h-5 w-5 mr-2" />
+            <Button variant="outline" className="border-border text-foreground hover:bg-accent hover:text-accent-foreground px-4 sm:px-6 py-2 sm:py-3 text-sm sm:text-base font-medium w-full sm:w-auto" onClick={() => navigate("/analytics")}>
+              <TrendingUp className="h-4 w-4 sm:h-5 sm:w-5 mr-2" />
               View Analytics
             </Button>
           </div>
         </div>
 
         {/* Enhanced Stats Cards */}
-        <div className="mb-10">
-          <div className="flex items-center justify-between mb-6">
-            <div>
-              <h2 className="text-2xl font-bold text-foreground mb-2">Performance Overview</h2>
-              <p className="text-muted-foreground">Your job search metrics at a glance</p>
+        <div className="mb-8 sm:mb-10">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 sm:mb-6">
+            <div className="mb-4 sm:mb-0">
+              <h2 className="text-xl sm:text-2xl font-bold text-foreground mb-2">Performance Overview</h2>
+              <p className="text-sm sm:text-base text-muted-foreground">Your job search metrics at a glance</p>
             </div>
-            <div className="flex gap-3">
+            <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
               <Button 
                 variant="outline" 
                 size="sm"
                 onClick={() => navigate("/resumes")}
-                className="text-primary hover:bg-primary hover:text-primary-foreground transition-all duration-300 font-medium"
+                className="text-primary hover:bg-primary hover:text-primary-foreground transition-all duration-300 font-medium text-xs sm:text-sm w-full sm:w-auto"
               >
-                <FileText className="h-4 w-4 mr-2" />
+                <FileText className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
                 Manage Resumes
               </Button>
               <Button 
                 variant="outline" 
                 size="sm"
                 onClick={() => navigate("/analytics")}
-                className="text-primary hover:bg-primary hover:text-primary-foreground transition-all duration-300 font-medium"
+                className="text-primary hover:bg-primary hover:text-primary-foreground transition-all duration-300 font-medium text-xs sm:text-sm w-full sm:w-auto"
               >
-                <BarChart3 className="h-4 w-4 mr-2" />
+                <BarChart3 className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
                 Detailed Analytics
               </Button>
             </div>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
             {loading ? (
               Array.from({ length: 4 }).map((_, i) => (
                 <StatsCardSkeleton key={i} />
               ))
             ) : (
               <>
-                <Card className="p-6 bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-950/50 dark:to-blue-900/50 border-blue-200 dark:border-blue-800 hover:shadow-xl transition-all duration-300 hover:-translate-y-1 group">
+                <Card className="p-4 sm:p-6 bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-950/50 dark:to-blue-900/50 border-blue-200 dark:border-blue-800 hover:shadow-xl transition-all duration-300 hover:-translate-y-1 group">
                   <div className="flex items-center justify-between">
                     <div>
-                      <div className="text-3xl font-bold text-blue-700 dark:text-blue-300 mb-1">{stats.total}</div>
-                      <div className="text-sm font-medium text-blue-600 dark:text-blue-400">Total Applications</div>
+                      <div className="text-2xl sm:text-3xl font-bold text-blue-700 dark:text-blue-300 mb-1">{stats.total}</div>
+                      <div className="text-xs sm:text-sm font-medium text-blue-600 dark:text-blue-400">Total Applications</div>
                     </div>
-                    <div className="p-4 bg-blue-200 dark:bg-blue-800 rounded-2xl group-hover:scale-110 transition-transform duration-300">
-                      <BarChart3 className="h-6 w-6 text-blue-700 dark:text-blue-300" />
+                    <div className="p-3 sm:p-4 bg-blue-200 dark:bg-blue-800 rounded-2xl group-hover:scale-110 transition-transform duration-300">
+                      <BarChart3 className="h-5 w-5 sm:h-6 sm:w-6 text-blue-700 dark:text-blue-300" />
                     </div>
                   </div>
                 </Card>
-                <Card className="p-6 bg-gradient-to-br from-emerald-50 to-emerald-100 dark:from-emerald-950/50 dark:to-emerald-900/50 border-emerald-200 dark:border-emerald-800 hover:shadow-xl transition-all duration-300 hover:-translate-y-1 group">
+                <Card className="p-4 sm:p-6 bg-gradient-to-br from-emerald-50 to-emerald-100 dark:from-emerald-950/50 dark:to-emerald-900/50 border-emerald-200 dark:border-emerald-800 hover:shadow-xl transition-all duration-300 hover:-translate-y-1 group">
                   <div className="flex items-center justify-between">
                     <div>
-                      <div className="text-3xl font-bold text-emerald-700 dark:text-emerald-300 mb-1">{stats.interviews}</div>
-                      <div className="text-sm font-medium text-emerald-600 dark:text-emerald-400">Interviews Secured</div>
+                      <div className="text-2xl sm:text-3xl font-bold text-emerald-700 dark:text-emerald-300 mb-1">{stats.interviews}</div>
+                      <div className="text-xs sm:text-sm font-medium text-emerald-600 dark:text-emerald-400">Interviews Secured</div>
                     </div>
-                    <div className="p-4 bg-emerald-200 dark:bg-emerald-800 rounded-2xl group-hover:scale-110 transition-transform duration-300">
-                      <User className="h-6 w-6 text-emerald-700 dark:text-emerald-300" />
+                    <div className="p-3 sm:p-4 bg-emerald-200 dark:bg-emerald-800 rounded-2xl group-hover:scale-110 transition-transform duration-300">
+                      <User className="h-5 w-5 sm:h-6 sm:w-6 text-emerald-700 dark:text-emerald-300" />
                     </div>
                   </div>
                 </Card>
-                <Card className="p-6 bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-950/50 dark:to-purple-900/50 border-purple-200 dark:border-purple-800 hover:shadow-xl transition-all duration-300 hover:-translate-y-1 group">
+                <Card className="p-4 sm:p-6 bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-950/50 dark:to-purple-900/50 border-purple-200 dark:border-purple-800 hover:shadow-xl transition-all duration-300 hover:-translate-y-1 group">
                   <div className="flex items-center justify-between">
                     <div>
-                      <div className="text-3xl font-bold text-purple-700 dark:text-purple-300 mb-1">{stats.offers}</div>
-                      <div className="text-sm font-medium text-purple-600 dark:text-purple-400">Job Offers</div>
+                      <div className="text-2xl sm:text-3xl font-bold text-purple-700 dark:text-purple-300 mb-1">{stats.offers}</div>
+                      <div className="text-xs sm:text-sm font-medium text-purple-600 dark:text-purple-400">Job Offers</div>
                     </div>
-                    <div className="p-4 bg-purple-200 dark:bg-purple-800 rounded-2xl group-hover:scale-110 transition-transform duration-300">
-                      <TrendingUp className="h-6 w-6 text-purple-700 dark:text-purple-300" />
+                    <div className="p-3 sm:p-4 bg-purple-200 dark:bg-purple-800 rounded-2xl group-hover:scale-110 transition-transform duration-300">
+                      <TrendingUp className="h-5 w-5 sm:h-6 sm:w-6 text-purple-700 dark:text-purple-300" />
                     </div>
                   </div>
                 </Card>
-                <Card className="p-6 bg-gradient-to-br from-amber-50 to-amber-100 dark:from-amber-950/50 dark:to-amber-900/50 border-amber-200 dark:border-amber-800 hover:shadow-xl transition-all duration-300 hover:-translate-y-1 group">
+                <Card className="p-4 sm:p-6 bg-gradient-to-br from-amber-50 to-amber-100 dark:from-amber-950/50 dark:to-amber-900/50 border-amber-200 dark:border-amber-800 hover:shadow-xl transition-all duration-300 hover:-translate-y-1 group">
                   <div className="flex items-center justify-between">
                     <div>
-                      <div className="text-3xl font-bold text-amber-700 dark:text-amber-300 mb-1">{stats.responseRate}%</div>
-                      <div className="text-sm font-medium text-amber-600 dark:text-amber-400">Response Rate</div>
+                      <div className="text-2xl sm:text-3xl font-bold text-amber-700 dark:text-amber-300 mb-1">{stats.responseRate}%</div>
+                      <div className="text-xs sm:text-sm font-medium text-amber-600 dark:text-amber-400">Response Rate</div>
                     </div>
-                    <div className="p-4 bg-amber-200 dark:bg-amber-800 rounded-2xl group-hover:scale-110 transition-transform duration-300">
-                      <BarChart3 className="h-6 w-6 text-amber-700 dark:text-amber-300" />
+                    <div className="p-3 sm:p-4 bg-amber-200 dark:bg-amber-800 rounded-2xl group-hover:scale-110 transition-transform duration-300">
+                      <BarChart3 className="h-5 w-5 sm:h-6 sm:w-6 text-amber-700 dark:text-amber-300" />
                     </div>
                   </div>
                 </Card>
@@ -222,7 +237,7 @@ const Dashboard = () => {
         </div>
 
         {/* Search and Filters */}
-        <div className="flex flex-col md:flex-row gap-4 mb-6">
+        <div className="flex flex-col gap-4 mb-6">
           <div className="relative flex-1">
             <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
             {loading ? (
@@ -236,16 +251,16 @@ const Dashboard = () => {
               />
             )}
           </div>
-          <div className="flex gap-2">
+          <div className="flex flex-col sm:flex-row gap-2">
             {loading ? (
               <>
-                <Skeleton className="h-10 w-24" />
-                <Skeleton className="h-10 w-20" />
+                <Skeleton className="h-10 w-full sm:w-24" />
+                <Skeleton className="h-10 w-full sm:w-20" />
               </>
             ) : (
               <>
-                {/* View Mode Toggle */}
-                <div className="flex rounded-lg overflow-hidden bg-muted/20 p-1">
+                {/* View Mode Toggle - Hidden on mobile */}
+                <div className="hidden sm:flex rounded-lg overflow-hidden bg-muted/20 p-1 w-auto">
                   <Button
                     variant="ghost"
                     size="sm"
@@ -270,7 +285,8 @@ const Dashboard = () => {
                   >
                     <LayoutGrid className="h-4 w-4" />
                   </Button>
-                </div>                <Button variant="outline" className="border-border text-foreground hover:bg-accent hover:text-accent-foreground">
+                </div>
+                <Button variant="outline" className="border-border text-foreground hover:bg-accent hover:text-accent-foreground w-full sm:w-auto">
                   <Filter className="h-4 w-4 mr-2" />
                   Filter
                 </Button>

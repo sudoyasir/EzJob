@@ -27,13 +27,16 @@ import {
   Smartphone,
   Download,
   AlertTriangle,
-  Save
+  Save,
+  BarChart3,
+  FileText
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useTheme } from "@/contexts/ThemeContext";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
+import { AccountManagementService } from "@/services/accountManagement";
 
 interface UserProfile {
   full_name?: string;
@@ -59,6 +62,12 @@ const AccountSettings = () => {
   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [dataSummary, setDataSummary] = useState<{
+    applicationsCount: number;
+    resumesCount: number;
+    storageFilesCount: number;
+  } | null>(null);
+  const [exportProgress, setExportProgress] = useState<string>("");
   
   const [profile, setProfile] = useState<UserProfile>({
     full_name: "",
@@ -100,8 +109,22 @@ const AccountSettings = () => {
         full_name: user.user_metadata?.full_name || "",
         avatar_url: user.user_metadata?.avatar_url || "",
       });
+      
+      // Load data summary for export preview
+      loadDataSummary();
     }
   }, [user]);
+
+  const loadDataSummary = async () => {
+    if (!user) return;
+    
+    try {
+      const summary = await AccountManagementService.getDataExportSummary(user.id);
+      setDataSummary(summary);
+    } catch (error) {
+      console.error('Failed to load data summary:', error);
+    }
+  };
 
   const handleSignOut = async () => {
     try {
@@ -187,23 +210,55 @@ const AccountSettings = () => {
   };
 
   const handleExportData = async () => {
-    toast.info("Preparing your data export...");
-    // This would typically trigger a backend process to export user data
-    setTimeout(() => {
-      toast.success("Data export will be emailed to you shortly");
-    }, 2000);
+    if (!user) return;
+    
+    try {
+      setLoading(true);
+      setExportProgress("Preparing your data export...");
+
+      await AccountManagementService.exportUserData(
+        user, 
+        preferences, 
+        notifications,
+        (step: string) => setExportProgress(step)
+      );
+      
+      setExportProgress("Download completed!");
+      toast.success("Data export downloaded successfully!");
+    } catch (error: any) {
+      console.error('Export error:', error);
+      toast.error(error.message || "Failed to export data. Please try again.");
+    } finally {
+      setLoading(false);
+      setExportProgress("");
+    }
   };
 
   const handleDeleteAccount = async () => {
-    // This would typically involve more complex account deletion logic
-    toast.error("Account deletion is not yet implemented. Please contact support.");
+    if (!user) return;
+    
+    try {
+      setLoading(true);
+      toast.info("Deleting your account and all data...");
+
+      await AccountManagementService.deleteUserAccount(user);
+
+      // Service already handles sign out, so just navigate
+      toast.success("Account and all data deleted successfully");
+      navigate("/");
+    } catch (error: any) {
+      console.error('Delete account error:', error);
+      toast.error(error.message || "Failed to delete account. Please contact support for assistance.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <div className="min-h-screen bg-background">
       {/* Navigation */}
       <nav className="border-b bg-card/50 backdrop-blur-sm sticky top-0 z-50">
-        <div className="container mx-auto px-6 py-4">
+        <div className="container mx-auto px-4 sm:px-8 lg:px-12 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-6">
               <Button
@@ -277,7 +332,7 @@ const AccountSettings = () => {
         </div>
       </nav>
 
-      <div className="container mx-auto px-6 py-8 max-w-4xl">
+      <div className="container mx-auto px-4 sm:px-8 lg:px-12 py-6 sm:py-8 max-w-4xl">
         {/* Header */}
         <div className="mb-8">
           <h1 className="text-3xl font-bold mb-2 bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
@@ -562,57 +617,153 @@ const AccountSettings = () => {
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="flex items-center justify-between">
-                <div className="space-y-1">
-                  <p className="font-medium">Export Data</p>
-                  <p className="text-sm text-muted-foreground">
-                    Download a copy of your data
-                  </p>
+              <div className="space-y-4">
+                <div className="flex items-start justify-between">
+                  <div className="space-y-2">
+                    <p className="font-medium">Export Data</p>
+                    <p className="text-sm text-muted-foreground">
+                      Download a comprehensive copy of all your data
+                    </p>
+                  </div>
+                  <Button variant="outline" onClick={handleExportData} disabled={loading}>
+                    <Download className="h-4 w-4 mr-2" />
+                    {loading ? (exportProgress || "Exporting...") : "Export"}
+                  </Button>
                 </div>
-                <Button variant="outline" onClick={handleExportData}>
-                  <Download className="h-4 w-4 mr-2" />
-                  Export
-                </Button>
+                {dataSummary && (
+                  <div className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-950/30 dark:to-indigo-950/30 border border-blue-200 dark:border-blue-800 rounded-lg p-4 transition-all duration-300 hover:shadow-md">
+                    <div className="flex items-center gap-2 mb-3">
+                      <div className="h-2 w-2 bg-blue-500 rounded-full animate-pulse"></div>
+                      <span className="font-medium text-blue-900 dark:text-blue-100 text-sm">
+                        Data Export Summary
+                      </span>
+                    </div>
+                    <div className="grid grid-cols-2 gap-3 text-sm">
+                      <div className="flex items-center gap-2 group hover:bg-blue-100/50 dark:hover:bg-blue-900/20 rounded-md p-2 -m-2 transition-colors">
+                        <BarChart3 className="h-4 w-4 text-blue-600 dark:text-blue-400 group-hover:scale-110 transition-transform" />
+                        <span className="text-blue-800 dark:text-blue-200">
+                          <span className="font-semibold">{dataSummary.applicationsCount}</span> Applications
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-2 group hover:bg-emerald-100/50 dark:hover:bg-emerald-900/20 rounded-md p-2 -m-2 transition-colors">
+                        <FileText className="h-4 w-4 text-emerald-600 dark:text-emerald-400 group-hover:scale-110 transition-transform" />
+                        <span className="text-emerald-800 dark:text-emerald-200">
+                          <span className="font-semibold">{dataSummary.resumesCount}</span> Resumes
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-2 group hover:bg-purple-100/50 dark:hover:bg-purple-900/20 rounded-md p-2 -m-2 transition-colors">
+                        <Download className="h-4 w-4 text-purple-600 dark:text-purple-400 group-hover:scale-110 transition-transform" />
+                        <span className="text-purple-800 dark:text-purple-200">
+                          <span className="font-semibold">{dataSummary.storageFilesCount}</span> Files
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-2 group hover:bg-amber-100/50 dark:hover:bg-amber-900/20 rounded-md p-2 -m-2 transition-colors">
+                        <User className="h-4 w-4 text-amber-600 dark:text-amber-400 group-hover:scale-110 transition-transform" />
+                        <span className="text-amber-800 dark:text-amber-200">
+                          <span className="font-semibold">Profile</span> & Settings
+                        </span>
+                      </div>
+                    </div>
+                    <div className="mt-3 pt-3 border-t border-blue-200 dark:border-blue-700">
+                      <p className="text-xs text-blue-700 dark:text-blue-300">
+                        Export includes: Account details, job applications, resumes, uploaded documents, preferences, and notification settings
+                      </p>
+                    </div>
+                  </div>
+                )}
               </div>
 
               <Separator />
 
-              <div className="flex items-center justify-between">
-                <div className="space-y-1">
-                  <p className="font-medium text-destructive">Delete Account</p>
-                  <p className="text-sm text-muted-foreground">
-                    Permanently delete your account and all data
-                  </p>
+              <div className="space-y-4">
+                <div className="flex items-start justify-between">
+                  <div className="space-y-2">
+                    <p className="font-medium text-destructive">Delete Account</p>
+                    <p className="text-sm text-muted-foreground">
+                      Permanently delete your account and remove all data
+                    </p>
+                  </div>
+                  <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                      <Button variant="destructive" disabled={loading}>
+                        <Trash2 className="h-4 w-4 mr-2" />
+                        Delete
+                      </Button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle className="flex items-center gap-2">
+                          <AlertTriangle className="h-5 w-5 text-destructive" />
+                          Delete Account
+                        </AlertDialogTitle>
+                        <AlertDialogDescription>
+                          This action cannot be undone. This will permanently delete all your data from our servers and sign you out.
+                          {dataSummary && (
+                            <>
+                              <div className="bg-destructive/10 border border-destructive/20 rounded-lg p-4 mt-4">
+                                <div className="flex items-center gap-2 mb-3">
+                                  <AlertTriangle className="h-4 w-4 text-destructive" />
+                                  <span className="font-medium text-destructive text-sm">
+                                    The following will be permanently deleted:
+                                  </span>
+                                </div>
+                                <div className="grid grid-cols-1 gap-2 text-sm">
+                                  <div className="flex items-center gap-2">
+                                    <BarChart3 className="h-4 w-4 text-red-600" />
+                                    <span className="text-destructive/80">
+                                      {dataSummary.applicationsCount} job applications and documents
+                                    </span>
+                                  </div>
+                                  <div className="flex items-center gap-2">
+                                    <FileText className="h-4 w-4 text-red-600" />
+                                    <span className="text-destructive/80">
+                                      {dataSummary.resumesCount} resumes and files
+                                    </span>
+                                  </div>
+                                  <div className="flex items-center gap-2">
+                                    <Download className="h-4 w-4 text-red-600" />
+                                    <span className="text-destructive/80">
+                                      {dataSummary.storageFilesCount} uploaded files
+                                    </span>
+                                  </div>
+                                  <div className="flex items-center gap-2">
+                                    <User className="h-4 w-4 text-red-600" />
+                                    <span className="text-destructive/80">
+                                      Profile, preferences, and account access
+                                    </span>
+                                  </div>
+                                </div>
+                              </div>
+                            </>
+                          )}
+                        </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel disabled={loading}>Cancel</AlertDialogCancel>
+                        <AlertDialogAction
+                          onClick={handleDeleteAccount}
+                          disabled={loading}
+                          className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                        >
+                          {loading ? "Deleting..." : "Delete Account"}
+                        </AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
                 </div>
-                <AlertDialog>
-                  <AlertDialogTrigger asChild>
-                    <Button variant="destructive">
-                      <Trash2 className="h-4 w-4 mr-2" />
-                      Delete
-                    </Button>
-                  </AlertDialogTrigger>
-                  <AlertDialogContent>
-                    <AlertDialogHeader>
-                      <AlertDialogTitle className="flex items-center gap-2">
-                        <AlertTriangle className="h-5 w-5 text-destructive" />
-                        Delete Account
-                      </AlertDialogTitle>
-                      <AlertDialogDescription>
-                        This action cannot be undone. This will permanently delete your account
-                        and remove all your data from our servers.
-                      </AlertDialogDescription>
-                    </AlertDialogHeader>
-                    <AlertDialogFooter>
-                      <AlertDialogCancel>Cancel</AlertDialogCancel>
-                      <AlertDialogAction
-                        onClick={handleDeleteAccount}
-                        className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-                      >
-                        Delete Account
-                      </AlertDialogAction>
-                    </AlertDialogFooter>
-                  </AlertDialogContent>
-                </AlertDialog>
+                {dataSummary && (
+                  <div className="bg-gradient-to-r from-red-50 to-orange-50 dark:from-red-950/30 dark:to-orange-950/30 border border-red-200 dark:border-red-800 rounded-lg p-4 transition-all duration-300 hover:shadow-md hover:border-red-300 dark:hover:border-red-700">
+                    <div className="flex items-center gap-2 mb-2">
+                      <AlertTriangle className="h-4 w-4 text-red-600 dark:text-red-400 animate-pulse" />
+                      <span className="font-medium text-red-900 dark:text-red-100 text-sm">
+                        Warning: This action is irreversible
+                      </span>
+                    </div>
+                    <p className="text-xs text-red-700 dark:text-red-300">
+                      Consider exporting your data first. Once deleted, all your data will be permanently removed and cannot be recovered.
+                    </p>
+                  </div>
+                )}
               </div>
             </CardContent>
           </Card>

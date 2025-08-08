@@ -1,0 +1,25 @@
+🎉 Welcome to EzJob!
+
+Hi there!
+
+Thanks for signing up for EzJob! We're excited to help you streamline your job search and land your dream role.
+
+To get started, please confirm your email address by clicking the link below:
+
+{{ .ConfirmationURL }}
+
+🔒 SECURITY NOTICE: This confirmation link will expire in 24 hours. If you didn't create an EzJob account, you can safely ignore this email.
+
+What you can do with EzJob:
+
+📊 Track Applications - Monitor your job applications and their status
+📄 Manage Resumes - Upload and organize multiple resume versions  
+📈 Analytics Dashboard - Get insights into your job search progress
+⚡ Easy Organization - Keep everything organized in one place
+
+Need help? Contact us at support@ezjob.app
+
+© 2025 EzJob. Making job searches easier, one application at a time.
+
+---
+EzJob - Your Job Search Companion

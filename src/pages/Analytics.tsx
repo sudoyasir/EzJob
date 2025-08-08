@@ -49,21 +49,30 @@ const Analytics = () => {
     <div className="min-h-screen bg-background">
       <Navbar currentStreak={7} longestStreak={12} />
 
-      <div className="container mx-auto px-6 py-8 max-w-7xl">
-        {/* Enhanced Header */}
-        <div className="mb-10">
-          <div className="text-center mb-8">
-            <h1 className="text-4xl lg:text-5xl font-bold mb-4 bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-              Analytics & Insights
+            <div className="container mx-auto px-4 sm:px-8 lg:px-12 py-6 sm:py-8 max-w-7xl">
+        {/* Header */}
+                {/* Header */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-6 sm:mb-8">
+          <div className="mb-4 sm:mb-0">
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-2 bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent">
+              Analytics Dashboard
             </h1>
-            <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-              Deep insights into your job application performance and trends to help you optimize your search strategy
+            <p className="text-sm sm:text-base text-muted-foreground">
+              Track your job application performance and identify trends
             </p>
           </div>
+          <Button
+            onClick={() => navigate("/dashboard")}
+            variant="outline"
+            className="w-full sm:w-auto"
+          >
+            <Plus className="h-4 w-4 mr-2" />
+            Add Application
+          </Button>
         </div>
 
         {/* Enhanced Key Metrics */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-8 sm:mb-12">
           {loading ? (
             Array.from({ length: 4 }).map((_, i) => (
               <Card key={i} className="p-6">
@@ -142,20 +151,22 @@ const Analytics = () => {
 
         {/* Charts */}
         {loading ? (
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-            <Card className="p-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 mb-6 sm:mb-8">
+            <Card className="p-4 sm:p-6">
               <Skeleton className="h-6 w-48 mb-2" />
               <Skeleton className="h-4 w-64 mb-4" />
-              <Skeleton className="h-[300px] w-full" />
+              <Skeleton className="h-[200px] sm:h-[250px] lg:h-[300px] w-full" />
             </Card>
-            <Card className="p-6">
+            <Card className="p-4 sm:p-6">
               <Skeleton className="h-6 w-48 mb-2" />
               <Skeleton className="h-4 w-64 mb-4" />
-              <Skeleton className="h-[300px] w-full" />
+              <Skeleton className="h-[200px] sm:h-[250px] lg:h-[300px] w-full" />
             </Card>
           </div>
         ) : applications.length > 0 ? (
-          <DashboardCharts applications={applications} />
+          <div className="w-full overflow-hidden">
+            <DashboardCharts applications={applications} />
+          </div>
         ) : (
           <Card className="p-12 text-center bg-gradient-to-br from-muted/30 to-muted/10 border-dashed border-2">
             <div className="max-w-md mx-auto">

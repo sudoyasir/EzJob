@@ -19,9 +19,15 @@ interface Resume {
   is_default: boolean;
 }
 
+interface ResumeInfo {
+  name: string;
+  is_default: boolean;
+  file_name?: string;
+}
+
 interface ApplicationCardProps {
   application: JobApplication;
-  resumeInfo?: Resume;
+  resumeInfo?: Resume | ResumeInfo;
   onEdit: () => void;
   onDelete: (id: string) => void;
   viewMode?: 'list' | 'grid';
@@ -83,10 +89,10 @@ export const ApplicationCard: React.FC<ApplicationCardProps> = ({
   const responseTime = calculateResponseTime();
 
   return (
-    <Card className={`p-6 hover:shadow-lg transition-all duration-300 hover:-translate-y-0.5 border border-border/50 hover:border-border bg-card/50 backdrop-blur-sm ${
+    <Card className={`p-4 sm:p-6 hover:shadow-lg transition-all duration-300 hover:-translate-y-0.5 border border-border/50 hover:border-border bg-card/50 backdrop-blur-sm ${
       viewMode === 'grid' ? 'h-fit' : ''
     }`}>
-      <div className="space-y-4">
+      <div className="space-y-3 sm:space-y-4">
         {/* Header Section */}
         <div className="flex items-start justify-between">
           <div className="flex-1 min-w-0">
@@ -173,7 +179,7 @@ export const ApplicationCard: React.FC<ApplicationCardProps> = ({
                 </div>
                 {viewMode === 'list' && (
                   <span className="text-xs text-green-600 dark:text-green-400">
-                    {resumeInfo.file_name}
+                    {resumeInfo.file_name || 'Resume'}
                   </span>
                 )}
               </div>

@@ -1,6 +1,6 @@
 import { Card } from "@/components/ui/card";
-import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
-import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, PieChart, Pie, Cell, LineChart, Line } from "recharts";
+import { ChartContainer, ChartTooltip, ChartTooltipContent, ChartLegend, ChartLegendContent } from "@/components/ui/chart";
+import { BarChart, Bar, XAxis, YAxis, PieChart, Pie, Cell, LineChart, Line } from "recharts";
 import { JobApplication } from "@/services/jobApplications";
 import { format, subDays, eachDayOfInterval } from "date-fns";
 
@@ -12,26 +12,26 @@ export const DashboardCharts = ({ applications }: DashboardChartsProps) => {
   // Status distribution data
   const statusData = [
     { 
-      status: 'Applied', 
-      count: applications.filter(app => app.status === 'Applied').length,
+      name: 'Applied', 
+      value: applications.filter(app => app.status === 'Applied').length,
       fill: 'hsl(var(--chart-1))'
     },
     { 
-      status: 'Interview', 
-      count: applications.filter(app => app.status === 'Interview').length,
+      name: 'Interview', 
+      value: applications.filter(app => app.status === 'Interview').length,
       fill: 'hsl(var(--chart-2))'
     },
     { 
-      status: 'Offer', 
-      count: applications.filter(app => app.status === 'Offer').length,
+      name: 'Offer', 
+      value: applications.filter(app => app.status === 'Offer').length,
       fill: 'hsl(var(--chart-3))'
     },
     { 
-      status: 'Rejected', 
-      count: applications.filter(app => app.status === 'Rejected').length,
+      name: 'Rejected', 
+      value: applications.filter(app => app.status === 'Rejected').length,
       fill: 'hsl(var(--chart-4))'
     },
-  ].filter(item => item.count > 0);
+  ].filter(item => item.value > 0);
 
   // Applications over time (last 30 days)
   const timelineData = (() => {
@@ -67,30 +67,43 @@ export const DashboardCharts = ({ applications }: DashboardChartsProps) => {
   })();
 
   const chartConfig = {
-    applied: { label: "Applied", color: "hsl(var(--chart-1))" },
-    interview: { label: "Interview", color: "hsl(var(--chart-2))" },
-    offer: { label: "Offer", color: "hsl(var(--chart-3))" },
-    rejected: { label: "Rejected", color: "hsl(var(--chart-4))" },
+    Applied: { 
+      label: "Applied", 
+      color: "hsl(var(--chart-1))" 
+    },
+    Interview: { 
+      label: "Interview", 
+      color: "hsl(var(--chart-2))" 
+    },
+    Offer: { 
+      label: "Offer", 
+      color: "hsl(var(--chart-3))" 
+    },
+    Rejected: { 
+      label: "Rejected", 
+      color: "hsl(var(--chart-4))" 
+    },
   };
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 mb-6 sm:mb-8">
       {/* Status Distribution Pie Chart */}
-      <Card className="p-6">
-        <div className="mb-4">
-          <h3 className="text-lg font-semibold">Application Status Distribution</h3>
-          <p className="text-sm text-muted-foreground">Overview of your application statuses</p>
+      <Card className="p-3 sm:p-4 lg:p-6 overflow-hidden">
+        <div className="mb-3 sm:mb-4">
+          <h3 className="text-sm sm:text-base lg:text-lg font-semibold">Application Status Distribution</h3>
+          <p className="text-xs sm:text-sm text-muted-foreground">Overview of your application statuses</p>
         </div>
-        <ChartContainer config={chartConfig} className="h-[300px]">
+        <ChartContainer config={chartConfig} className="h-[200px] sm:h-[250px] lg:h-[300px] w-full">
           <PieChart>
             <Pie
               data={statusData}
               cx="50%"
               cy="50%"
-              outerRadius={80}
-              innerRadius={40}
+              outerRadius="60%"
+              innerRadius="30%"
               paddingAngle={2}
-              dataKey="count"
+              dataKey="value"
+              nameKey="name"
             >
               {statusData.map((entry, index) => (
                 <Cell key={`cell-${index}`} fill={entry.fill} />
@@ -103,34 +116,50 @@ export const DashboardCharts = ({ applications }: DashboardChartsProps) => {
                     `${value} applications`,
                     name
                   ]}
+                  className="bg-background border-border shadow-lg text-xs sm:text-sm"
                 />
               }
+            />
+            <ChartLegend 
+              content={<ChartLegendContent className="text-xs sm:text-sm" />}
+              verticalAlign="bottom"
+              height={36}
             />
           </PieChart>
         </ChartContainer>
       </Card>
 
       {/* Applications Timeline */}
-      <Card className="p-6">
-        <div className="mb-4">
-          <h3 className="text-lg font-semibold">Applications Over Time</h3>
-          <p className="text-sm text-muted-foreground">Your application activity in the last 30 days</p>
+      <Card className="p-3 sm:p-4 lg:p-6 overflow-hidden">
+        <div className="mb-3 sm:mb-4">
+          <h3 className="text-sm sm:text-base lg:text-lg font-semibold">Applications Over Time</h3>
+          <p className="text-xs sm:text-sm text-muted-foreground">Your application activity in the last 30 days</p>
         </div>
-        <ChartContainer config={chartConfig} className="h-[300px]">
-          <LineChart data={timelineData}>
+        <ChartContainer config={chartConfig} className="h-[200px] sm:h-[250px] lg:h-[300px] w-full">
+          <LineChart 
+            data={timelineData} 
+            margin={{ top: 5, right: 10, left: 5, bottom: 5 }}
+          >
             <XAxis 
               dataKey="date" 
-              tick={{ fontSize: 12 }}
+              tick={{ fontSize: 10 }}
               interval="preserveStartEnd"
+              axisLine={false}
+              tickLine={false}
             />
-            <YAxis tick={{ fontSize: 12 }} />
+            <YAxis 
+              tick={{ fontSize: 10 }}
+              axisLine={false}
+              tickLine={false}
+              width={30}
+            />
             <Line 
               type="monotone" 
               dataKey="count" 
               stroke="hsl(var(--primary))" 
               strokeWidth={2}
-              dot={{ fill: "hsl(var(--primary))", strokeWidth: 2, r: 4 }}
-              activeDot={{ r: 6, fill: "hsl(var(--primary))" }}
+              dot={{ fill: "hsl(var(--primary))", strokeWidth: 2, r: 3 }}
+              activeDot={{ r: 5, fill: "hsl(var(--primary))" }}
             />
             <ChartTooltip
               content={
@@ -139,6 +168,7 @@ export const DashboardCharts = ({ applications }: DashboardChartsProps) => {
                     `${value} applications`,
                     "Applications"
                   ]}
+                  className="bg-background border-border shadow-lg text-xs sm:text-sm"
                 />
               }
             />
@@ -148,34 +178,49 @@ export const DashboardCharts = ({ applications }: DashboardChartsProps) => {
 
       {/* Top Companies */}
       {companyData.length > 0 && (
-        <Card className="p-6 lg:col-span-2">
-          <div className="mb-4">
-            <h3 className="text-lg font-semibold">Top Companies Applied To</h3>
-            <p className="text-sm text-muted-foreground">Companies where you've submitted the most applications</p>
+        <Card className="p-3 sm:p-4 lg:p-6 lg:col-span-2 overflow-hidden">
+          <div className="mb-3 sm:mb-4">
+            <h3 className="text-sm sm:text-base lg:text-lg font-semibold">Top Companies Applied To</h3>
+            <p className="text-xs sm:text-sm text-muted-foreground">Companies where you've submitted the most applications</p>
           </div>
-          <ChartContainer config={chartConfig} className="h-[300px]">
-            <BarChart data={companyData} layout="horizontal">
-              <XAxis type="number" tick={{ fontSize: 12 }} />
-              <YAxis 
-                type="category" 
+          <ChartContainer config={chartConfig} className="h-[250px] sm:h-[300px] lg:h-[400px] w-full">
+            <BarChart 
+              data={companyData} 
+              margin={{ top: 20, right: 10, left: 5, bottom: 60 }}
+            >
+              <XAxis 
                 dataKey="company" 
-                tick={{ fontSize: 12 }}
-                width={150}
+                tick={{ fontSize: 9 }}
+                height={60}
+                interval={0}
+                angle={-45}
+                textAnchor="end"
+                axisLine={false}
+                tickLine={false}
+              />
+              <YAxis 
+                tick={{ fontSize: 10 }}
+                axisLine={false}
+                tickLine={false}
+                width={30}
               />
               <Bar 
                 dataKey="count" 
                 fill="hsl(var(--primary))"
-                radius={[0, 4, 4, 0]}
+                radius={[4, 4, 0, 0]}
+                maxBarSize={60}
               />
               <ChartTooltip
                 content={
                   <ChartTooltipContent 
                     formatter={(value, name, props) => [
                       `${value} applications`,
-                      props.payload?.company
+                      props.payload?.company || "Company"
                     ]}
+                    className="bg-background border-border shadow-lg text-xs sm:text-sm"
                   />
                 }
+                cursor={false}
               />
             </BarChart>
           </ChartContainer>

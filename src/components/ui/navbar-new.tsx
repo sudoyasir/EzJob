@@ -49,10 +49,7 @@ export const Navbar = ({
       <div className="container mx-auto px-4 sm:px-8 lg:px-12 py-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-4 lg:space-x-6">
-            <div 
-              className="flex items-center space-x-2 cursor-pointer"
-              onClick={() => navigate("/")}
-            >
+            <div className="flex items-center space-x-2">
               <img 
                 src="/logo.png" 
                 className="w-7 h-7 sm:w-8 sm:h-8 object-contain" 
@@ -67,14 +64,14 @@ export const Navbar = ({
             </div>
             
             {/* Desktop Navigation */}
-                        <div className="hidden md:flex items-center space-x-1">
+            <div className="hidden md:flex items-center space-x-1">
               <Button 
                 variant="ghost" 
                 size="sm" 
-                className={`text-foreground hover:bg-accent hover:text-accent-foreground text-sm px-3 py-2 ${
+                className={`text-foreground hover:bg-accent hover:text-accent-foreground ${
                   isCurrentPage("/dashboard") ? "bg-accent text-accent-foreground" : ""
                 }`}
-                onClick={() => navigate("/dashboard")}
+                onClick={() => handleNavigation("/dashboard")}
               >
                 <BarChart3 className="h-4 w-4 mr-2" />
                 Dashboard
@@ -82,10 +79,10 @@ export const Navbar = ({
               <Button 
                 variant="ghost" 
                 size="sm" 
-                className={`text-foreground hover:bg-accent hover:text-accent-foreground text-sm px-3 py-2 ${
+                className={`text-foreground hover:bg-accent hover:text-accent-foreground ${
                   isCurrentPage("/resumes") ? "bg-accent text-accent-foreground" : ""
                 }`}
-                onClick={() => navigate("/resumes")}
+                onClick={() => handleNavigation("/resumes")}
               >
                 <FileText className="h-4 w-4 mr-2" />
                 Resumes
@@ -93,10 +90,10 @@ export const Navbar = ({
               <Button 
                 variant="ghost" 
                 size="sm" 
-                className={`text-foreground hover:bg-accent hover:text-accent-foreground text-sm px-3 py-2 ${
+                className={`text-foreground hover:bg-accent hover:text-accent-foreground ${
                   isCurrentPage("/analytics") ? "bg-accent text-accent-foreground" : ""
                 }`}
-                onClick={() => navigate("/analytics")}
+                onClick={() => handleNavigation("/analytics")}
               >
                 <TrendingUp className="h-4 w-4 mr-2" />
                 Analytics

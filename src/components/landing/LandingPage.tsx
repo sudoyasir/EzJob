@@ -49,7 +49,7 @@ const LandingPage = () => {
   return (
     <div className="min-h-screen bg-background">
       {/* Navigation */}
-      <nav className="container mx-auto px-6 py-6 sticky top-0 z-50 bg-background/80 backdrop-blur-sm border-b border-border/50">
+      <nav className="container mx-auto px-4 sm:px-8 lg:px-12 py-4 sm:py-6 sticky top-0 z-50 bg-background/80 backdrop-blur-sm border-b border-border/50">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-3">
             <img 
@@ -108,7 +108,7 @@ const LandingPage = () => {
       </nav>
 
       {/* Hero Section */}
-      <section className="container mx-auto px-6 py-20 lg:py-32 text-center relative overflow-hidden">
+      <section className="container mx-auto px-4 sm:px-8 lg:px-12 py-12 sm:py-20 lg:py-32 text-center relative overflow-hidden">
         {/* Background decoration */}
         <div className="absolute inset-0 -z-10">
           <div className="absolute top-20 left-10 w-32 h-32 bg-primary/10 rounded-full blur-3xl"></div>
@@ -244,7 +244,7 @@ const LandingPage = () => {
       </section>
 
       {/* Features Section */}
-      <section id="features" className="container mx-auto px-6 py-20 lg:py-32 relative">
+      <section id="features" className="container mx-auto px-8 lg:px-12 py-20 lg:py-32 relative">
         {/* Background decoration */}
         <div className="absolute inset-0 -z-10">
           <div className="absolute top-10 right-20 w-32 h-32 bg-accent/5 rounded-full blur-3xl"></div>
@@ -293,7 +293,7 @@ const LandingPage = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="container mx-auto px-6 py-20 lg:py-32 relative">
+      <section className="container mx-auto px-8 lg:px-12 py-20 lg:py-32 relative">
         {/* Background decoration */}
         <div className="absolute inset-0 -z-10">
           <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-accent/5 to-primary/5 rounded-3xl blur-3xl"></div>
@@ -363,7 +363,7 @@ const LandingPage = () => {
 
       {/* Footer */}
       <footer className="border-t border-border bg-muted/20">
-        <div className="container mx-auto px-6 py-16">
+        <div className="container mx-auto px-8 lg:px-12 py-16">
           <div className="grid md:grid-cols-5 gap-8 lg:gap-12">
             {/* Brand section */}
             <div className="md:col-span-2">

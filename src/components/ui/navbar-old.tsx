@@ -5,7 +5,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { StreakDisplay } from "@/components/ui/streak-display";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { Settings, LogOut, User, FileText, BarChart3, Flame, TrendingUp, Menu } from "lucide-react";
+import { Settings, LogOut, User, FileText, BarChart3, Flame, TrendingUp, Menu, X } from "lucide-react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
@@ -49,10 +49,7 @@ export const Navbar = ({
       <div className="container mx-auto px-4 sm:px-8 lg:px-12 py-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-4 lg:space-x-6">
-            <div 
-              className="flex items-center space-x-2 cursor-pointer"
-              onClick={() => navigate("/")}
-            >
+            <div className="flex items-center space-x-2">
               <img 
                 src="/logo.png" 
                 className="w-7 h-7 sm:w-8 sm:h-8 object-contain" 
@@ -67,14 +64,14 @@ export const Navbar = ({
             </div>
             
             {/* Desktop Navigation */}
-                        <div className="hidden md:flex items-center space-x-1">
+            <div className="hidden md:flex items-center space-x-1">
               <Button 
                 variant="ghost" 
                 size="sm" 
-                className={`text-foreground hover:bg-accent hover:text-accent-foreground text-sm px-3 py-2 ${
+                className={`text-foreground hover:bg-accent hover:text-accent-foreground ${
                   isCurrentPage("/dashboard") ? "bg-accent text-accent-foreground" : ""
                 }`}
-                onClick={() => navigate("/dashboard")}
+                onClick={() => handleNavigation("/dashboard")}
               >
                 <BarChart3 className="h-4 w-4 mr-2" />
                 Dashboard
@@ -82,10 +79,10 @@ export const Navbar = ({
               <Button 
                 variant="ghost" 
                 size="sm" 
-                className={`text-foreground hover:bg-accent hover:text-accent-foreground text-sm px-3 py-2 ${
+                className={`text-foreground hover:bg-accent hover:text-accent-foreground ${
                   isCurrentPage("/resumes") ? "bg-accent text-accent-foreground" : ""
                 }`}
-                onClick={() => navigate("/resumes")}
+                onClick={() => handleNavigation("/resumes")}
               >
                 <FileText className="h-4 w-4 mr-2" />
                 Resumes
@@ -93,10 +90,10 @@ export const Navbar = ({
               <Button 
                 variant="ghost" 
                 size="sm" 
-                className={`text-foreground hover:bg-accent hover:text-accent-foreground text-sm px-3 py-2 ${
+                className={`text-foreground hover:bg-accent hover:text-accent-foreground ${
                   isCurrentPage("/analytics") ? "bg-accent text-accent-foreground" : ""
                 }`}
-                onClick={() => navigate("/analytics")}
+                onClick={() => handleNavigation("/analytics")}
               >
                 <TrendingUp className="h-4 w-4 mr-2" />
                 Analytics
@@ -155,33 +152,31 @@ export const Navbar = ({
               </SheetContent>
             </Sheet>
 
-            {/* Streak Display - Hidden on small screens */}
             {showStreak && (
               <div className="hidden sm:block">
                 <Popover>
-                  <PopoverTrigger asChild>
-                    <Button 
-                      variant="ghost" 
-                      size="sm"
-                      className="flex items-center space-x-1.5 px-2 py-1.5 hover:bg-accent/30 transition-all duration-200 group border-0 bg-transparent"
-                    >
-                      <Flame className="h-4 w-4 text-orange-500 group-hover:text-orange-400 transition-colors" />
-                      <span className="text-sm font-semibold text-foreground group-hover:text-accent-foreground">
-                        {currentStreak}
-                      </span>
-                    </Button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-80 p-0" align="end" side="bottom">
-                    <StreakDisplay 
-                      currentStreak={currentStreak} 
-                      longestStreak={longestStreak} 
-                      variant="full"
-                      showWeekly={true}
-                      className="border-0 shadow-none"
-                    />
-                  </PopoverContent>
-                </Popover>
-              </div>
+                <PopoverTrigger asChild>
+                  <Button 
+                    variant="ghost" 
+                    size="sm"
+                    className="flex items-center space-x-1.5 px-2 py-1.5 hover:bg-accent/30 transition-all duration-200 group border-0 bg-transparent"
+                  >
+                    <Flame className="h-4 w-4 text-orange-500 group-hover:text-orange-400 transition-colors" />
+                    <span className="text-sm font-semibold text-foreground group-hover:text-accent-foreground">
+                      {currentStreak}
+                    </span>
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-80 p-0" align="end" side="bottom">
+                  <StreakDisplay 
+                    currentStreak={currentStreak} 
+                    longestStreak={longestStreak} 
+                    variant="full"
+                    showWeekly={true}
+                    className="border-0 shadow-none"
+                  />
+                </PopoverContent>
+              </Popover>
             )}
             
             {/* Theme Toggle */}
@@ -192,15 +187,15 @@ export const Navbar = ({
               <DropdownMenuTrigger asChild>
                 <Button 
                   variant="ghost" 
-                  className="relative h-8 w-8 sm:h-10 sm:w-10 rounded-full focus:ring-0 focus:ring-offset-0 focus:outline-none focus-visible:outline-none hover:bg-accent [&:focus]:outline-none [&:focus-visible]:outline-none [&:focus]:ring-0 [&:focus-visible]:ring-0 outline-none border-none shadow-none"
+                  className="relative h-10 w-10 rounded-full focus:ring-0 focus:ring-offset-0 focus:outline-none focus-visible:outline-none hover:bg-accent [&:focus]:outline-none [&:focus-visible]:outline-none [&:focus]:ring-0 [&:focus-visible]:ring-0 outline-none border-none shadow-none"
                   style={{ boxShadow: 'none', outline: 'none' }}
                 >
-                  <Avatar className="h-8 w-8 sm:h-10 sm:w-10">
+                  <Avatar className="h-10 w-10">
                     <AvatarImage 
                       src={user?.user_metadata?.avatar_url} 
                       alt={user?.user_metadata?.full_name || user?.email || "User"} 
                     />
-                    <AvatarFallback className="bg-primary text-primary-foreground text-xs sm:text-sm">
+                    <AvatarFallback className="bg-primary text-primary-foreground">
                       {user?.user_metadata?.full_name 
                         ? user.user_metadata.full_name.charAt(0).toUpperCase()
                         : user?.email?.charAt(0).toUpperCase() || "U"
@@ -224,7 +219,7 @@ export const Navbar = ({
                 <DropdownMenuItem asChild>
                   <button 
                     className="flex items-center w-full px-2 py-1.5 text-sm cursor-pointer text-popover-foreground hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none"
-                    onClick={() => handleNavigation('/settings')}
+                    onClick={() => navigate('/settings')}
                   >
                     <User className="h-4 w-4 mr-2" />
                     Settings
