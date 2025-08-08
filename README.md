@@ -6,11 +6,14 @@
 
 ![EzJob Banner](https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?w=800&h=400&fit=crop&crop=center)
 
+[![Live Demo](https://img.shields.io/badge/🚀_Live_Demo-ezjob.sudoyasir.space-blue?style=for-the-badge)](https://ezjob.sudoyasir.space)
 [![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)](https://reactjs.org/)
 [![Vite](https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white)](https://vitejs.dev/)
 [![Supabase](https://img.shields.io/badge/Supabase-3ECF8E?style=for-the-badge&logo=supabase&logoColor=white)](https://supabase.com/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
+
+[🚀 **Try EzJob Live**](https://ezjob.sudoyasir.space) | [📖 Documentation](#-getting-started) | [🐛 Report Bug](https://github.com/sudoyasir/EzJob/issues)
 
 </div>
 
@@ -22,10 +25,14 @@ EzJob is a modern, full-stack job application tracking platform designed to help
 
 - **📊 Application Management** - Track job applications with detailed information (company, role, status, notes)
 - **📈 Analytics Dashboard** - Visual insights into application success rates, response times, and trends
-- **🔥 Streak Tracking** - Gamified daily application streaks to maintain momentum
+- **� Resume Management** - Upload, organize, and manage multiple resume versions
+- **�🔥 Streak Tracking** - Gamified daily application streaks to maintain momentum
 - **🎯 Smart Status Updates** - Track applications through Applied → Interview → Offer pipeline
+- **📤 Data Export** - Export all your data in JSON format with progress tracking
+- **🗑️ Account Management** - Complete account deletion with data cleanup (GDPR compliant)
+- **📧 Professional Email Templates** - Beautiful, branded email confirmations and notifications
 - **🌓 Dark/Light Mode** - Beautiful theming that adapts to user preferences
-- **🔐 Secure Authentication** - Multiple sign-in options (Google, GitHub, Email)
+- **🔐 Secure Authentication** - Multiple sign-in options (Google, GitHub, Email, Magic Links)
 - **📱 Responsive Design** - Seamless experience across desktop and mobile devices
 
 ## 🛠️ Tech Stack
@@ -61,6 +68,7 @@ src/
 │   ├── auth/            # Authentication components
 │   ├── charts/          # Analytics and chart components
 │   ├── landing/         # Landing page components
+│   ├── resumes/         # Resume management components
 │   ├── skeletons/       # Loading skeleton components
 │   └── ui/              # shadcn/ui component library
 ├── contexts/            # React context providers
@@ -73,10 +81,22 @@ src/
 ├── pages/               # Application pages/routes
 ├── routes/              # Route configurations
 └── services/            # API service layers
+    ├── jobApplications.ts    # Job application CRUD operations
+    ├── accountManagement.ts  # Data export & account deletion
+    └── emailNotifications.ts # Email service integration
 
 supabase/
 ├── config.toml          # Supabase project configuration
 └── migrations/          # Database migration files
+
+email-templates/         # Professional email templates
+├── confirm-signup.html  # Account confirmation template
+├── reset-password.html  # Password reset template
+├── magic-link.html      # Passwordless signin template
+└── README.md           # Email setup guide
+
+docs/
+└── ACCOUNT_MANAGEMENT.md # Account management documentation
 ```
 
 ## 🚦 Getting Started
@@ -90,7 +110,7 @@ supabase/
 
 1. **Clone the repository**
    ```bash
-   git clone <YOUR_GIT_URL>
+   git clone https://github.com/sudoyasir/EzJob.git
    cd EzJob
    ```
 
@@ -187,13 +207,34 @@ EzJob uses a modern design system built on:
 - **Accent**: Gradient combinations for call-to-action elements
 - **Semantic Colors**: Status-specific colors for applications (blue=applied, green=interview/offer, red=rejected)
 
-## 🔐 Authentication
+## 🔐 Authentication & Email Templates
 
-EzJob supports multiple authentication methods:
+EzJob supports multiple authentication methods with beautiful, branded email templates:
 
-- **Email/Password** - Traditional account creation
+### Authentication Methods
+- **Email/Password** - Traditional account creation with professional welcome emails
 - **Google OAuth** - Sign in with Google account
 - **GitHub OAuth** - Sign in with GitHub account
+- **Magic Links** - Passwordless signin with secure email links
+
+### Professional Email Templates
+All authentication emails use custom-designed templates that match EzJob's branding:
+- **Welcome Email** - Beautiful gradient design with feature highlights
+- **Password Reset** - Security-focused design with clear instructions
+- **Magic Link** - Clean, modern template for passwordless authentication
+
+All templates are:
+- Mobile-responsive with clean HTML/CSS
+- Branded with EzJob colors and logo
+- Include clear call-to-action buttons
+- Provide security notices and expiration warnings
+- Available in both HTML and plain text formats
+
+### Setup Email Templates
+To use the custom email templates in your Supabase project:
+1. Go to Authentication → Email Templates in your Supabase dashboard
+2. Copy the HTML from `/email-templates/` directory
+3. Follow the setup guide in `/email-templates/README.md`
 
 All authentication is handled securely by Supabase with:
 - Email verification for new accounts
@@ -293,6 +334,6 @@ A: Verify your Supabase authentication settings include the correct redirect URL
 
 **Built with ❤️ by Yasir**
 
-[Demo](https://your-demo-link.com) • [Documentation](https://github.com/sudoyasir/EzJob/wiki) • [Report Bug](https://github.com/sudoyasir/EzJob/issues)
+[Demo](https://ezjob.sudoyasir.space) • [Documentation](https://github.com/sudoyasir/EzJob/wiki) • [Report Bug](https://github.com/sudoyasir/EzJob/issues)
 
 </div>
