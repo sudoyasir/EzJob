@@ -8,137 +8,149 @@
 
 @layer base {
   :root {
-    /* Core Brand Colors */
-    --background: 0 0% 99%;
-    --foreground: 222 84% 4.9%;
+    /* Core Brand Colors - Modern Aesthetic Palette */
+    --background: 0 0% 98%;
+    --foreground: 240 10% 3.9%;
 
     --card: 0 0% 100%;
-    --card-foreground: 222 84% 4.9%;
+    --card-foreground: 240 10% 3.9%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 222 84% 4.9%;
+    --popover-foreground: 240 10% 3.9%;
 
-    /* Primary Brand - Deep Blue/Purple */
-    --primary: 242 47% 12%;
-    --primary-foreground: 210 40% 98%;
-    --primary-glow: 242 65% 25%;
+    /* Primary Brand - Sophisticated Purple/Indigo */
+    --primary: 262 83% 58%;
+    --primary-foreground: 0 0% 98%;
+    --primary-glow: 262 83% 70%;
 
-    /* Secondary - Light Blue */
-    --secondary: 210 40% 96%;
-    --secondary-foreground: 242 47% 12%;
+    /* Secondary - Warm Gray */
+    --secondary: 240 4.8% 95.9%;
+    --secondary-foreground: 240 5.9% 10%;
 
-    /* Success Green */
-    --success: 142 69% 58%;
-    --success-foreground: 0 0% 100%;
+    /* Success Green - Nature Inspired */
+    --success: 142 76% 36%;
+    --success-foreground: 0 0% 98%;
 
-    /* Accent Colors */
-    --accent: 262 83% 58%;
-    --accent-foreground: 0 0% 100%;
-    --accent-light: 262 83% 95%;
+    /* Accent Colors - Vibrant Coral/Pink */
+    --accent: 346 77% 49%;
+    --accent-foreground: 0 0% 98%;
+    --accent-light: 346 77% 95%;
 
-    --muted: 210 40% 96%;
-    --muted-foreground: 215 16% 47%;
+    /* Neutral Tones */
+    --muted: 240 4.8% 95.9%;
+    --muted-foreground: 240 3.8% 46.1%;
 
-    --destructive: 0 84% 60%;
-    --destructive-foreground: 210 40% 98%;
+    /* Warning/Destructive */
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 98%;
 
-    --border: 214 32% 91%;
-    --input: 214 32% 91%;
-    --ring: 242 47% 12%;
+    /* Borders and Inputs */
+    --border: 240 5.9% 90%;
+    --input: 240 5.9% 90%;
+    --ring: 262 83% 58%;
 
     --radius: 0.75rem;
 
-    /* Gradients */
-    --gradient-primary: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--accent)));
-    --gradient-hero: linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--accent)) 100%);
-    --gradient-card: linear-gradient(145deg, hsl(0 0% 100% / 0.8), hsl(0 0% 100% / 0.4));
+    /* Gradients - Aesthetic Combinations */
+    --gradient-primary: linear-gradient(135deg, hsl(262 83% 58%) 0%, hsl(346 77% 49%) 100%);
+    --gradient-hero: linear-gradient(135deg, hsl(262 83% 58%) 0%, hsl(224 76% 48%) 50%, hsl(346 77% 49%) 100%);
+    --gradient-card: linear-gradient(145deg, hsl(0 0% 100% / 0.9), hsl(0 0% 100% / 0.6));
     
-    /* Shadows */
-    --shadow-brand: 0 10px 40px -15px hsl(var(--primary) / 0.2);
-    --shadow-glow: 0 0 40px hsl(var(--accent) / 0.3);
-    --shadow-card: 0 4px 20px -8px hsl(var(--foreground) / 0.1);
+    /* Shadows - Soft and Modern */
+    --shadow-brand: 0 10px 40px -15px hsl(262 83% 58% / 0.25);
+    --shadow-glow: 0 0 30px hsl(346 77% 49% / 0.3);
+    --shadow-card: 0 4px 20px -8px hsl(240 10% 3.9% / 0.08);
 
     /* Animations */
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     --transition-spring: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 
-    --sidebar-background: 0 0% 98%;
-
-    --sidebar-foreground: 240 5.3% 26.1%;
-
-    --sidebar-primary: 240 5.9% 10%;
-
+    /* Sidebar */
+    --sidebar-background: 240 4.8% 97%;
+    --sidebar-foreground: 240 5.9% 10%;
+    --sidebar-primary: 262 83% 58%;
     --sidebar-primary-foreground: 0 0% 98%;
-
     --sidebar-accent: 240 4.8% 95.9%;
-
     --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-border: 240 5.9% 90%;
+    --sidebar-ring: 262 83% 58%;
 
-    --sidebar-border: 220 13% 91%;
-
-    --sidebar-ring: 217.2 91.2% 59.8%;
-
-    /* Chart Colors */
-    --chart-1: 220 70% 50%;
-    --chart-2: 160 60% 45%;
-    --chart-3: 30 80% 55%;
-    --chart-4: 340 75% 55%;
-    --chart-5: 260 70% 50%;
+    /* Chart Colors - Harmonious Palette */
+    --chart-1: 262 83% 58%;
+    --chart-2: 346 77% 49%;
+    --chart-3: 142 76% 36%;
+    --chart-4: 43 96% 56%;
+    --chart-5: 224 76% 48%;
   }
 
   .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
+    /* Core Colors - Dark Mode Sophistication */
+    --background: 240 10% 3.9%;
+    --foreground: 0 0% 98%;
 
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
+    --card: 240 10% 3.9%;
+    --card-foreground: 0 0% 98%;
 
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
+    --popover: 240 10% 3.9%;
+    --popover-foreground: 0 0% 98%;
 
-    --primary: 217.2 91.2% 59.8%;
-    --primary-foreground: 222.2 84% 4.9%;
+    /* Primary - Lighter for dark mode */
+    --primary: 262 83% 70%;
+    --primary-foreground: 240 10% 3.9%;
+    --primary-glow: 262 83% 80%;
 
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
+    /* Secondary - Dark gray */
+    --secondary: 240 3.7% 15.9%;
+    --secondary-foreground: 0 0% 98%;
 
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
+    /* Success - Slightly brighter for dark */
+    --success: 142 76% 45%;
+    --success-foreground: 240 10% 3.9%;
 
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
+    /* Muted tones */
+    --muted: 240 3.7% 15.9%;
+    --muted-foreground: 240 5% 64.9%;
 
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
+    /* Accent - Vibrant for dark mode */
+    --accent: 346 77% 60%;
+    --accent-foreground: 240 10% 3.9%;
+    --accent-light: 346 77% 15%;
 
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
+    /* Destructive */
+    --destructive: 0 72% 60%;
+    --destructive-foreground: 0 0% 98%;
+
+    /* Borders and inputs */
+    --border: 240 3.7% 15.9%;
+    --input: 240 3.7% 15.9%;
+    --ring: 262 83% 70%;
+
+    /* Sidebar Dark */
     --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
-    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-foreground: 0 0% 98%;
+    --sidebar-primary: 262 83% 70%;
+    --sidebar-primary-foreground: 240 10% 3.9%;
     --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
+    --sidebar-accent-foreground: 0 0% 98%;
     --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --sidebar-ring: 262 83% 70%;
 
-    /* Dark theme gradients */
-    --gradient-primary: linear-gradient(135deg, hsl(var(--primary)), hsl(217.2 32.6% 17.5%));
-    --gradient-hero: linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(217.2 32.6% 17.5%) 100%);
-    --gradient-card: linear-gradient(145deg, hsl(222.2 84% 4.9% / 0.8), hsl(222.2 84% 4.9% / 0.4));
+    /* Dark Mode Gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(262 83% 70%) 0%, hsl(346 77% 60%) 100%);
+    --gradient-hero: linear-gradient(135deg, hsl(262 83% 70%) 0%, hsl(224 76% 58%) 50%, hsl(346 77% 60%) 100%);
+    --gradient-card: linear-gradient(145deg, hsl(240 10% 3.9% / 0.9), hsl(240 10% 3.9% / 0.6));
     
-    /* Dark theme shadows */
-    --shadow-brand: 0 10px 40px -15px hsl(var(--primary) / 0.3);
-    --shadow-glow: 0 0 40px hsl(var(--primary) / 0.2);
-    --shadow-card: 0 4px 20px -8px hsl(0 0% 0% / 0.3);
+    /* Dark Mode Shadows */
+    --shadow-brand: 0 10px 40px -15px hsl(262 83% 70% / 0.3);
+    --shadow-glow: 0 0 30px hsl(346 77% 60% / 0.4);
+    --shadow-card: 0 4px 20px -8px hsl(0 0% 0% / 0.4);
 
-    /* Chart Colors */
-    --chart-1: 220 70% 50%;
-    --chart-2: 160 60% 45%;
-    --chart-3: 30 80% 55%;
-    --chart-4: 340 75% 55%;
-    --chart-5: 260 70% 50%;
+    /* Chart Colors - Dark mode optimized */
+    --chart-1: 262 83% 70%;
+    --chart-2: 346 77% 60%;
+    --chart-3: 142 76% 45%;
+    --chart-4: 43 96% 65%;
+    --chart-5: 224 76% 58%;
   }
 }
 
