@@ -137,6 +137,33 @@ export default function ResumeManager({ embedded = false, onResumeUploaded, onCl
 
       const { url: publicUrl, path: filePath } = uploadResult;
 
+      // Determine file type from extension if file.type is empty
+      const getFileType = (file: File): string => {
+        if (file.type) return file.type;
+        
+        const extension = file.name.toLowerCase().split('.').pop();
+        switch (extension) {
+          case 'pdf':
+            return 'application/pdf';
+          case 'doc':
+            return 'application/msword';
+          case 'docx':
+            return 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
+          case 'txt':
+            return 'text/plain';
+          default:
+            return 'application/octet-stream';
+        }
+      };
+
+      const fileType = getFileType(selectedFile);
+      console.log('File upload details:', {
+        fileName: selectedFile.name,
+        originalType: selectedFile.type,
+        determinedType: fileType,
+        size: selectedFile.size
+      });
+
       // Save resume metadata to database
       const { data, error } = await supabase
         .from('resumes')
@@ -148,7 +175,7 @@ export default function ResumeManager({ embedded = false, onResumeUploaded, onCl
           file_url: publicUrl,
           file_path: filePath,
           file_size: selectedFile.size,
-          file_type: selectedFile.type,
+          file_type: fileType,
           is_default: resumes.length === 0, // First resume is default
         })
         .select()
