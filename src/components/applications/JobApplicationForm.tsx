@@ -12,8 +12,6 @@ import { CalendarIcon, Plus, FileText, AlertCircle } from 'lucide-react';
 import { format } from 'date-fns';
 import { JobApplication, JobApplicationInsert, JobApplicationService } from '@/services/jobApplications';
 import { useAuth } from '@/contexts/AuthContext';
-import { rateLimitService, securityEventService } from '@/services/rateLimitService';
-import { backgroundJobService } from '@/services/backgroundJobs';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
@@ -79,19 +77,6 @@ export const JobApplicationForm: React.FC<JobApplicationFormProps> = ({
     setLoading(true);
 
     try {
-      // Rate limit check for application submissions
-      if (!application) { // Only rate limit new applications, not updates
-        const rateLimitResult = rateLimitService.checkRateLimit(
-          `application_submit:${user?.id}`,
-          { windowMs: 5 * 60 * 1000, maxRequests: 20 } // 20 submissions per 5 minutes
-        );
-
-        if (!rateLimitResult.allowed) {
-          const resetTimeMinutes = Math.ceil((rateLimitResult.resetTime - Date.now()) / (1000 * 60));
-          throw new Error(`Too many applications submitted. Try again in ${resetTimeMinutes} minutes.`);
-        }
-      }
-
       const applicationData = {
         ...formData,
         applied_date: appliedDate.toISOString().split('T')[0],
@@ -148,30 +133,7 @@ export const JobApplicationForm: React.FC<JobApplicationFormProps> = ({
         }
 
         // Schedule interview reminder if status is Interview and has interview date
-        if (formData.status === 'Interview' && formData.notes?.includes('interview')) {
-          // Try to extract interview date from notes (basic implementation)
-          const interviewMatch = formData.notes.match(/(\d{4}-\d{2}-\d{2})/);
-          if (interviewMatch && user?.email) {
-            const interviewDate = new Date(interviewMatch[1]);
-            if (interviewDate > new Date()) {
-              backgroundJobService.scheduleJob({
-                type: 'email_reminder',
-                data: {
-                  userId: user.id,
-                  email: user.email,
-                  type: 'interview_reminder',
-                  applicationData: {
-                    company: formData.company_name,
-                    role: formData.role,
-                    interviewDate: interviewDate.toISOString()
-                  }
-                },
-                scheduledFor: new Date(interviewDate.getTime() - 24 * 60 * 60 * 1000), // 24 hours before
-                active: true
-              });
-            }
-          }
-        }
+        // Simple notification for interview status (removed complex background job scheduling)
       }
 
       setOpen(false);

@@ -3,14 +3,12 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { AvatarUpload } from "@/components/ui/avatar-upload";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { ArrowLeft, Upload, User, Settings, LogOut, Save, Camera, Mail, MapPin, Calendar, Building, Link as LinkIcon } from "lucide-react";
+import { ArrowLeft, User, Settings, LogOut, Save } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
@@ -19,15 +17,6 @@ import { supabase } from "@/integrations/supabase/client";
 interface UserProfile {
   full_name?: string;
   avatar_url?: string;
-  bio?: string;
-  location?: string;
-  website?: string;
-  linkedin?: string;
-  github?: string;
-  phone?: string;
-  preferred_job_title?: string;
-  years_experience?: number;
-  skills?: string[];
 }
 
 const ProfileSettings = () => {
@@ -36,17 +25,7 @@ const ProfileSettings = () => {
   const [loading, setLoading] = useState(false);
   const [profile, setProfile] = useState<UserProfile>({
     full_name: "",
-    bio: "",
-    location: "",
-    website: "",
-    linkedin: "",
-    github: "",
-    phone: "",
-    preferred_job_title: "",
-    years_experience: 0,
-    skills: [],
   });
-  const [newSkill, setNewSkill] = useState("");
 
   useEffect(() => {
     if (user) {
@@ -73,30 +52,12 @@ const ProfileSettings = () => {
         setProfile({
           full_name: data.full_name || "",
           avatar_url: data.avatar_url || "",
-          bio: data.bio || "",
-          location: data.location || "",
-          website: data.website || "",
-          linkedin: data.linkedin || "",
-          github: data.github || "",
-          phone: data.phone || "",
-          preferred_job_title: data.preferred_job_title || "",
-          years_experience: data.years_experience || 0,
-          skills: data.skills || [],
         });
       } else {
         // Fallback to user metadata if no profile exists
         setProfile({
           full_name: user.user_metadata?.full_name || "",
           avatar_url: user.user_metadata?.avatar_url || "",
-          bio: user.user_metadata?.bio || "",
-          location: user.user_metadata?.location || "",
-          website: user.user_metadata?.website || "",
-          linkedin: user.user_metadata?.linkedin || "",
-          github: user.user_metadata?.github || "",
-          phone: user.user_metadata?.phone || "",
-          preferred_job_title: user.user_metadata?.preferred_job_title || "",
-          years_experience: user.user_metadata?.years_experience || 0,
-          skills: user.user_metadata?.skills || [],
         });
       }
     } catch (error: any) {
@@ -127,15 +88,6 @@ const ProfileSettings = () => {
           id: user.id,
           full_name: profile.full_name,
           avatar_url: profile.avatar_url,
-          bio: profile.bio,
-          location: profile.location,
-          website: profile.website,
-          linkedin: profile.linkedin,
-          github: profile.github,
-          phone: profile.phone,
-          preferred_job_title: profile.preferred_job_title,
-          years_experience: profile.years_experience,
-          skills: profile.skills,
         });
 
       if (profileError) throw profileError;
@@ -143,8 +95,8 @@ const ProfileSettings = () => {
       // Also update auth user metadata for backwards compatibility
       const { error: authError } = await supabase.auth.updateUser({
         data: {
-          ...profile,
           full_name: profile.full_name,
+          avatar_url: profile.avatar_url,
         }
       });
 
@@ -158,32 +110,8 @@ const ProfileSettings = () => {
     }
   };
 
-  const handleAddSkill = () => {
-    if (newSkill.trim() && !profile.skills?.includes(newSkill.trim())) {
-      setProfile(prev => ({
-        ...prev,
-        skills: [...(prev.skills || []), newSkill.trim()]
-      }));
-      setNewSkill("");
-    }
-  };
-
-  const handleRemoveSkill = (skillToRemove: string) => {
-    setProfile(prev => ({
-      ...prev,
-      skills: prev.skills?.filter(skill => skill !== skillToRemove) || []
-    }));
-  };
-
   const handleAvatarChange = (newAvatarUrl: string) => {
     setProfile(prev => ({ ...prev, avatar_url: newAvatarUrl }));
-  };
-
-  const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter') {
-      e.preventDefault();
-      handleAddSkill();
-    }
   };
 
   return (
@@ -203,7 +131,14 @@ const ProfileSettings = () => {
                 Back to Dashboard
               </Button>
               <div className="flex items-center space-x-2">
-                <div className="w-8 h-8 bg-primary rounded-lg"></div>
+                <img 
+                  src="/logo.png" 
+                  className="w-8 h-8 object-contain" 
+                  alt="EzJob Logo"
+                  onError={(e) => {
+                    e.currentTarget.style.display = 'none';
+                  }}
+                />
                 <span className="text-2xl font-bold text-primary">EzJob</span>
               </div>
             </div>
@@ -274,7 +209,7 @@ const ProfileSettings = () => {
             Profile Settings
           </h1>
           <p className="text-muted-foreground">
-            Manage your personal information and professional details
+            Manage your basic profile information
           </p>
         </div>
 
@@ -284,10 +219,10 @@ const ProfileSettings = () => {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <User className="h-5 w-5" />
-                Personal Information
+                Profile Information
               </CardTitle>
               <CardDescription>
-                Your basic profile information visible to others
+                Your basic account information
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
@@ -324,163 +259,6 @@ const ProfileSettings = () => {
                   <p className="text-xs text-muted-foreground">
                     Email cannot be changed here. Use Account Settings.
                   </p>
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="phone">Phone Number</Label>
-                  <Input
-                    id="phone"
-                    value={profile.phone || ""}
-                    onChange={(e) => setProfile(prev => ({ ...prev, phone: e.target.value }))}
-                    placeholder="+1 (555) 123-4567"
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="location">Location</Label>
-                  <div className="relative">
-                    <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                    <Input
-                      id="location"
-                      value={profile.location || ""}
-                      onChange={(e) => setProfile(prev => ({ ...prev, location: e.target.value }))}
-                      placeholder="City, State, Country"
-                      className="pl-10"
-                    />
-                  </div>
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="bio">Bio</Label>
-                <Textarea
-                  id="bio"
-                  value={profile.bio || ""}
-                  onChange={(e) => setProfile(prev => ({ ...prev, bio: e.target.value }))}
-                  placeholder="Tell us about yourself..."
-                  rows={4}
-                />
-                <p className="text-xs text-muted-foreground">
-                  {profile.bio?.length || 0}/500 characters
-                </p>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Professional Information */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Building className="h-5 w-5" />
-                Professional Information
-              </CardTitle>
-              <CardDescription>
-                Your career and professional details
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="space-y-2">
-                  <Label htmlFor="preferred_job_title">Preferred Job Title</Label>
-                  <Input
-                    id="preferred_job_title"
-                    value={profile.preferred_job_title || ""}
-                    onChange={(e) => setProfile(prev => ({ ...prev, preferred_job_title: e.target.value }))}
-                    placeholder="e.g., Software Engineer, Product Manager"
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="years_experience">Years of Experience</Label>
-                  <Input
-                    id="years_experience"
-                    type="number"
-                    min="0"
-                    max="50"
-                    value={profile.years_experience || ""}
-                    onChange={(e) => setProfile(prev => ({ ...prev, years_experience: parseInt(e.target.value) || 0 }))}
-                    placeholder="5"
-                  />
-                </div>
-              </div>
-
-              {/* Skills Section */}
-              <div className="space-y-4">
-                <Label>Skills</Label>
-                <div className="flex flex-wrap gap-2 mb-4">
-                  {profile.skills?.map((skill, index) => (
-                    <Badge
-                      key={index}
-                      variant="secondary"
-                      className="flex items-center gap-1 px-3 py-1"
-                    >
-                      {skill}
-                      <button
-                        onClick={() => handleRemoveSkill(skill)}
-                        className="ml-1 hover:text-destructive"
-                      >
-                        ×
-                      </button>
-                    </Badge>
-                  ))}
-                </div>
-                <div className="flex gap-2">
-                  <Input
-                    value={newSkill}
-                    onChange={(e) => setNewSkill(e.target.value)}
-                    onKeyPress={handleKeyPress}
-                    placeholder="Add a skill..."
-                    className="flex-1"
-                  />
-                  <Button onClick={handleAddSkill} variant="outline" size="sm">
-                    Add
-                  </Button>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Links & Social */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <LinkIcon className="h-5 w-5" />
-                Links & Social Media
-              </CardTitle>
-              <CardDescription>
-                Your professional online presence
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="space-y-2">
-                  <Label htmlFor="website">Personal Website</Label>
-                  <Input
-                    id="website"
-                    value={profile.website || ""}
-                    onChange={(e) => setProfile(prev => ({ ...prev, website: e.target.value }))}
-                    placeholder="https://yourwebsite.com"
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="linkedin">LinkedIn</Label>
-                  <Input
-                    id="linkedin"
-                    value={profile.linkedin || ""}
-                    onChange={(e) => setProfile(prev => ({ ...prev, linkedin: e.target.value }))}
-                    placeholder="https://linkedin.com/in/username"
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="github">GitHub</Label>
-                  <Input
-                    id="github"
-                    value={profile.github || ""}
-                    onChange={(e) => setProfile(prev => ({ ...prev, github: e.target.value }))}
-                    placeholder="https://github.com/username"
-                  />
                 </div>
               </div>
             </CardContent>

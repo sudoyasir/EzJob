@@ -3,13 +3,13 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Navbar } from "@/components/ui/navbar";
-import { Plus, Search, Filter, Edit, Trash2, TrendingUp, FileText, Star, BarChart3, User } from "lucide-react";
+import { Plus, Search, Filter, Edit, Trash2, TrendingUp, FileText, Star, BarChart3, User, LayoutGrid, List } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 import { JobApplication, JobApplicationService } from "@/services/jobApplications";
 import { JobApplicationForm } from "@/components/applications/JobApplicationForm";
-import { JobApplicationView } from "@/components/applications/JobApplicationView";
+import { ApplicationCard } from "@/components/applications/ApplicationCard";
 import { supabase } from "@/integrations/supabase/client";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { format } from "date-fns";
@@ -19,6 +19,10 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 const Dashboard = () => {
   const [searchTerm, setSearchTerm] = useState("");
+  const [viewMode, setViewMode] = useState<'list' | 'grid'>(() => {
+    const saved = localStorage.getItem('dashboard-view-mode');
+    return (saved as 'list' | 'grid') || 'list';
+  });
   const [applications, setApplications] = useState<JobApplication[]>([]);
   const [loading, setLoading] = useState(true);
   const [resumeInfoCache, setResumeInfoCache] = useState<Record<string, {name: string, is_default: boolean}>>({});
@@ -29,6 +33,11 @@ const Dashboard = () => {
     responseRate: 0,
   });
   const navigate = useNavigate();
+
+  // Save view mode to localStorage
+  useEffect(() => {
+    localStorage.setItem('dashboard-view-mode', viewMode);
+  }, [viewMode]);
 
   const loadApplications = async () => {
     try {
@@ -95,21 +104,6 @@ const Dashboard = () => {
     app.role?.toLowerCase().includes(searchTerm.toLowerCase()) ||
     (app.location && app.location.toLowerCase().includes(searchTerm.toLowerCase()))
   );
-
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case "Applied":
-        return "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300";
-      case "Interview":
-        return "bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-300";
-      case "Offer":
-        return "bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-300";
-      case "Rejected":
-        return "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300";
-      default:
-        return "bg-muted text-muted-foreground";
-    }
-  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-muted/10 to-background">
@@ -242,105 +236,65 @@ const Dashboard = () => {
               />
             )}
           </div>
-          {loading ? (
-            <Skeleton className="h-10 w-24" />
-          ) : (
-            <Button variant="outline" className="border-border text-foreground hover:bg-accent hover:text-accent-foreground">
-              <Filter className="h-4 w-4 mr-2" />
-              Filter
-            </Button>
-          )}
+          <div className="flex gap-2">
+            {loading ? (
+              <>
+                <Skeleton className="h-10 w-24" />
+                <Skeleton className="h-10 w-20" />
+              </>
+            ) : (
+              <>
+                {/* View Mode Toggle */}
+                <div className="flex rounded-lg overflow-hidden bg-muted/20 p-1">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setViewMode('list')}
+                    className={`rounded-md px-3 py-1.5 h-8 transition-all duration-200 ${
+                      viewMode === 'list' 
+                        ? 'bg-primary text-primary-foreground hover:bg-primary/90 shadow-sm' 
+                        : 'bg-transparent text-muted-foreground hover:bg-background hover:text-foreground'
+                    }`}
+                  >
+                    <List className="h-4 w-4" />
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setViewMode('grid')}
+                    className={`rounded-md px-3 py-1.5 h-8 transition-all duration-200 ${
+                      viewMode === 'grid' 
+                        ? 'bg-primary text-primary-foreground hover:bg-primary/90 shadow-sm' 
+                        : 'bg-transparent text-muted-foreground hover:bg-background hover:text-foreground'
+                    }`}
+                  >
+                    <LayoutGrid className="h-4 w-4" />
+                  </Button>
+                </div>                <Button variant="outline" className="border-border text-foreground hover:bg-accent hover:text-accent-foreground">
+                  <Filter className="h-4 w-4 mr-2" />
+                  Filter
+                </Button>
+              </>
+            )}
+          </div>
         </div>
 
         {/* Applications List */}
-        <div className="space-y-4">
+        <div className={viewMode === 'grid' ? 'grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6' : 'space-y-4'}>
           {loading ? (
             Array.from({ length: 3 }).map((_, i) => (
               <ApplicationCardSkeleton key={i} />
             ))
           ) : (
             filteredApplications.map((app) => (
-              <Card key={app.id} className="p-6 bg-card border-border hover:shadow-lg dark:hover:shadow-xl transition-shadow">
-                <div className="flex flex-col md:flex-row md:items-center justify-between">
-                  <div className="flex-1">
-                    <div className="flex flex-col md:flex-row md:items-center gap-4">
-                      <div>
-                        <h3 className="text-xl font-semibold text-card-foreground">{app.role}</h3>
-                        <p className="text-muted-foreground">{app.company_name}</p>
-                        <p className="text-sm text-muted-foreground">{app.location}</p>
-                      </div>
-                      <div className="flex items-center space-x-4">
-                        <Badge className={getStatusColor(app.status)}>
-                          {app.status}
-                        </Badge>
-                        <span className="text-sm text-muted-foreground">
-                          Applied: {format(new Date(app.applied_date), "MMM dd, yyyy")}
-                        </span>
-                      </div>
-                    </div>
-                    {app.notes && (
-                      <p className="text-sm text-muted-foreground mt-3 max-w-2xl">
-                        {app.notes}
-                      </p>
-                    )}
-                    {app.resume_id && resumeInfoCache[app.resume_id] && (
-                      <div className="mt-3 flex items-center gap-2 text-xs">
-                        <div className="flex items-center gap-1 px-2 py-1 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 rounded-full">
-                          <FileText className="h-3 w-3" />
-                          <span>{resumeInfoCache[app.resume_id].name}</span>
-                          {resumeInfoCache[app.resume_id].is_default && (
-                            <Star className="h-3 w-3 fill-current text-yellow-500" />
-                          )}
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                  <div className="flex space-x-2 mt-4 md:mt-0">
-                    <JobApplicationForm
-                      application={app}
-                      onSuccess={loadApplications}
-                      trigger={
-                        <Button variant="outline" size="sm" className="border-border text-foreground hover:bg-accent hover:text-accent-foreground">
-                          <Edit className="h-4 w-4 mr-2" />
-                          Edit
-                        </Button>
-                      }
-                    />
-                    <JobApplicationView
-                      application={app}
-                      trigger={
-                        <Button variant="outline" size="sm" className="border-border text-foreground hover:bg-accent hover:text-accent-foreground">
-                          View
-                        </Button>
-                      }
-                    />
-                    <AlertDialog>
-                      <AlertDialogTrigger asChild>
-                        <Button variant="outline" size="sm" className="border-border text-destructive hover:bg-destructive hover:text-destructive-foreground">
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
-                      </AlertDialogTrigger>
-                      <AlertDialogContent>
-                        <AlertDialogHeader>
-                          <AlertDialogTitle>Delete Application</AlertDialogTitle>
-                          <AlertDialogDescription>
-                            Are you sure you want to delete the application for {app.role} at {app.company_name}? This action cannot be undone.
-                          </AlertDialogDescription>
-                        </AlertDialogHeader>
-                        <AlertDialogFooter>
-                          <AlertDialogCancel>Cancel</AlertDialogCancel>
-                          <AlertDialogAction
-                            onClick={() => handleDeleteApplication(app.id)}
-                            className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-                          >
-                            Delete
-                          </AlertDialogAction>
-                        </AlertDialogFooter>
-                      </AlertDialogContent>
-                    </AlertDialog>
-                  </div>
-                </div>
-              </Card>
+              <ApplicationCard
+                key={app.id}
+                application={app}
+                resumeInfo={app.resume_id ? resumeInfoCache[app.resume_id] : undefined}
+                onEdit={loadApplications}
+                onDelete={handleDeleteApplication}
+                viewMode={viewMode}
+              />
             ))
           )}
         </div>

@@ -143,7 +143,14 @@ const ResetPassword = () => {
         <Card className="p-8 bg-card border-border shadow-lg">
           <div className="text-center mb-8">
             <div className="flex items-center justify-center space-x-2 mb-4">
-              <div className="w-8 h-8 bg-primary rounded-lg"></div>
+              <img 
+                src="/logo.png" 
+                className="w-8 h-8 object-contain" 
+                alt="EzJob Logo"
+                onError={(e) => {
+                  e.currentTarget.style.display = 'none';
+                }}
+              />
               <span className="text-2xl font-bold text-primary">EzJob</span>
             </div>
             <h1 className="text-2xl font-bold text-card-foreground">

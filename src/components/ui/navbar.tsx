@@ -42,7 +42,14 @@ export const Navbar = ({
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-6">
             <div className="flex items-center space-x-2">
-              <div className="w-8 h-8 bg-primary rounded-lg"></div>
+              <img 
+                src="/logo.png" 
+                className="w-8 h-8 object-contain" 
+                alt="EzJob Logo"
+                onError={(e) => {
+                  e.currentTarget.style.display = 'none';
+                }}
+              />
               <span className="text-2xl font-bold text-primary">
                 EzJob
               </span>
@@ -79,14 +86,6 @@ export const Navbar = ({
                 onClick={() => navigate("/analytics")}
               >
                 Analytics
-              </Button>
-              <Button 
-                variant="ghost" 
-                size="sm" 
-                className="text-foreground hover:bg-accent hover:text-accent-foreground"
-              >
-                <Settings className="h-4 w-4 mr-2" />
-                Settings
               </Button>
             </div>
           </div>
@@ -158,19 +157,10 @@ export const Navbar = ({
                 <DropdownMenuItem asChild>
                   <button 
                     className="flex items-center w-full px-2 py-1.5 text-sm cursor-pointer text-popover-foreground hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none"
-                    onClick={() => navigate('/settings/profile')}
+                    onClick={() => navigate('/settings')}
                   >
                     <User className="h-4 w-4 mr-2" />
-                    Profile Settings
-                  </button>
-                </DropdownMenuItem>
-                <DropdownMenuItem asChild>
-                  <button 
-                    className="flex items-center w-full px-2 py-1.5 text-sm cursor-pointer text-popover-foreground hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none"
-                    onClick={() => navigate('/settings/account')}
-                  >
-                    <Settings className="h-4 w-4 mr-2" />
-                    Account Settings
+                    Settings
                   </button>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator className="bg-border" />

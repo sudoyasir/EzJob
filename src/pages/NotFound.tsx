@@ -35,7 +35,14 @@ const NotFound = () => {
         <Card className="p-8 lg:p-12 bg-card/80 backdrop-blur-lg border-border shadow-2xl rounded-2xl text-center">
           {/* Brand Header */}
           <div className="flex items-center justify-center space-x-3 mb-8">
-            <div className="w-12 h-12 bg-gradient-primary rounded-2xl shadow-brand"></div>
+            <img 
+              src="/logo.png" 
+              className="w-12 h-12 object-contain" 
+              alt="EzJob Logo"
+              onError={(e) => {
+                e.currentTarget.style.display = 'none';
+              }}
+            />
             <span className="text-3xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
               EzJob
             </span>

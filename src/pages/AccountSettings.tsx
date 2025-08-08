@@ -6,22 +6,17 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
-import { TwoFactorSetup } from "@/components/auth/TwoFactorSetup";
-import ProductionSetupGuide from "@/components/setup/ProductionSetupGuide";
+import { AvatarUpload } from "@/components/ui/avatar-upload";
+
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { 
   ArrowLeft, 
-  Shield, 
   User, 
   Settings, 
   LogOut, 
-  Save, 
-  Mail, 
   Lock, 
   Trash2, 
   Eye, 
@@ -30,10 +25,9 @@ import {
   Moon,
   Sun,
   Smartphone,
-  Globe,
-  Calendar,
   Download,
-  AlertTriangle
+  AlertTriangle,
+  Save
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useTheme } from "@/contexts/ThemeContext";
@@ -41,19 +35,20 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 
-interface NotificationSettings {
-  email_notifications: boolean;
-  application_reminders: boolean;
-  weekly_digest: boolean;
-  interview_reminders: boolean;
-  offer_notifications: boolean;
+interface UserProfile {
+  full_name?: string;
+  avatar_url?: string;
 }
 
-interface PreferencesSettings {
+interface NotificationSettings {
+  email_notifications: boolean;
+}
+
+interface UserPreferences {
   timezone: string;
+  language: string;
   date_format: string;
   week_start: string;
-  language: string;
 }
 
 const AccountSettings = () => {
@@ -65,6 +60,10 @@ const AccountSettings = () => {
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   
+  const [profile, setProfile] = useState<UserProfile>({
+    full_name: "",
+  });
+  
   const [passwordData, setPasswordData] = useState({
     currentPassword: "",
     newPassword: "",
@@ -73,20 +72,14 @@ const AccountSettings = () => {
 
   const [notifications, setNotifications] = useState<NotificationSettings>({
     email_notifications: true,
-    application_reminders: true,
-    weekly_digest: false,
-    interview_reminders: true,
-    offer_notifications: true,
   });
 
-  const [preferences, setPreferences] = useState<PreferencesSettings>({
+  const [preferences, setPreferences] = useState<UserPreferences>({
     timezone: "UTC",
     date_format: "MM/DD/YYYY",
     week_start: "Monday",
     language: "English",
   });
-
-  const [twoFactorEnabled, setTwoFactorEnabled] = useState(false);
 
   useEffect(() => {
     // Load user preferences from metadata or localStorage
@@ -101,8 +94,13 @@ const AccountSettings = () => {
       setPreferences(JSON.parse(savedPreferences));
     }
 
-    // Check if 2FA is enabled (this would typically come from your auth provider)
-    setTwoFactorEnabled(user?.user_metadata?.two_factor_enabled || false);
+    // Load profile data
+    if (user) {
+      setProfile({
+        full_name: user.user_metadata?.full_name || "",
+        avatar_url: user.user_metadata?.avatar_url || "",
+      });
+    }
   }, [user]);
 
   const handleSignOut = async () => {
@@ -147,23 +145,31 @@ const AccountSettings = () => {
     }
   };
 
-  const handleEmailChange = async (newEmail: string) => {
-    if (!newEmail || newEmail === user?.email) return;
+  const handleSaveProfile = async () => {
+    if (!user) return;
 
     setLoading(true);
     try {
+      // Update auth user metadata
       const { error } = await supabase.auth.updateUser({
-        email: newEmail
+        data: {
+          full_name: profile.full_name,
+          avatar_url: profile.avatar_url,
+        }
       });
 
       if (error) throw error;
 
-      toast.success("Verification email sent to new address!");
+      toast.success("Profile updated successfully!");
     } catch (error: any) {
-      toast.error(error.message || "Failed to update email");
+      toast.error(error.message || "Failed to update profile");
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleAvatarChange = (newAvatarUrl: string) => {
+    setProfile(prev => ({ ...prev, avatar_url: newAvatarUrl }));
   };
 
   const handleNotificationChange = (key: keyof NotificationSettings, value: boolean) => {
@@ -173,7 +179,7 @@ const AccountSettings = () => {
     toast.success("Notification preferences updated");
   };
 
-  const handlePreferenceChange = (key: keyof PreferencesSettings, value: string) => {
+  const handlePreferenceChange = (key: keyof UserPreferences, value: string) => {
     const updated = { ...preferences, [key]: value };
     setPreferences(updated);
     localStorage.setItem('ezjob-preferences', JSON.stringify(updated));
@@ -193,16 +199,6 @@ const AccountSettings = () => {
     toast.error("Account deletion is not yet implemented. Please contact support.");
   };
 
-  const toggle2FA = async () => {
-    try {
-      setTwoFactorEnabled(!twoFactorEnabled);
-      // In a real implementation, you'd set up TOTP here
-      toast.success(twoFactorEnabled ? "Two-factor authentication disabled" : "Two-factor authentication enabled");
-    } catch (error: any) {
-      toast.error("Failed to update two-factor authentication");
-    }
-  };
-
   return (
     <div className="min-h-screen bg-background">
       {/* Navigation */}
@@ -220,7 +216,14 @@ const AccountSettings = () => {
                 Back to Dashboard
               </Button>
               <div className="flex items-center space-x-2">
-                <div className="w-8 h-8 bg-primary rounded-lg"></div>
+                <img 
+                  src="/logo.png" 
+                  className="w-8 h-8 object-contain" 
+                  alt="EzJob Logo"
+                  onError={(e) => {
+                    e.currentTarget.style.display = 'none';
+                  }}
+                />
                 <span className="text-2xl font-bold text-primary">EzJob</span>
               </div>
             </div>
@@ -260,16 +263,6 @@ const AccountSettings = () => {
                   <DropdownMenuSeparator className="bg-border" />
                   <DropdownMenuItem asChild>
                     <button 
-                      className="flex items-center w-full px-2 py-1.5 text-sm cursor-pointer text-popover-foreground hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none"
-                      onClick={() => navigate('/settings/profile')}
-                    >
-                      <User className="h-4 w-4 mr-2" />
-                      Profile Settings
-                    </button>
-                  </DropdownMenuItem>
-                  <DropdownMenuSeparator className="bg-border" />
-                  <DropdownMenuItem asChild>
-                    <button 
                       className="flex items-center w-full px-2 py-1.5 text-sm cursor-pointer text-destructive hover:text-destructive-foreground hover:bg-destructive focus:text-destructive-foreground focus:bg-destructive focus:outline-none transition-colors"
                       onClick={handleSignOut}
                     >
@@ -288,163 +281,158 @@ const AccountSettings = () => {
         {/* Header */}
         <div className="mb-8">
           <h1 className="text-3xl font-bold mb-2 bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-            Account Settings
+            Settings
           </h1>
           <p className="text-muted-foreground">
-            Manage your account security, notifications, and preferences
+            Manage your profile, account, security, and preferences
           </p>
         </div>
 
-        <Tabs defaultValue="security" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4">
-            <TabsTrigger value="security" className="flex items-center gap-2">
-              <Shield className="h-4 w-4" />
-              Security
-            </TabsTrigger>
-            <TabsTrigger value="notifications" className="flex items-center gap-2">
-              <Bell className="h-4 w-4" />
-              Notifications
-            </TabsTrigger>
-            <TabsTrigger value="preferences" className="flex items-center gap-2">
-              <Settings className="h-4 w-4" />
-              Preferences
-            </TabsTrigger>
-            <TabsTrigger value="production" className="flex items-center gap-2">
-              <Globe className="h-4 w-4" />
-              Production Setup
-            </TabsTrigger>
-          </TabsList>
-
-          <TabsContent value="security" className="space-y-6">
-            {/* Account Security */}
-            <Card>
+        <div className="space-y-6">
+          {/* Profile Information */}
+          <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <Shield className="h-5 w-5" />
-                Security
+                <User className="h-5 w-5" />
+                Profile Information
               </CardTitle>
               <CardDescription>
-                Manage your account security and authentication
+                Your basic account information
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
-              {/* Email */}
-              <div className="space-y-2">
-                <Label htmlFor="email">Email Address</Label>
-                <div className="flex gap-2">
+              {/* Avatar Upload Section */}
+              <AvatarUpload
+                currentAvatarUrl={profile.avatar_url}
+                onAvatarChange={handleAvatarChange}
+                userId={user?.id || ""}
+                userName={profile.full_name || user?.email}
+              />
+
+              <Separator />
+
+              {/* Basic Information */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-2">
+                  <Label htmlFor="full_name">Full Name</Label>
+                  <Input
+                    id="full_name"
+                    value={profile.full_name || ""}
+                    onChange={(e) => setProfile(prev => ({ ...prev, full_name: e.target.value }))}
+                    placeholder="Enter your full name"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="email">Email</Label>
                   <Input
                     id="email"
                     value={user?.email || ""}
-                    className="flex-1"
                     disabled
+                    className="bg-muted"
                   />
-                  <Button variant="outline" size="sm">
-                    Change Email
-                  </Button>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Badge variant={user?.email_confirmed_at ? "default" : "destructive"}>
-                    {user?.email_confirmed_at ? "Verified" : "Not Verified"}
-                  </Badge>
-                  {!user?.email_confirmed_at && (
-                    <Button variant="link" size="sm" className="h-auto p-0">
-                      Resend verification
-                    </Button>
-                  )}
+                  <p className="text-xs text-muted-foreground">
+                    Email cannot be changed after account creation
+                  </p>
                 </div>
               </div>
 
-              <Separator />
-
-              {/* Password Change */}
-              <div className="space-y-4">
-                <h3 className="text-lg font-medium">Change Password</h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="current_password">Current Password</Label>
-                    <div className="relative">
-                      <Input
-                        id="current_password"
-                        type={showCurrentPassword ? "text" : "password"}
-                        value={passwordData.currentPassword}
-                        onChange={(e) => setPasswordData(prev => ({ ...prev, currentPassword: e.target.value }))}
-                        placeholder="Enter current password"
-                      />
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="sm"
-                        className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
-                        onClick={() => setShowCurrentPassword(!showCurrentPassword)}
-                      >
-                        {showCurrentPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                      </Button>
-                    </div>
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="new_password">New Password</Label>
-                    <div className="relative">
-                      <Input
-                        id="new_password"
-                        type={showNewPassword ? "text" : "password"}
-                        value={passwordData.newPassword}
-                        onChange={(e) => setPasswordData(prev => ({ ...prev, newPassword: e.target.value }))}
-                        placeholder="Enter new password"
-                      />
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="sm"
-                        className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
-                        onClick={() => setShowNewPassword(!showNewPassword)}
-                      >
-                        {showNewPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                      </Button>
-                    </div>
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="confirm_password">Confirm New Password</Label>
-                    <div className="relative">
-                      <Input
-                        id="confirm_password"
-                        type={showConfirmPassword ? "text" : "password"}
-                        value={passwordData.confirmPassword}
-                        onChange={(e) => setPasswordData(prev => ({ ...prev, confirmPassword: e.target.value }))}
-                        placeholder="Confirm new password"
-                      />
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="sm"
-                        className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
-                        onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                      >
-                        {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                      </Button>
-                    </div>
-                  </div>
-                </div>
-                <Button onClick={handlePasswordChange} disabled={loading} className="w-full md:w-auto">
-                  <Lock className="h-4 w-4 mr-2" />
-                  Update Password
+              <div className="flex justify-end">
+                <Button onClick={handleSaveProfile} disabled={loading} variant="outline">
+                  <Save className="h-4 w-4 mr-2" />
+                  {loading ? "Saving..." : "Save Profile"}
                 </Button>
               </div>
-
-              <Separator />
-
-              {/* Two-Factor Authentication */}
-              <TwoFactorSetup
-                onSetupComplete={(enabled) => setTwoFactorEnabled(enabled)}
-                currentlyEnabled={twoFactorEnabled}
-              />
             </CardContent>
           </Card>
-          </TabsContent>
 
-          <TabsContent value="notifications" className="space-y-6">
-          {/* Notifications */}
+          {/* Password Change Section */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Lock className="h-5 w-5" />
+                Change Password
+              </CardTitle>
+              <CardDescription>
+                Update your account password
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="current_password">Current Password</Label>
+                  <div className="relative">
+                    <Input
+                      id="current_password"
+                      type={showCurrentPassword ? "text" : "password"}
+                      value={passwordData.currentPassword}
+                      onChange={(e) => setPasswordData(prev => ({ ...prev, currentPassword: e.target.value }))}
+                      placeholder="Enter current password"
+                    />
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                      onClick={() => setShowCurrentPassword(!showCurrentPassword)}
+                    >
+                      {showCurrentPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                    </Button>
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="new_password">New Password</Label>
+                  <div className="relative">
+                    <Input
+                      id="new_password"
+                      type={showNewPassword ? "text" : "password"}
+                      value={passwordData.newPassword}
+                      onChange={(e) => setPasswordData(prev => ({ ...prev, newPassword: e.target.value }))}
+                      placeholder="Enter new password"
+                    />
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                      onClick={() => setShowNewPassword(!showNewPassword)}
+                    >
+                      {showNewPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                    </Button>
+                  </div>
+                </div>
+
+                <div className="space-y-2 md:col-span-2">
+                  <Label htmlFor="confirm_password">Confirm New Password</Label>
+                  <div className="relative">
+                    <Input
+                      id="confirm_password"
+                      type={showConfirmPassword ? "text" : "password"}
+                      value={passwordData.confirmPassword}
+                      onChange={(e) => setPasswordData(prev => ({ ...prev, confirmPassword: e.target.value }))}
+                      placeholder="Confirm new password"
+                    />
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                      onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                    >
+                      {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                    </Button>
+                  </div>
+                </div>
+              </div>
+              <Button onClick={handlePasswordChange} disabled={loading} className="w-full md:w-auto">
+                <Lock className="h-4 w-4 mr-2" />
+                Update Password
+              </Button>
+            </CardContent>
+          </Card>
+
+          {/* Notifications Section */}
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
@@ -468,64 +456,10 @@ const AccountSettings = () => {
                   onCheckedChange={(checked) => handleNotificationChange('email_notifications', checked)}
                 />
               </div>
-
-              <div className="flex items-center justify-between">
-                <div className="space-y-1">
-                  <p className="font-medium">Application Reminders</p>
-                  <p className="text-sm text-muted-foreground">
-                    Get reminded to follow up on applications
-                  </p>
-                </div>
-                <Switch
-                  checked={notifications.application_reminders}
-                  onCheckedChange={(checked) => handleNotificationChange('application_reminders', checked)}
-                />
-              </div>
-
-              <div className="flex items-center justify-between">
-                <div className="space-y-1">
-                  <p className="font-medium">Weekly Digest</p>
-                  <p className="text-sm text-muted-foreground">
-                    Weekly summary of your job search progress
-                  </p>
-                </div>
-                <Switch
-                  checked={notifications.weekly_digest}
-                  onCheckedChange={(checked) => handleNotificationChange('weekly_digest', checked)}
-                />
-              </div>
-
-              <div className="flex items-center justify-between">
-                <div className="space-y-1">
-                  <p className="font-medium">Interview Reminders</p>
-                  <p className="text-sm text-muted-foreground">
-                    Get notified about upcoming interviews
-                  </p>
-                </div>
-                <Switch
-                  checked={notifications.interview_reminders}
-                  onCheckedChange={(checked) => handleNotificationChange('interview_reminders', checked)}
-                />
-              </div>
-
-              <div className="flex items-center justify-between">
-                <div className="space-y-1">
-                  <p className="font-medium">Offer Notifications</p>
-                  <p className="text-sm text-muted-foreground">
-                    Get notified when you receive job offers
-                  </p>
-                </div>
-                <Switch
-                  checked={notifications.offer_notifications}
-                  onCheckedChange={(checked) => handleNotificationChange('offer_notifications', checked)}
-                />
-              </div>
             </CardContent>
           </Card>
-          </TabsContent>
 
-          <TabsContent value="preferences" className="space-y-6">
-          {/* Preferences */}
+          {/* Preferences Section */}
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
@@ -616,11 +550,11 @@ const AccountSettings = () => {
             </CardContent>
           </Card>
 
-          {/* Data & Privacy */}
+          {/* Data & Privacy Section */}
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <Globe className="h-5 w-5" />
+                <Settings className="h-5 w-5" />
                 Data & Privacy
               </CardTitle>
               <CardDescription>
@@ -682,12 +616,7 @@ const AccountSettings = () => {
               </div>
             </CardContent>
           </Card>
-          </TabsContent>
-
-          <TabsContent value="production" className="space-y-6">
-            <ProductionSetupGuide />
-          </TabsContent>
-        </Tabs>
+        </div>
       </div>
     </div>
   );

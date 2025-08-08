@@ -136,6 +136,12 @@ export const JobApplicationView: React.FC<JobApplicationViewProps> = ({
                   <span className="text-sm font-medium text-muted-foreground">Applied Date</span>
                   <p className="text-card-foreground font-medium">{formatDate(application.applied_date)}</p>
                 </div>
+                {application.response_date && (
+                  <div>
+                    <span className="text-sm font-medium text-muted-foreground">Response Date</span>
+                    <p className="text-card-foreground font-medium">{formatDate(application.response_date)}</p>
+                  </div>
+                )}
                 <div>
                   <span className="text-sm font-medium text-muted-foreground">Status</span>
                   <p className="text-card-foreground font-medium">{application.status}</p>
@@ -150,6 +156,22 @@ export const JobApplicationView: React.FC<JobApplicationViewProps> = ({
                   <span className="text-sm font-medium text-muted-foreground">Position</span>
                   <p className="text-card-foreground font-medium">{application.role}</p>
                 </div>
+                {application.response_date && application.applied_date && (
+                  <div>
+                    <span className="text-sm font-medium text-muted-foreground">Response Time</span>
+                    <p className="text-card-foreground font-medium">
+                      {(() => {
+                        const appliedDate = new Date(application.applied_date);
+                        const responseDate = new Date(application.response_date);
+                        const daysDiff = Math.ceil((responseDate.getTime() - appliedDate.getTime()) / (1000 * 60 * 60 * 24));
+                        
+                        if (daysDiff === 0) return 'Same day';
+                        if (daysDiff === 1) return '1 day';
+                        return `${daysDiff} days`;
+                      })()}
+                    </p>
+                  </div>
+                )}
               </div>
             </div>
           </Card>
@@ -290,6 +312,13 @@ export const JobApplicationView: React.FC<JobApplicationViewProps> = ({
                   <span className="font-medium">Application Submitted</span>
                   <span className="text-muted-foreground">{formatDate(application.applied_date)}</span>
                 </div>
+                {application.response_date && (
+                  <div className="flex items-center gap-3 text-sm">
+                    <div className="w-2 h-2 bg-emerald-500 rounded-full"></div>
+                    <span className="font-medium">Company Response</span>
+                    <span className="text-muted-foreground">{formatDate(application.response_date)}</span>
+                  </div>
+                )}
                 <div className="flex items-center gap-3 text-sm">
                   <div className="w-2 h-2 bg-muted rounded-full"></div>
                   <span className="font-medium">Created in EzJob</span>

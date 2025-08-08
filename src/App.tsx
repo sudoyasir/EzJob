@@ -13,7 +13,6 @@ import ResetPassword from "./pages/ResetPassword";
 import Dashboard from "./pages/Dashboard";
 import Analytics from "./pages/Analytics";
 import Resumes from "./pages/Resumes";
-import ProfileSettings from "./pages/ProfileSettings";
 import AccountSettings from "./pages/AccountSettings";
 import NotFound from "./pages/NotFound";
 
@@ -55,12 +54,7 @@ const App = () => (
                   <Resumes />
                 </ProtectedRoute>
               } />
-              <Route path="/settings/profile" element={
-                <ProtectedRoute>
-                  <ProfileSettings />
-                </ProtectedRoute>
-              } />
-              <Route path="/settings/account" element={
+              <Route path="/settings" element={
                 <ProtectedRoute>
                   <AccountSettings />
                 </ProtectedRoute>

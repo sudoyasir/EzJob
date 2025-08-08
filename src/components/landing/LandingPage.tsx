@@ -52,7 +52,14 @@ const LandingPage = () => {
       <nav className="container mx-auto px-6 py-6 sticky top-0 z-50 bg-background/80 backdrop-blur-sm border-b border-border/50">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 bg-gradient-primary rounded-xl shadow-brand"></div>
+            <img 
+              src="/logo.png" 
+              alt="EzJob Logo" 
+              className="w-10 h-10 object-contain" 
+              onError={(e) => {
+                e.currentTarget.style.display = 'none';
+              }}
+            />
             <span className="text-2xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
               EzJob
             </span>
@@ -361,7 +368,14 @@ const LandingPage = () => {
             {/* Brand section */}
             <div className="md:col-span-2">
               <div className="flex items-center space-x-3 mb-6">
-                <div className="w-10 h-10 bg-gradient-primary rounded-xl shadow-brand"></div>
+                <img 
+                  src="/logo.png" 
+                  className="w-10 h-10 object-contain" 
+                  alt="EzJob Logo"
+                  onError={(e) => {
+                    e.currentTarget.style.display = 'none';
+                  }}
+                />
                 <span className="text-2xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">EzJob</span>
               </div>
               <p className="text-muted-foreground mb-6 leading-relaxed max-w-md">
