@@ -67,90 +67,97 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center p-6">
+    <div className="min-h-screen bg-gradient-to-br from-background via-muted/10 to-background flex items-center justify-center p-6 relative overflow-hidden">
+      {/* Background decoration */}
+      <div className="absolute inset-0 -z-10">
+        <div className="absolute top-20 left-10 w-32 h-32 bg-primary/10 rounded-full blur-3xl"></div>
+        <div className="absolute bottom-20 right-10 w-48 h-48 bg-accent/10 rounded-full blur-3xl"></div>
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-primary/5 rounded-full blur-3xl"></div>
+      </div>
+      
       {/* Theme Toggle - Fixed Position */}
-      <div className="fixed top-4 right-4 z-50">
+      <div className="fixed top-6 right-6 z-50">
         <ThemeToggle />
       </div>
       
-      <div className="w-full max-w-md">
+      <div className="w-full max-w-md relative z-10">
         {/* Back to Home */}
         <Link 
           to="/" 
-          className="inline-flex items-center text-muted-foreground hover:text-foreground mb-8 transition-colors"
+          className="inline-flex items-center text-muted-foreground hover:text-primary mb-8 transition-all duration-300 group"
         >
-          <ArrowLeft className="h-4 w-4 mr-2" />
+          <ArrowLeft className="h-4 w-4 mr-2 group-hover:-translate-x-1 transition-transform" />
           Back to Home
         </Link>
 
-        <Card className="p-8 bg-card border-border shadow-lg">
+        <Card className="p-8 lg:p-10 bg-card/80 backdrop-blur-lg border-border shadow-2xl rounded-2xl">
           {/* Header */}
           <div className="text-center mb-8">
-            <div className="flex items-center justify-center space-x-2 mb-4">
-              <div className="w-8 h-8 bg-primary rounded-lg"></div>
-              <span className="text-2xl font-bold text-primary">
+            <div className="flex items-center justify-center space-x-3 mb-6">
+              <div className="w-12 h-12 bg-gradient-primary rounded-2xl shadow-brand"></div>
+              <span className="text-3xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
                 EzJob
               </span>
             </div>
-            <h1 className="text-2xl font-bold text-card-foreground">
-              {isLogin ? "Welcome back" : "Create your account"}
+            <h1 className="text-3xl font-bold text-card-foreground mb-3">
+              {isLogin ? "Welcome back!" : "Join EzJob today"}
             </h1>
-            <p className="text-muted-foreground mt-2">
+            <p className="text-muted-foreground text-lg">
               {isLogin 
                 ? "Sign in to continue your job search journey" 
-                : "Start tracking your job applications today"
+                : "Start tracking your applications and land your dream job"
               }
             </p>
           </div>
 
           {/* Social Login Buttons */}
-          <div className="space-y-3 mb-6">
+          <div className="space-y-4 mb-8">
             <Button 
               variant="outline" 
-              className="w-full border-border text-foreground hover:bg-accent hover:text-accent-foreground" 
+              className="w-full border-border text-foreground hover:bg-accent hover:text-accent-foreground transition-all duration-300 py-6 text-base font-medium" 
               size="lg"
               onClick={handleGoogleSignIn}
               disabled={loading}
             >
-              <FaGoogle className="h-4 w-4 mr-2" />
+              <FaGoogle className="h-5 w-5 mr-3 text-red-500" />
               Continue with Google
             </Button>
             <Button 
               variant="outline" 
-              className="w-full border-border text-foreground hover:bg-accent hover:text-accent-foreground" 
+              className="w-full border-border text-foreground hover:bg-accent hover:text-accent-foreground transition-all duration-300 py-6 text-base font-medium" 
               size="lg"
               onClick={handleGithubSignIn}
               disabled={loading}
             >
-              <Github className="h-4 w-4 mr-2" />
+              <Github className="h-5 w-5 mr-3" />
               Continue with GitHub
             </Button>
           </div>
 
-          <div className="relative mb-6">
+          <div className="relative mb-8">
             <Separator className="bg-border" />
             <div className="absolute inset-0 flex items-center justify-center">
-              <span className="bg-card px-4 text-sm text-muted-foreground">or</span>
+              <span className="bg-card px-4 text-sm text-muted-foreground font-medium">or continue with email</span>
             </div>
           </div>
 
           {/* Email/Password Form */}
           <form onSubmit={handleSubmit} className="space-y-6">
-            <div className="space-y-2">
-              <Label htmlFor="email" className="text-card-foreground">Email</Label>
+            <div className="space-y-3">
+              <Label htmlFor="email" className="text-card-foreground font-medium">Email Address</Label>
               <Input
                 id="email"
                 type="email"
-                placeholder="Enter your email"
+                placeholder="Enter your email address"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                className="bg-background border-border text-foreground placeholder:text-muted-foreground"
+                className="bg-background border-border text-foreground placeholder:text-muted-foreground h-12 text-base"
               />
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="password" className="text-card-foreground">Password</Label>
+            <div className="space-y-3">
+              <Label htmlFor="password" className="text-card-foreground font-medium">Password</Label>
               <Input
                 id="password"
                 type="password"
@@ -158,7 +165,7 @@ const Login = () => {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
-                className="bg-background border-border text-foreground placeholder:text-muted-foreground"
+                className="bg-background border-border text-foreground placeholder:text-muted-foreground h-12 text-base"
               />
             </div>
 
@@ -166,21 +173,27 @@ const Login = () => {
               <div className="text-right">
                 <Link 
                   to="/forgot-password" 
-                  className="text-sm text-primary hover:text-primary/80 transition-colors"
+                  className="text-sm text-primary hover:text-primary/80 transition-colors font-medium"
                 >
-                  Forgot password?
+                  Forgot your password?
                 </Link>
               </div>
             )}
 
             <Button 
               type="submit" 
-              variant="hero" 
-              className="w-full bg-primary text-primary-foreground hover:bg-primary/90" 
+              className="w-full bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02] h-12 text-base font-semibold" 
               size="lg"
               disabled={loading}
             >
-              {loading ? "Loading..." : (isLogin ? "Sign In" : "Create Account")}
+              {loading ? (
+                <div className="flex items-center space-x-2">
+                  <div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin"></div>
+                  <span>Please wait...</span>
+                </div>
+              ) : (
+                <span>{isLogin ? "Sign In" : "Create Account"}</span>
+              )}
             </Button>
           </form>
 

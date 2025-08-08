@@ -2,12 +2,9 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { ThemeToggle } from "@/components/ui/theme-toggle";
-import { Plus, Search, Filter, BarChart3, Settings, LogOut, User, Edit, Trash2, TrendingUp, FileText, Star } from "lucide-react";
+import { Navbar } from "@/components/ui/navbar";
+import { Plus, Search, Filter, Edit, Trash2, TrendingUp, FileText, Star, BarChart3, User } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 import { JobApplication, JobApplicationService } from "@/services/jobApplications";
@@ -31,7 +28,6 @@ const Dashboard = () => {
     offers: 0,
     responseRate: 0,
   });
-  const { user, signOut } = useAuth();
   const navigate = useNavigate();
 
   const loadApplications = async () => {
@@ -84,16 +80,6 @@ const Dashboard = () => {
     loadApplications();
   }, []);
 
-  const handleSignOut = async () => {
-    try {
-      await signOut();
-      toast.success("Signed out successfully");
-      navigate("/");
-    } catch (error: any) {
-      toast.error(error.message || "An unexpected error occurred");
-    }
-  };
-
   const handleDeleteApplication = async (id: string) => {
     try {
       await JobApplicationService.deleteApplication(id);
@@ -126,142 +112,50 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Navigation */}
-      <nav className="border-b bg-card/50 backdrop-blur-sm sticky top-0 z-50">
-        <div className="container mx-auto px-6 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-6">
-              <div className="flex items-center space-x-2">
-                <div className="w-8 h-8 bg-primary rounded-lg"></div>
-                <span className="text-2xl font-bold text-primary">
-                  EzJob
-                </span>
-              </div>
-              <div className="hidden md:flex items-center space-x-1">
-                <Button variant="ghost" size="sm" className="text-foreground hover:bg-accent hover:text-accent-foreground bg-accent/50">Dashboard</Button>
-                <Button variant="ghost" size="sm" className="text-foreground hover:bg-accent hover:text-accent-foreground">
-                  <Settings className="h-4 w-4 mr-2" />
-                  Settings
-                </Button>
-              </div>
-            </div>
-            
-            <div className="flex items-center space-x-4">
-              <div className="flex items-center space-x-3 bg-card/50 backdrop-blur-sm px-4 py-2 rounded-full border border-border shadow-sm">
-                <div className="flex items-center space-x-2">
-                  <span className="text-lg">🔥</span>
-                  <div className="flex flex-col">
-                    <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Streak</span>
-                    <span className="text-sm font-bold text-foreground">7 Days</span>
-                  </div>
-                </div>
-              </div>
-              
-              {/* Theme Toggle */}
-              <ThemeToggle />
-              
-              {/* User Profile Dropdown */}
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button 
-                    variant="ghost" 
-                    className="relative h-10 w-10 rounded-full focus:ring-0 focus:ring-offset-0 focus:outline-none focus-visible:outline-none hover:bg-accent [&:focus]:outline-none [&:focus-visible]:outline-none [&:focus]:ring-0 [&:focus-visible]:ring-0 outline-none border-none shadow-none"
-                    style={{ boxShadow: 'none', outline: 'none' }}
-                  >
-                    <Avatar className="h-10 w-10">
-                      <AvatarImage 
-                        src={user?.user_metadata?.avatar_url} 
-                        alt={user?.user_metadata?.full_name || user?.email || "User"} 
-                      />
-                      <AvatarFallback className="bg-primary text-primary-foreground">
-                        {user?.user_metadata?.full_name 
-                          ? user.user_metadata.full_name.charAt(0).toUpperCase()
-                          : user?.email?.charAt(0).toUpperCase() || "U"
-                        }
-                      </AvatarFallback>
-                    </Avatar>
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent className="w-56 bg-popover border-border" align="end" forceMount>
-                  <div className="flex items-center justify-start gap-2 p-2">
-                    <div className="flex flex-col space-y-1 leading-none">
-                      <p className="font-medium text-sm text-popover-foreground">
-                        {user?.user_metadata?.full_name || "User"}
-                      </p>
-                      <p className="w-[200px] truncate text-xs text-muted-foreground">
-                        {user?.email}
-                      </p>
-                    </div>
-                  </div>
-                  <DropdownMenuSeparator className="bg-border" />
-                  <DropdownMenuItem asChild>
-                    <button 
-                      className="flex items-center w-full px-2 py-1.5 text-sm cursor-pointer text-popover-foreground hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none"
-                      onClick={() => navigate('/settings/profile')}
-                    >
-                      <User className="h-4 w-4 mr-2" />
-                      Profile Settings
-                    </button>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem asChild>
-                    <button 
-                      className="flex items-center w-full px-2 py-1.5 text-sm cursor-pointer text-popover-foreground hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none"
-                      onClick={() => navigate('/settings/account')}
-                    >
-                      <Settings className="h-4 w-4 mr-2" />
-                      Account Settings
-                    </button>
-                  </DropdownMenuItem>
-                  <DropdownMenuSeparator className="bg-border" />
-                  <DropdownMenuItem asChild>
-                    <button 
-                      className="flex items-center w-full px-2 py-1.5 text-sm cursor-pointer text-destructive hover:text-destructive-foreground hover:bg-destructive focus:text-destructive-foreground focus:bg-destructive focus:outline-none transition-colors"
-                      onClick={handleSignOut}
-                    >
-                      <LogOut className="h-4 w-4 mr-2" />
-                      Sign Out
-                    </button>
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </div>
-          </div>
-        </div>
-      </nav>
+    <div className="min-h-screen bg-gradient-to-br from-background via-muted/10 to-background">
+      <Navbar currentStreak={7} longestStreak={12} />
 
-      <div className="container mx-auto px-6 py-8">
-        {/* Header */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between mb-8">
-          <div>
-            <h1 className="text-3xl font-bold mb-2 bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-              Your Applications
+      <div className="container mx-auto px-6 py-12">
+        {/* Enhanced Header */}
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between mb-12">
+          <div className="mb-6 lg:mb-0">
+            <h1 className="text-4xl lg:text-5xl font-bold mb-4 bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent">
+              Your Job Search Command Center
             </h1>
-            <p className="text-muted-foreground">
-              Track and manage your job applications with powerful insights
+            <p className="text-xl text-muted-foreground max-w-2xl">
+              Track applications, analyze performance, and accelerate your career journey with intelligent insights
             </p>
           </div>
-          <JobApplicationForm 
-            onSuccess={loadApplications}
-            trigger={
-              <Button className="mt-4 md:mt-0 bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 shadow-lg hover:shadow-xl transition-all duration-300">
-                <Plus className="h-4 w-4 mr-2" />
-                Add Application
-              </Button>
-            }
-          />
+          <div className="flex flex-col sm:flex-row gap-3">
+            <JobApplicationForm 
+              onSuccess={loadApplications}
+              trigger={
+                <Button className="bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 px-6 py-3 text-base font-semibold">
+                  <Plus className="h-5 w-5 mr-2" />
+                  Add Application
+                </Button>
+              }
+            />
+            <Button variant="outline" className="border-border text-foreground hover:bg-accent hover:text-accent-foreground px-6 py-3 text-base font-medium" onClick={() => navigate("/analytics")}>
+              <TrendingUp className="h-5 w-5 mr-2" />
+              View Analytics
+            </Button>
+          </div>
         </div>
 
-        {/* Stats Cards */}
-        <div className="mb-6">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-semibold text-foreground">Quick Stats</h2>
-            <div className="flex gap-2">
+        {/* Enhanced Stats Cards */}
+        <div className="mb-10">
+          <div className="flex items-center justify-between mb-6">
+            <div>
+              <h2 className="text-2xl font-bold text-foreground mb-2">Performance Overview</h2>
+              <p className="text-muted-foreground">Your job search metrics at a glance</p>
+            </div>
+            <div className="flex gap-3">
               <Button 
                 variant="outline" 
                 size="sm"
                 onClick={() => navigate("/resumes")}
-                className="text-primary hover:bg-primary/10"
+                className="text-primary hover:bg-primary hover:text-primary-foreground transition-all duration-300 font-medium"
               >
                 <FileText className="h-4 w-4 mr-2" />
                 Manage Resumes
@@ -270,61 +164,61 @@ const Dashboard = () => {
                 variant="outline" 
                 size="sm"
                 onClick={() => navigate("/analytics")}
-                className="text-primary hover:bg-primary/10"
+                className="text-primary hover:bg-primary hover:text-primary-foreground transition-all duration-300 font-medium"
               >
                 <BarChart3 className="h-4 w-4 mr-2" />
-                View Analytics
+                Detailed Analytics
               </Button>
             </div>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {loading ? (
               Array.from({ length: 4 }).map((_, i) => (
                 <StatsCardSkeleton key={i} />
               ))
             ) : (
               <>
-                <Card className="p-6 bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-950/50 dark:to-blue-900/50 border-blue-200 dark:border-blue-800 hover:shadow-lg transition-all duration-300">
+                <Card className="p-6 bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-950/50 dark:to-blue-900/50 border-blue-200 dark:border-blue-800 hover:shadow-xl transition-all duration-300 hover:-translate-y-1 group">
                   <div className="flex items-center justify-between">
                     <div>
-                      <div className="text-2xl font-bold text-blue-700 dark:text-blue-300">{stats.total}</div>
-                      <div className="text-sm text-blue-600 dark:text-blue-400">Total Applications</div>
+                      <div className="text-3xl font-bold text-blue-700 dark:text-blue-300 mb-1">{stats.total}</div>
+                      <div className="text-sm font-medium text-blue-600 dark:text-blue-400">Total Applications</div>
                     </div>
-                    <div className="p-3 bg-blue-200 dark:bg-blue-800 rounded-full">
-                      <BarChart3 className="h-5 w-5 text-blue-700 dark:text-blue-300" />
+                    <div className="p-4 bg-blue-200 dark:bg-blue-800 rounded-2xl group-hover:scale-110 transition-transform duration-300">
+                      <BarChart3 className="h-6 w-6 text-blue-700 dark:text-blue-300" />
                     </div>
                   </div>
                 </Card>
-                <Card className="p-6 bg-gradient-to-br from-emerald-50 to-emerald-100 dark:from-emerald-950/50 dark:to-emerald-900/50 border-emerald-200 dark:border-emerald-800 hover:shadow-lg transition-all duration-300">
+                <Card className="p-6 bg-gradient-to-br from-emerald-50 to-emerald-100 dark:from-emerald-950/50 dark:to-emerald-900/50 border-emerald-200 dark:border-emerald-800 hover:shadow-xl transition-all duration-300 hover:-translate-y-1 group">
                   <div className="flex items-center justify-between">
                     <div>
-                      <div className="text-2xl font-bold text-emerald-700 dark:text-emerald-300">{stats.interviews}</div>
-                      <div className="text-sm text-emerald-600 dark:text-emerald-400">Interviews</div>
+                      <div className="text-3xl font-bold text-emerald-700 dark:text-emerald-300 mb-1">{stats.interviews}</div>
+                      <div className="text-sm font-medium text-emerald-600 dark:text-emerald-400">Interviews Secured</div>
                     </div>
-                    <div className="p-3 bg-emerald-200 dark:bg-emerald-800 rounded-full">
-                      <User className="h-5 w-5 text-emerald-700 dark:text-emerald-300" />
+                    <div className="p-4 bg-emerald-200 dark:bg-emerald-800 rounded-2xl group-hover:scale-110 transition-transform duration-300">
+                      <User className="h-6 w-6 text-emerald-700 dark:text-emerald-300" />
                     </div>
                   </div>
                 </Card>
-                <Card className="p-6 bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-950/50 dark:to-purple-900/50 border-purple-200 dark:border-purple-800 hover:shadow-lg transition-all duration-300">
+                <Card className="p-6 bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-950/50 dark:to-purple-900/50 border-purple-200 dark:border-purple-800 hover:shadow-xl transition-all duration-300 hover:-translate-y-1 group">
                   <div className="flex items-center justify-between">
                     <div>
-                      <div className="text-2xl font-bold text-purple-700 dark:text-purple-300">{stats.offers}</div>
-                      <div className="text-sm text-purple-600 dark:text-purple-400">Offers</div>
+                      <div className="text-3xl font-bold text-purple-700 dark:text-purple-300 mb-1">{stats.offers}</div>
+                      <div className="text-sm font-medium text-purple-600 dark:text-purple-400">Job Offers</div>
                     </div>
-                    <div className="p-3 bg-purple-200 dark:bg-purple-800 rounded-full">
-                      <TrendingUp className="h-5 w-5 text-purple-700 dark:text-purple-300" />
+                    <div className="p-4 bg-purple-200 dark:bg-purple-800 rounded-2xl group-hover:scale-110 transition-transform duration-300">
+                      <TrendingUp className="h-6 w-6 text-purple-700 dark:text-purple-300" />
                     </div>
                   </div>
                 </Card>
-                <Card className="p-6 bg-gradient-to-br from-amber-50 to-amber-100 dark:from-amber-950/50 dark:to-amber-900/50 border-amber-200 dark:border-amber-800 hover:shadow-lg transition-all duration-300">
+                <Card className="p-6 bg-gradient-to-br from-amber-50 to-amber-100 dark:from-amber-950/50 dark:to-amber-900/50 border-amber-200 dark:border-amber-800 hover:shadow-xl transition-all duration-300 hover:-translate-y-1 group">
                   <div className="flex items-center justify-between">
                     <div>
-                      <div className="text-2xl font-bold text-amber-700 dark:text-amber-300">{stats.responseRate}%</div>
-                      <div className="text-sm text-amber-600 dark:text-amber-400">Response Rate</div>
+                      <div className="text-3xl font-bold text-amber-700 dark:text-amber-300 mb-1">{stats.responseRate}%</div>
+                      <div className="text-sm font-medium text-amber-600 dark:text-amber-400">Response Rate</div>
                     </div>
-                    <div className="p-3 bg-amber-200 dark:bg-amber-800 rounded-full">
-                      <BarChart3 className="h-5 w-5 text-amber-700 dark:text-amber-300" />
+                    <div className="p-4 bg-amber-200 dark:bg-amber-800 rounded-2xl group-hover:scale-110 transition-transform duration-300">
+                      <BarChart3 className="h-6 w-6 text-amber-700 dark:text-amber-300" />
                     </div>
                   </div>
                 </Card>

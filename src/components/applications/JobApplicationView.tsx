@@ -99,33 +99,57 @@ export const JobApplicationView: React.FC<JobApplicationViewProps> = ({
           </Button>
         )}
       </DialogTrigger>
-      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle className="flex items-center justify-between">
-            <div>
-              <h2 className="text-2xl font-bold">{application.role}</h2>
-              <p className="text-lg text-muted-foreground">{application.company_name}</p>
+      <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+        <DialogHeader className="pb-4">
+          <DialogTitle className="flex items-start justify-between gap-4">
+            <div className="flex-1 min-w-0">
+              <h2 className="text-2xl font-bold text-card-foreground mb-1">{application.role}</h2>
+              <div className="flex items-center gap-2 text-lg text-muted-foreground">
+                <span>{application.company_name}</span>
+                {application.location && (
+                  <>
+                    <span>•</span>
+                    <span className="flex items-center gap-1">
+                      <MapPin className="h-4 w-4" />
+                      {application.location}
+                    </span>
+                  </>
+                )}
+              </div>
             </div>
-            <Badge className={getStatusColor(application.status)}>
+            <Badge className={`${getStatusColor(application.status)} px-3 py-1 text-sm font-medium shrink-0`}>
               {application.status}
             </Badge>
           </DialogTitle>
         </DialogHeader>
 
         <div className="space-y-6">
-          {/* Basic Information */}
-          <Card className="p-4">
-            <h3 className="font-semibold mb-3">Job Details</h3>
+          {/* Application Overview */}
+          <Card className="p-6 bg-gradient-to-br from-primary/5 to-accent/5 border-primary/20">
+            <h3 className="font-semibold mb-4 flex items-center gap-2 text-card-foreground">
+              <Calendar className="h-5 w-5 text-primary" />
+              Application Overview
+            </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {application.location && (
-                <div className="flex items-center space-x-2">
-                  <MapPin className="h-4 w-4 text-muted-foreground" />
-                  <span>{application.location}</span>
+              <div className="space-y-3">
+                <div>
+                  <span className="text-sm font-medium text-muted-foreground">Applied Date</span>
+                  <p className="text-card-foreground font-medium">{formatDate(application.applied_date)}</p>
                 </div>
-              )}
-              <div className="flex items-center space-x-2">
-                <Calendar className="h-4 w-4 text-muted-foreground" />
-                <span>Applied: {formatDate(application.applied_date)}</span>
+                <div>
+                  <span className="text-sm font-medium text-muted-foreground">Status</span>
+                  <p className="text-card-foreground font-medium">{application.status}</p>
+                </div>
+              </div>
+              <div className="space-y-3">
+                <div>
+                  <span className="text-sm font-medium text-muted-foreground">Company</span>
+                  <p className="text-card-foreground font-medium">{application.company_name}</p>
+                </div>
+                <div>
+                  <span className="text-sm font-medium text-muted-foreground">Position</span>
+                  <p className="text-card-foreground font-medium">{application.role}</p>
+                </div>
               </div>
             </div>
           </Card>
@@ -133,25 +157,27 @@ export const JobApplicationView: React.FC<JobApplicationViewProps> = ({
           {/* Resume Section */}
           {application.resume_id ? (
             <div>
-              <h3 className="font-semibold mb-3 flex items-center gap-2">
-                <FileText className="h-4 w-4" />
-                Resume
+              <h3 className="font-semibold mb-4 flex items-center gap-2 text-card-foreground">
+                <FileText className="h-5 w-5 text-primary" />
+                Resume Used
               </h3>
               {loadingResume ? (
-                <div className="p-4 border rounded-lg animate-pulse">
-                  <div className="h-4 bg-muted rounded w-1/2 mb-2"></div>
-                  <div className="h-3 bg-muted rounded w-1/3"></div>
-                </div>
+                <Card className="p-6">
+                  <div className="animate-pulse">
+                    <div className="h-4 bg-muted rounded w-1/2 mb-2"></div>
+                    <div className="h-3 bg-muted rounded w-1/3"></div>
+                  </div>
+                </Card>
               ) : resumeInfo ? (
-                <Card className="p-4 border-2 border-green-200 bg-green-50 dark:border-green-800 dark:bg-green-950/20">
+                <Card className="p-6 border-2 border-green-200 bg-green-50 dark:border-green-800 dark:bg-green-950/20">
                   <div className="flex items-start justify-between">
-                    <div className="flex items-start gap-3 flex-1">
-                      <div className="p-2 rounded-lg bg-green-100 dark:bg-green-900/30">
-                        <FileText className="h-5 w-5 text-green-600 dark:text-green-400" />
+                    <div className="flex items-start gap-4 flex-1">
+                      <div className="p-3 rounded-xl bg-green-100 dark:bg-green-900/30 shrink-0">
+                        <FileText className="h-6 w-6 text-green-600 dark:text-green-400" />
                       </div>
                       <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2 mb-1">
-                          <h4 className="font-semibold text-green-800 dark:text-green-200">
+                        <div className="flex items-center gap-2 mb-2">
+                          <h4 className="font-semibold text-green-800 dark:text-green-200 text-lg">
                             {resumeInfo.name}
                           </h4>
                           {resumeInfo.is_default && (
@@ -162,12 +188,15 @@ export const JobApplicationView: React.FC<JobApplicationViewProps> = ({
                           )}
                         </div>
                         {resumeInfo.description && (
-                          <p className="text-sm text-green-700 dark:text-green-300 mb-2">
+                          <p className="text-sm text-green-700 dark:text-green-300 mb-3 leading-relaxed">
                             {resumeInfo.description}
                           </p>
                         )}
-                        <div className="flex gap-3 text-xs text-green-600 dark:text-green-400">
-                          <span>{resumeInfo.file_name}</span>
+                        <div className="flex gap-4 text-sm text-green-600 dark:text-green-400">
+                          <span className="flex items-center gap-1">
+                            <FileText className="h-3 w-3" />
+                            {resumeInfo.file_name}
+                          </span>
                           <span>{formatFileSize(resumeInfo.file_size)}</span>
                         </div>
                       </div>
@@ -176,64 +205,104 @@ export const JobApplicationView: React.FC<JobApplicationViewProps> = ({
                       variant="ghost"
                       size="sm"
                       onClick={downloadResume}
-                      className="hover:bg-green-100 hover:text-green-800 dark:hover:bg-green-900/30"
+                      className="hover:bg-green-100 hover:text-green-800 dark:hover:bg-green-900/30 shrink-0"
+                      title="Download resume"
                     >
                       <Download className="h-4 w-4" />
                     </Button>
                   </div>
                 </Card>
               ) : (
-                <Card className="p-4 border-2 border-red-200 bg-red-50 dark:border-red-800 dark:bg-red-950/20">
-                  <div className="flex items-center gap-2 text-red-700 dark:text-red-300">
-                    <AlertCircle className="h-4 w-4" />
-                    <span className="text-sm">Resume not found or has been deleted</span>
+                <Card className="p-6 border-2 border-red-200 bg-red-50 dark:border-red-800 dark:bg-red-950/20">
+                  <div className="flex items-center gap-3 text-red-700 dark:text-red-300">
+                    <div className="p-2 rounded-lg bg-red-100 dark:bg-red-900/30">
+                      <AlertCircle className="h-5 w-5" />
+                    </div>
+                    <div>
+                      <p className="font-medium">Resume not found</p>
+                      <p className="text-sm">The resume associated with this application has been deleted or moved.</p>
+                    </div>
                   </div>
                 </Card>
               )}
             </div>
           ) : application.resume_url ? (
             <div>
-              <h3 className="font-semibold mb-3 flex items-center gap-2">
-                <FileText className="h-4 w-4" />
+              <h3 className="font-semibold mb-4 flex items-center gap-2 text-card-foreground">
+                <FileText className="h-5 w-5 text-primary" />
                 Resume (Legacy Link)
               </h3>
-              <Button
-                variant="outline"
-                size="sm"
-                asChild
-                className="w-full justify-start"
-              >
-                <a
-                  href={application.resume_url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-2"
-                >
-                  <ExternalLink className="h-4 w-4" />
-                  <span>View Resume</span>
-                </a>
-              </Button>
+              <Card className="p-6 border-amber-200 bg-amber-50 dark:border-amber-800 dark:bg-amber-950/20">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 rounded-lg bg-amber-100 dark:bg-amber-900/30">
+                    <ExternalLink className="h-5 w-5 text-amber-600 dark:text-amber-400" />
+                  </div>
+                  <div className="flex-1">
+                    <p className="font-medium text-amber-800 dark:text-amber-200">External Resume Link</p>
+                    <p className="text-sm text-amber-600 dark:text-amber-400">This application uses a legacy resume link</p>
+                  </div>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    asChild
+                    className="border-amber-300 text-amber-700 hover:bg-amber-100 dark:border-amber-700 dark:text-amber-300 dark:hover:bg-amber-900/30"
+                  >
+                    <a
+                      href={application.resume_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-2"
+                    >
+                      <ExternalLink className="h-4 w-4" />
+                      View Resume
+                    </a>
+                  </Button>
+                </div>
+              </Card>
             </div>
           ) : null}
 
           {/* Notes */}
           {application.notes && (
-            <Card className="p-4">
-              <h3 className="font-semibold mb-3">Notes</h3>
-              <div className="whitespace-pre-wrap text-sm text-muted-foreground">
-                {application.notes}
-              </div>
-            </Card>
+            <div>
+              <h3 className="font-semibold mb-4 flex items-center gap-2 text-card-foreground">
+                <FileText className="h-5 w-5 text-primary" />
+                Notes & Comments
+              </h3>
+              <Card className="p-6 bg-muted/50">
+                <div className="whitespace-pre-wrap text-muted-foreground leading-relaxed">
+                  {application.notes}
+                </div>
+              </Card>
+            </div>
           )}
 
-          {/* Timestamps */}
-          <Card className="p-4">
-            <h3 className="font-semibold mb-3">Timeline</h3>
-            <div className="space-y-2 text-sm text-muted-foreground">
-              <div>Created: {formatDate(application.created_at)}</div>
-              <div>Last updated: {formatDate(application.updated_at)}</div>
-            </div>
-          </Card>
+          {/* Timeline */}
+          <div>
+            <h3 className="font-semibold mb-4 flex items-center gap-2 text-card-foreground">
+              <Calendar className="h-5 w-5 text-primary" />
+              Timeline
+            </h3>
+            <Card className="p-6">
+              <div className="space-y-4">
+                <div className="flex items-center gap-3 text-sm">
+                  <div className="w-2 h-2 bg-primary rounded-full"></div>
+                  <span className="font-medium">Application Submitted</span>
+                  <span className="text-muted-foreground">{formatDate(application.applied_date)}</span>
+                </div>
+                <div className="flex items-center gap-3 text-sm">
+                  <div className="w-2 h-2 bg-muted rounded-full"></div>
+                  <span className="font-medium">Created in EzJob</span>
+                  <span className="text-muted-foreground">{formatDate(application.created_at)}</span>
+                </div>
+                <div className="flex items-center gap-3 text-sm">
+                  <div className="w-2 h-2 bg-muted rounded-full"></div>
+                  <span className="font-medium">Last Updated</span>
+                  <span className="text-muted-foreground">{formatDate(application.updated_at)}</span>
+                </div>
+              </div>
+            </Card>
+          </div>
         </div>
       </DialogContent>
     </Dialog>
