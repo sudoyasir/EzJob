@@ -7,6 +7,8 @@ import { Separator } from "@/components/ui/separator";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { Mail, Github, ArrowLeft } from "lucide-react";
+import { FaGoogle } from "react-icons/fa";
+
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
 
@@ -110,7 +112,7 @@ const Login = () => {
               onClick={handleGoogleSignIn}
               disabled={loading}
             >
-              <Mail className="h-4 w-4 mr-2" />
+              <FaGoogle className="h-4 w-4 mr-2" />
               Continue with Google
             </Button>
             <Button 

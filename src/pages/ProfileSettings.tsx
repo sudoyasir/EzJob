@@ -8,6 +8,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
+import { AvatarUpload } from "@/components/ui/avatar-upload";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { ArrowLeft, Upload, User, Settings, LogOut, Save, Camera, Mail, MapPin, Calendar, Building, Link as LinkIcon } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
@@ -49,22 +50,60 @@ const ProfileSettings = () => {
 
   useEffect(() => {
     if (user) {
-      // Load existing profile data from user metadata
-      setProfile({
-        full_name: user.user_metadata?.full_name || "",
-        avatar_url: user.user_metadata?.avatar_url || "",
-        bio: user.user_metadata?.bio || "",
-        location: user.user_metadata?.location || "",
-        website: user.user_metadata?.website || "",
-        linkedin: user.user_metadata?.linkedin || "",
-        github: user.user_metadata?.github || "",
-        phone: user.user_metadata?.phone || "",
-        preferred_job_title: user.user_metadata?.preferred_job_title || "",
-        years_experience: user.user_metadata?.years_experience || 0,
-        skills: user.user_metadata?.skills || [],
-      });
+      // Load existing profile data from Supabase
+      loadUserProfile();
     }
   }, [user]);
+
+  const loadUserProfile = async () => {
+    if (!user) return;
+
+    try {
+      const { data, error } = await supabase
+        .from('user_profiles')
+        .select('*')
+        .eq('id', user.id)
+        .single();
+
+      if (error && error.code !== 'PGRST116') { // PGRST116 = no rows returned
+        throw error;
+      }
+
+      if (data) {
+        setProfile({
+          full_name: data.full_name || "",
+          avatar_url: data.avatar_url || "",
+          bio: data.bio || "",
+          location: data.location || "",
+          website: data.website || "",
+          linkedin: data.linkedin || "",
+          github: data.github || "",
+          phone: data.phone || "",
+          preferred_job_title: data.preferred_job_title || "",
+          years_experience: data.years_experience || 0,
+          skills: data.skills || [],
+        });
+      } else {
+        // Fallback to user metadata if no profile exists
+        setProfile({
+          full_name: user.user_metadata?.full_name || "",
+          avatar_url: user.user_metadata?.avatar_url || "",
+          bio: user.user_metadata?.bio || "",
+          location: user.user_metadata?.location || "",
+          website: user.user_metadata?.website || "",
+          linkedin: user.user_metadata?.linkedin || "",
+          github: user.user_metadata?.github || "",
+          phone: user.user_metadata?.phone || "",
+          preferred_job_title: user.user_metadata?.preferred_job_title || "",
+          years_experience: user.user_metadata?.years_experience || 0,
+          skills: user.user_metadata?.skills || [],
+        });
+      }
+    } catch (error: any) {
+      toast.error("Failed to load profile data");
+      console.error("Profile load error:", error);
+    }
+  };
 
   const handleSignOut = async () => {
     try {
@@ -81,14 +120,35 @@ const ProfileSettings = () => {
 
     setLoading(true);
     try {
-      const { error } = await supabase.auth.updateUser({
+      // Save to user_profiles table
+      const { error: profileError } = await supabase
+        .from('user_profiles')
+        .upsert({
+          id: user.id,
+          full_name: profile.full_name,
+          avatar_url: profile.avatar_url,
+          bio: profile.bio,
+          location: profile.location,
+          website: profile.website,
+          linkedin: profile.linkedin,
+          github: profile.github,
+          phone: profile.phone,
+          preferred_job_title: profile.preferred_job_title,
+          years_experience: profile.years_experience,
+          skills: profile.skills,
+        });
+
+      if (profileError) throw profileError;
+
+      // Also update auth user metadata for backwards compatibility
+      const { error: authError } = await supabase.auth.updateUser({
         data: {
           ...profile,
           full_name: profile.full_name,
         }
       });
 
-      if (error) throw error;
+      if (authError) throw authError;
 
       toast.success("Profile updated successfully!");
     } catch (error: any) {
@@ -113,6 +173,10 @@ const ProfileSettings = () => {
       ...prev,
       skills: prev.skills?.filter(skill => skill !== skillToRemove) || []
     }));
+  };
+
+  const handleAvatarChange = (newAvatarUrl: string) => {
+    setProfile(prev => ({ ...prev, avatar_url: newAvatarUrl }));
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
@@ -227,27 +291,13 @@ const ProfileSettings = () => {
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
-              {/* Avatar Section */}
-              <div className="flex items-center space-x-6">
-                <Avatar className="h-24 w-24">
-                  <AvatarImage src={profile.avatar_url} alt={profile.full_name || "User"} />
-                  <AvatarFallback className="bg-primary text-primary-foreground text-xl">
-                    {profile.full_name 
-                      ? profile.full_name.charAt(0).toUpperCase()
-                      : user?.email?.charAt(0).toUpperCase() || "U"
-                    }
-                  </AvatarFallback>
-                </Avatar>
-                <div className="space-y-2">
-                  <Button variant="outline" size="sm">
-                    <Camera className="h-4 w-4 mr-2" />
-                    Change Photo
-                  </Button>
-                  <p className="text-xs text-muted-foreground">
-                    JPG, PNG or GIF. Max size 2MB.
-                  </p>
-                </div>
-              </div>
+              {/* Avatar Upload Section */}
+              <AvatarUpload
+                currentAvatarUrl={profile.avatar_url}
+                onAvatarChange={handleAvatarChange}
+                userId={user?.id || ""}
+                userName={profile.full_name || user?.email}
+              />
 
               <Separator />
 

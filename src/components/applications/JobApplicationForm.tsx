@@ -7,9 +7,11 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { DocumentUpload, UploadedDocument } from '@/components/ui/document-upload';
 import { CalendarIcon, Plus } from 'lucide-react';
 import { format } from 'date-fns';
 import { JobApplication, JobApplicationInsert, JobApplicationService } from '@/services/jobApplications';
+import { useAuth } from '@/contexts/AuthContext';
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
 
@@ -24,8 +26,10 @@ export const JobApplicationForm: React.FC<JobApplicationFormProps> = ({
   onSuccess,
   trigger,
 }) => {
+  const { user } = useAuth();
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [documents, setDocuments] = useState<UploadedDocument[]>([]);
   const [formData, setFormData] = useState<{
     company_name: string;
     role: string;
@@ -218,6 +222,14 @@ export const JobApplicationForm: React.FC<JobApplicationFormProps> = ({
               rows={3}
             />
           </div>
+
+          {/* Document Upload Section */}
+          <DocumentUpload
+            onDocumentsChange={setDocuments}
+            initialDocuments={documents}
+            userId={user?.id || ""}
+            maxFiles={3}
+          />
 
           <div className="flex justify-end space-x-2">
             <Button type="button" variant="outline" onClick={() => setOpen(false)}>
