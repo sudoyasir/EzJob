@@ -315,20 +315,22 @@ export default function ResumeManager({ embedded = false, onResumeUploaded, onCl
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold">Resume Management</h1>
-          <p className="text-muted-foreground">Upload and manage your resume versions</p>
+          <h1 className="text-xl sm:text-2xl font-bold">Resume Management</h1>
+          <p className="text-sm sm:text-base text-muted-foreground">Upload and manage your resume versions</p>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex flex-col xs:flex-row items-stretch xs:items-center gap-2">
           {!embedded && (
             <Button
               variant="outline"
               onClick={() => navigate('/dashboard')}
-              className="flex items-center gap-2"
+              className="flex items-center justify-center gap-2 order-2 xs:order-1"
+              size="sm"
             >
               <ArrowLeft className="h-4 w-4" />
-              Back to Dashboard
+              <span className="hidden xs:inline">Back to Dashboard</span>
+              <span className="xs:hidden">Dashboard</span>
             </Button>
           )}
           <Dialog open={showUploadDialog} onOpenChange={(open) => {
@@ -336,15 +338,16 @@ export default function ResumeManager({ embedded = false, onResumeUploaded, onCl
             setShowUploadDialog(open);
           }}>
             <DialogTrigger asChild>
-              <Button className="flex items-center gap-2">
+              <Button className="flex items-center justify-center gap-2 order-1 xs:order-2" size="sm">
                 <Plus className="h-4 w-4" />
-                Upload Resume
+                <span className="hidden xs:inline">Upload Resume</span>
+                <span className="xs:hidden">Upload</span>
               </Button>
             </DialogTrigger>
-            <DialogContent className="sm:max-w-md">
+            <DialogContent className="mx-4 max-w-sm sm:mx-auto sm:max-w-md">
               <DialogHeader>
-                <DialogTitle>Upload New Resume</DialogTitle>
-                <DialogDescription>
+                <DialogTitle className="text-lg sm:text-xl">Upload New Resume</DialogTitle>
+                <DialogDescription className="text-sm">
                   Upload a PDF document of your resume
                 </DialogDescription>
               </DialogHeader>
@@ -352,7 +355,7 @@ export default function ResumeManager({ embedded = false, onResumeUploaded, onCl
               <div className="space-y-4">
                 {/* File Drop Zone */}
                 <div
-                  className={`border-2 border-dashed rounded-lg p-6 text-center transition-colors ${
+                  className={`border-2 border-dashed rounded-lg p-4 sm:p-6 text-center transition-colors ${
                     dragOver 
                       ? 'border-primary bg-primary/10' 
                       : selectedFile 
@@ -365,24 +368,25 @@ export default function ResumeManager({ embedded = false, onResumeUploaded, onCl
                 >
                   {selectedFile ? (
                     <div className="space-y-2">
-                      <CheckCircle2 className="h-12 w-12 text-green-500 mx-auto" />
-                      <p className="font-medium text-green-700">{selectedFile.name}</p>
+                      <CheckCircle2 className="h-8 w-8 sm:h-12 sm:w-12 text-green-500 mx-auto" />
+                      <p className="font-medium text-green-700 text-sm sm:text-base truncate px-2">{selectedFile.name}</p>
                       <p className="text-xs text-muted-foreground">{formatFileSize(selectedFile.size)}</p>
                       <Button 
                         variant="outline" 
                         size="sm"
                         onClick={() => setSelectedFile(null)}
+                        className="text-xs"
                       >
                         Choose Different File
                       </Button>
                     </div>
                   ) : (
                     <div className="space-y-2">
-                      <Upload className="h-12 w-12 text-gray-400 mx-auto" />
-                      <p className="text-gray-600">
-                        Drag and drop your resume here, or{" "}
+                      <Upload className="h-8 w-8 sm:h-12 sm:w-12 text-gray-400 mx-auto" />
+                      <p className="text-gray-600 text-sm sm:text-base px-2">
+                        <span className="hidden sm:inline">Drag and drop your resume here, or </span>
                         <label className="text-primary hover:text-primary/80 cursor-pointer font-medium">
-                          browse files
+                          <span className="sm:hidden">Tap to </span>browse files
                           <input
                             type="file"
                             accept=".pdf,.doc,.docx"
@@ -402,42 +406,44 @@ export default function ResumeManager({ embedded = false, onResumeUploaded, onCl
                 {selectedFile && (
                   <div className="space-y-3">
                     <div>
-                      <Label htmlFor="resume-name">Resume Name *</Label>
+                      <Label htmlFor="resume-name" className="text-sm">Resume Name *</Label>
                       <Input
                         id="resume-name"
                         value={resumeName}
                         onChange={(e) => setResumeName(e.target.value)}
                         placeholder="e.g., Software Engineer Resume 2024"
-                        className="mt-1"
+                        className="mt-1 text-sm"
                       />
                     </div>
                     
                     <div>
-                      <Label htmlFor="resume-description">Description (Optional)</Label>
+                      <Label htmlFor="resume-description" className="text-sm">Description (Optional)</Label>
                       <Textarea
                         id="resume-description"
                         value={resumeDescription}
                         onChange={(e) => setResumeDescription(e.target.value)}
                         placeholder="Brief description of this resume version..."
                         rows={2}
-                        className="mt-1"
+                        className="mt-1 text-sm"
                       />
                     </div>
                   </div>
                 )}
 
                 {/* Actions */}
-                <div className="flex justify-end gap-2 pt-4">
+                <div className="flex flex-col-reverse sm:flex-row gap-2 sm:justify-end pt-4">
                   <Button 
                     variant="outline" 
                     onClick={resetUploadForm}
                     disabled={uploadLoading}
+                    className="w-full sm:w-auto"
                   >
                     Cancel
                   </Button>
                   <Button 
                     onClick={uploadResume}
                     disabled={!selectedFile || !resumeName.trim() || uploadLoading}
+                    className="w-full sm:w-auto"
                   >
                     {uploadLoading ? 'Uploading...' : 'Upload Resume'}
                   </Button>
@@ -451,17 +457,17 @@ export default function ResumeManager({ embedded = false, onResumeUploaded, onCl
       {/* Resumes Grid */}
       {resumes.length === 0 ? (
         <Card className="border-2 border-dashed">
-          <CardContent className="flex flex-col items-center justify-center py-12">
-            <div className="rounded-full bg-gray-100 p-6 mb-4">
-              <FileText className="h-12 w-12 text-gray-400" />
+          <CardContent className="flex flex-col items-center justify-center py-8 sm:py-12 px-4">
+            <div className="rounded-full bg-gray-100 p-4 sm:p-6 mb-4">
+              <FileText className="h-8 w-8 sm:h-12 sm:w-12 text-gray-400" />
             </div>
-            <h3 className="text-lg font-semibold mb-2">No resumes uploaded</h3>
-            <p className="text-muted-foreground text-center mb-6 max-w-sm">
+            <h3 className="text-base sm:text-lg font-semibold mb-2 text-center">No resumes uploaded</h3>
+            <p className="text-sm sm:text-base text-muted-foreground text-center mb-6 max-w-sm">
               Get started by uploading your first resume. You can upload multiple versions for different job applications.
             </p>
             <Dialog open={showUploadDialog} onOpenChange={setShowUploadDialog}>
               <DialogTrigger asChild>
-                <Button>
+                <Button size="sm" className="w-full xs:w-auto">
                   <Plus className="h-4 w-4 mr-2" />
                   Upload Your First Resume
                 </Button>
@@ -470,102 +476,128 @@ export default function ResumeManager({ embedded = false, onResumeUploaded, onCl
           </CardContent>
         </Card>
       ) : (
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-4 sm:gap-6 grid-cols-1 md:grid-cols-2">
           {resumes.map((resume) => (
-            <Card key={resume.id} className={`relative ${resume.is_default ? 'ring-2 ring-yellow-400' : ''}`}>
-              <CardHeader className="pb-3">
+            <Card key={resume.id} className={`relative transition-all duration-200 hover:shadow-lg ${resume.is_default ? 'ring-2 ring-yellow-400 shadow-md' : 'hover:shadow-md'}`}>
+              <CardHeader className="pb-3 sm:pb-4">
                 <div className="flex items-start justify-between">
                   <div className="flex-1 min-w-0">
-                    <CardTitle className="text-lg leading-6 truncate">
+                    <CardTitle className="text-base sm:text-lg leading-6 truncate pr-2">
                       {resume.name}
                     </CardTitle>
-                    <CardDescription className="text-sm mt-1">
-                      {resume.description || 'No description'}
+                    <CardDescription className="text-xs sm:text-sm mt-1 overflow-hidden text-ellipsis" style={{
+                      display: '-webkit-box',
+                      WebkitLineClamp: 2,
+                      WebkitBoxOrient: 'vertical' as any
+                    }}>
+                      {resume.description || 'No description provided'}
                     </CardDescription>
                   </div>
                   {resume.is_default && (
-                    <Badge className="bg-yellow-100 text-yellow-800 border-yellow-200 ml-2 shrink-0">
-                      <Star className="h-3 w-3 mr-1 fill-current" />
-                      Default
+                    <Badge className="bg-yellow-100 text-yellow-800 border-yellow-300 ml-2 shrink-0 shadow-sm text-xs">
+                      <Star className="h-2.5 w-2.5 sm:h-3 sm:w-3 mr-1 fill-current" />
+                      <span className="hidden xs:inline">Default</span>
+                      <span className="xs:hidden">★</span>
                     </Badge>
                   )}
                 </div>
               </CardHeader>
               
-              <CardContent className="space-y-4">
-                <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <FileText className="h-4 w-4" />
-                  <span className="truncate">{resume.file_name}</span>
+              <CardContent className="space-y-3 sm:space-y-4">
+                <div className="flex items-center gap-2 text-xs sm:text-sm text-muted-foreground bg-muted/30 rounded-md p-2">
+                  <FileText className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-primary shrink-0" />
+                  <span className="truncate font-medium">{resume.file_name}</span>
                 </div>
                 
-                <div className="flex items-center justify-between text-xs text-muted-foreground">
-                  <div className="flex items-center gap-3">
-                    <span>{formatFileSize(resume.file_size)}</span>
+                <div className="flex flex-col xs:flex-row xs:items-center xs:justify-between text-xs text-muted-foreground gap-1 xs:gap-2">
+                  <div className="flex items-center gap-2">
+                    <span className="font-medium">{formatFileSize(resume.file_size)}</span>
                     <span>•</span>
-                    <span>Uploaded {new Date(resume.created_at).toLocaleDateString()}</span>
+                    <span className="truncate">
+                      <span className="hidden sm:inline">Uploaded </span>
+                      {new Date(resume.created_at).toLocaleDateString(undefined, { 
+                        month: 'short', 
+                        day: 'numeric',
+                        year: window.innerWidth < 640 ? '2-digit' : 'numeric'
+                      })}
+                    </span>
                   </div>
                 </div>
 
-                <div className="flex items-center gap-2 pt-2">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => downloadResume(resume)}
-                    className="flex items-center gap-1"
-                  >
-                    <Download className="h-3 w-3" />
-                    Download
-                  </Button>
-                  
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => {
-                      setEditingResume({ ...resume });
-                      setShowEditDialog(true);
-                    }}
-                    className="flex items-center gap-1"
-                  >
-                    <Edit className="h-3 w-3" />
-                    Edit
-                  </Button>
-
-                  {!resume.is_default && (
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => setAsDefault(resume.id)}
-                      className="flex items-center gap-1"
-                    >
-                      <Star className="h-3 w-3" />
-                      Set Default
-                    </Button>
-                  )}
-
-                  <AlertDialog>
-                    <AlertDialogTrigger asChild>
-                      <Button variant="destructive" size="sm" className="ml-auto">
-                        <Trash2 className="h-3 w-3" />
+                <div className="pt-3 sm:pt-4 border-t border-border">
+                  {/* Mobile-optimized Actions */}
+                  <div className="space-y-2 sm:space-y-3">
+                    {/* Primary Actions Row - Responsive */}
+                    <div className="flex flex-col xs:flex-row gap-2 justify-center ">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => downloadResume(resume)}
+                        className="flex items-center justify-center gap-1.5 hover:bg-primary hover:text-primary-foreground transition-colors flex-1 xs:flex-initial"
+                      >
+                        <Download className="h-3.5 w-3.5" />
+                        <span className="hidden xs:inline">Download</span>
+                        <span className="xs:hidden">Download</span>
                       </Button>
-                    </AlertDialogTrigger>
-                    <AlertDialogContent>
-                      <AlertDialogHeader>
-                        <AlertDialogTitle>Delete Resume</AlertDialogTitle>
-                        <AlertDialogDescription>
-                          Are you sure you want to delete "{resume.name}"? This action cannot be undone.
-                        </AlertDialogDescription>
-                      </AlertDialogHeader>
-                      <AlertDialogFooter>
-                        <AlertDialogCancel>Cancel</AlertDialogCancel>
-                        <AlertDialogAction
-                          onClick={() => deleteResume(resume)}
-                          className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                      
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => {
+                          setEditingResume({ ...resume });
+                          setShowEditDialog(true);
+                        }}
+                        className="flex items-center justify-center gap-1.5 hover:bg-secondary hover:text-secondary-foreground transition-colors flex-1 xs:flex-initial"
+                      >
+                        <Edit className="h-3.5 w-3.5" />
+                        <span>Edit</span>
+                      </Button>
+
+                      {!resume.is_default && (
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => setAsDefault(resume.id)}
+                          className="flex items-center justify-center gap-1.5 text-yellow-600 hover:text-yellow-700 hover:bg-yellow-50 transition-colors flex-1 xs:flex-initial"
                         >
-                          Delete
-                        </AlertDialogAction>
-                      </AlertDialogFooter>
-                    </AlertDialogContent>
-                  </AlertDialog>
+                          <Star className="h-3.5 w-3.5" />
+                          <span className="hidden xs:inline">Set Default</span>
+                          <span className="xs:hidden">Default</span>
+                        </Button>
+                      )}
+                    </div>
+
+                    {/* Danger Zone - Full width on mobile */}
+                    <AlertDialog>
+                      <AlertDialogTrigger asChild>
+                        <Button 
+                          variant="ghost" 
+                          size="sm" 
+                          className="w-full justify-center text-destructive hover:text-destructive hover:bg-destructive/10 transition-colors"
+                        >
+                          <Trash2 className="h-3.5 w-3.5 mr-1.5" />
+                          Delete Resume
+                        </Button>
+                      </AlertDialogTrigger>
+                      <AlertDialogContent className="mx-4 max-w-sm sm:mx-auto sm:max-w-lg">
+                        <AlertDialogHeader>
+                          <AlertDialogTitle className="text-base sm:text-lg">Delete Resume</AlertDialogTitle>
+                          <AlertDialogDescription className="text-sm">
+                            Are you sure you want to delete "{resume.name}"? This action cannot be undone.
+                          </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter className="flex-col-reverse gap-2 sm:flex-row">
+                          <AlertDialogCancel className="mt-0 w-full sm:w-auto">Cancel</AlertDialogCancel>
+                          <AlertDialogAction
+                            onClick={() => deleteResume(resume)}
+                            className="w-full sm:w-auto bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                          >
+                            Delete
+                          </AlertDialogAction>
+                        </AlertDialogFooter>
+                      </AlertDialogContent>
+                    </AlertDialog>
+                  </div>
                 </div>
               </CardContent>
             </Card>
@@ -575,10 +607,10 @@ export default function ResumeManager({ embedded = false, onResumeUploaded, onCl
 
       {/* Edit Dialog */}
       <Dialog open={showEditDialog} onOpenChange={setShowEditDialog}>
-        <DialogContent>
+        <DialogContent className="mx-4 max-w-sm sm:mx-auto sm:max-w-lg">
           <DialogHeader>
-            <DialogTitle>Edit Resume</DialogTitle>
-            <DialogDescription>
+            <DialogTitle className="text-lg sm:text-xl">Edit Resume</DialogTitle>
+            <DialogDescription className="text-sm">
               Update the name and description of your resume
             </DialogDescription>
           </DialogHeader>
@@ -586,37 +618,38 @@ export default function ResumeManager({ embedded = false, onResumeUploaded, onCl
           {editingResume && (
             <div className="space-y-4">
               <div>
-                <Label htmlFor="edit-name">Resume Name *</Label>
+                <Label htmlFor="edit-name" className="text-sm">Resume Name *</Label>
                 <Input
                   id="edit-name"
                   value={editingResume.name}
                   onChange={(e) => setEditingResume(prev => prev ? { ...prev, name: e.target.value } : null)}
-                  className="mt-1"
+                  className="mt-1 text-sm"
                 />
               </div>
               
               <div>
-                <Label htmlFor="edit-description">Description</Label>
+                <Label htmlFor="edit-description" className="text-sm">Description</Label>
                 <Textarea
                   id="edit-description"
                   value={editingResume.description || ''}
                   onChange={(e) => setEditingResume(prev => prev ? { ...prev, description: e.target.value } : null)}
                   rows={3}
-                  className="mt-1"
+                  className="mt-1 text-sm"
                 />
               </div>
 
-              <div className="flex justify-end gap-2 pt-4">
+              <div className="flex flex-col-reverse sm:flex-row gap-2 sm:justify-end pt-4">
                 <Button 
                   variant="outline" 
                   onClick={() => {
                     setShowEditDialog(false);
                     setEditingResume(null);
                   }}
+                  className="w-full sm:w-auto"
                 >
                   Cancel
                 </Button>
-                <Button onClick={updateResume}>
+                <Button onClick={updateResume} className="w-full sm:w-auto">
                   Update Resume
                 </Button>
               </div>
