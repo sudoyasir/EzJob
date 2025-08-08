@@ -1,0 +1,14 @@
+# Netlify redirects file for EzJob
+# Handle Supabase OAuth redirects and SPA routing
+
+# Supabase OAuth callback - redirect to home for processing
+/auth/callback    /    200
+
+# Handle auth-related routes
+/auth/*           /    200
+
+# Handle SPA routing - all non-file requests should serve index.html
+/*                /index.html   200
+
+# Optional: Force HTTPS redirect (recommended for production)
+# http://ezjob.sudoyasir.space/*  https://ezjob.sudoyasir.space/:splat  301!
