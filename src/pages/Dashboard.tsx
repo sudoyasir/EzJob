@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
-import { Plus, Search, Filter, BarChart3, Settings, LogOut, User, Edit, Trash2, TrendingUp } from "lucide-react";
+import { Plus, Search, Filter, BarChart3, Settings, LogOut, User, Edit, Trash2, TrendingUp, FileText, Star } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
@@ -13,6 +13,7 @@ import { useNavigate } from "react-router-dom";
 import { JobApplication, JobApplicationService } from "@/services/jobApplications";
 import { JobApplicationForm } from "@/components/applications/JobApplicationForm";
 import { JobApplicationView } from "@/components/applications/JobApplicationView";
+import { supabase } from "@/integrations/supabase/client";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { format } from "date-fns";
 import { ApplicationCardSkeleton } from "@/components/skeletons/ApplicationCardSkeleton";
@@ -23,6 +24,7 @@ const Dashboard = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [applications, setApplications] = useState<JobApplication[]>([]);
   const [loading, setLoading] = useState(true);
+  const [resumeInfoCache, setResumeInfoCache] = useState<Record<string, {name: string, is_default: boolean}>>({});
   const [stats, setStats] = useState({
     total: 0,
     interviews: 0,
@@ -41,10 +43,40 @@ const Dashboard = () => {
       ]);
       setApplications(applicationsData);
       setStats(statsData);
+      
+      // Fetch resume info for applications that have resume_id
+      const resumeIds = applicationsData
+        .filter(app => app.resume_id && !resumeInfoCache[app.resume_id])
+        .map(app => app.resume_id!)
+        .filter(Boolean);
+      
+      if (resumeIds.length > 0) {
+        fetchResumeInfo(resumeIds);
+      }
     } catch (error: any) {
       toast.error(error.message || "Failed to load applications");
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchResumeInfo = async (resumeIds: string[]) => {
+    try {
+      const { data, error } = await supabase
+        .from('resumes')
+        .select('id, name, is_default')
+        .in('id', resumeIds);
+
+      if (error) throw error;
+      
+      const newResumeInfo = (data || []).reduce((acc: any, resume: any) => {
+        acc[resume.id] = { name: resume.name, is_default: resume.is_default };
+        return acc;
+      }, {} as Record<string, {name: string, is_default: boolean}>);
+      
+      setResumeInfoCache(prev => ({ ...prev, ...newResumeInfo }));
+    } catch (error) {
+      console.error('Error fetching resume info:', error);
     }
   };
 
@@ -224,15 +256,26 @@ const Dashboard = () => {
         <div className="mb-6">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-lg font-semibold text-foreground">Quick Stats</h2>
-            <Button 
-              variant="outline" 
-              size="sm"
-              onClick={() => navigate("/analytics")}
-              className="text-primary hover:bg-primary/10"
-            >
-              <BarChart3 className="h-4 w-4 mr-2" />
-              View Analytics
-            </Button>
+            <div className="flex gap-2">
+              <Button 
+                variant="outline" 
+                size="sm"
+                onClick={() => navigate("/resumes")}
+                className="text-primary hover:bg-primary/10"
+              >
+                <FileText className="h-4 w-4 mr-2" />
+                Manage Resumes
+              </Button>
+              <Button 
+                variant="outline" 
+                size="sm"
+                onClick={() => navigate("/analytics")}
+                className="text-primary hover:bg-primary/10"
+              >
+                <BarChart3 className="h-4 w-4 mr-2" />
+                View Analytics
+              </Button>
+            </div>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
             {loading ? (
@@ -345,6 +388,17 @@ const Dashboard = () => {
                       <p className="text-sm text-muted-foreground mt-3 max-w-2xl">
                         {app.notes}
                       </p>
+                    )}
+                    {app.resume_id && resumeInfoCache[app.resume_id] && (
+                      <div className="mt-3 flex items-center gap-2 text-xs">
+                        <div className="flex items-center gap-1 px-2 py-1 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 rounded-full">
+                          <FileText className="h-3 w-3" />
+                          <span>{resumeInfoCache[app.resume_id].name}</span>
+                          {resumeInfoCache[app.resume_id].is_default && (
+                            <Star className="h-3 w-3 fill-current text-yellow-500" />
+                          )}
+                        </div>
+                      </div>
                     )}
                   </div>
                   <div className="flex space-x-2 mt-4 md:mt-0">

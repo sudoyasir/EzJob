@@ -8,8 +8,11 @@ import { ThemeProvider } from "@/contexts/ThemeContext";
 import { ProtectedRoute, PublicRoute } from "@/components/auth/ProtectedRoute";
 import Index from "./pages/Index";
 import Login from "./pages/Login";
+import ForgotPassword from "./pages/ForgotPassword";
+import ResetPassword from "./pages/ResetPassword";
 import Dashboard from "./pages/Dashboard";
 import Analytics from "./pages/Analytics";
+import Resumes from "./pages/Resumes";
 import ProfileSettings from "./pages/ProfileSettings";
 import AccountSettings from "./pages/AccountSettings";
 import NotFound from "./pages/NotFound";
@@ -31,6 +34,12 @@ const App = () => (
                   <Login />
                 </PublicRoute>
               } />
+              <Route path="/forgot-password" element={
+                <PublicRoute>
+                  <ForgotPassword />
+                </PublicRoute>
+              } />
+              <Route path="/reset-password" element={<ResetPassword />} />
               <Route path="/dashboard" element={
                 <ProtectedRoute>
                   <Dashboard />
@@ -39,6 +48,11 @@ const App = () => (
               <Route path="/analytics" element={
                 <ProtectedRoute>
                   <Analytics />
+                </ProtectedRoute>
+              } />
+              <Route path="/resumes" element={
+                <ProtectedRoute>
+                  <Resumes />
                 </ProtectedRoute>
               } />
               <Route path="/settings/profile" element={

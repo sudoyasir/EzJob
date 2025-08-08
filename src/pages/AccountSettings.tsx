@@ -8,7 +8,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
+import { TwoFactorSetup } from "@/components/auth/TwoFactorSetup";
+import ProductionSetupGuide from "@/components/setup/ProductionSetupGuide";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { 
@@ -292,9 +295,29 @@ const AccountSettings = () => {
           </p>
         </div>
 
-        <div className="space-y-6">
-          {/* Account Security */}
-          <Card>
+        <Tabs defaultValue="security" className="space-y-6">
+          <TabsList className="grid w-full grid-cols-4">
+            <TabsTrigger value="security" className="flex items-center gap-2">
+              <Shield className="h-4 w-4" />
+              Security
+            </TabsTrigger>
+            <TabsTrigger value="notifications" className="flex items-center gap-2">
+              <Bell className="h-4 w-4" />
+              Notifications
+            </TabsTrigger>
+            <TabsTrigger value="preferences" className="flex items-center gap-2">
+              <Settings className="h-4 w-4" />
+              Preferences
+            </TabsTrigger>
+            <TabsTrigger value="production" className="flex items-center gap-2">
+              <Globe className="h-4 w-4" />
+              Production Setup
+            </TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="security" className="space-y-6">
+            {/* Account Security */}
+            <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Shield className="h-5 w-5" />
@@ -412,21 +435,15 @@ const AccountSettings = () => {
               <Separator />
 
               {/* Two-Factor Authentication */}
-              <div className="flex items-center justify-between">
-                <div className="space-y-1">
-                  <h3 className="text-lg font-medium">Two-Factor Authentication</h3>
-                  <p className="text-sm text-muted-foreground">
-                    Add an extra layer of security to your account
-                  </p>
-                </div>
-                <Switch
-                  checked={twoFactorEnabled}
-                  onCheckedChange={toggle2FA}
-                />
-              </div>
+              <TwoFactorSetup
+                onSetupComplete={(enabled) => setTwoFactorEnabled(enabled)}
+                currentlyEnabled={twoFactorEnabled}
+              />
             </CardContent>
           </Card>
+          </TabsContent>
 
+          <TabsContent value="notifications" className="space-y-6">
           {/* Notifications */}
           <Card>
             <CardHeader>
@@ -505,7 +522,9 @@ const AccountSettings = () => {
               </div>
             </CardContent>
           </Card>
+          </TabsContent>
 
+          <TabsContent value="preferences" className="space-y-6">
           {/* Preferences */}
           <Card>
             <CardHeader>
@@ -663,7 +682,12 @@ const AccountSettings = () => {
               </div>
             </CardContent>
           </Card>
-        </div>
+          </TabsContent>
+
+          <TabsContent value="production" className="space-y-6">
+            <ProductionSetupGuide />
+          </TabsContent>
+        </Tabs>
       </div>
     </div>
   );
