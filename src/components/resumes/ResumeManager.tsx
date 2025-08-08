@@ -269,8 +269,13 @@ export default function ResumeManager({ embedded = false, onResumeUploaded, onCl
 
   const deleteResume = async (resume: Resume) => {
     try {
-      // Delete file from storage
-      const deleteSuccess = await deleteFile('resumes', resume.file_path);
+      // Try to delete from resumes bucket first, then documents as fallback
+      let deleteSuccess = await deleteFile('resumes', resume.file_path);
+      
+      if (!deleteSuccess) {
+        console.warn('Failed to delete from resumes bucket, trying documents bucket');
+        deleteSuccess = await deleteFile('documents', resume.file_path);
+      }
       
       if (!deleteSuccess) {
         console.warn('Failed to delete file from storage');
@@ -290,8 +295,58 @@ export default function ResumeManager({ embedded = false, onResumeUploaded, onCl
     }
   };
 
-  const downloadResume = (resume: Resume) => {
-    window.open(resume.file_url, '_blank');
+  const downloadResume = async (resume: Resume) => {
+    try {
+      // Try downloading using the stored file path from resumes bucket
+      const { data, error } = await supabase.storage
+        .from('resumes')
+        .download(resume.file_path);
+
+      if (error) {
+        // If download fails, try documents bucket as fallback for old files
+        const { data: fallbackData, error: fallbackError } = await supabase.storage
+          .from('documents')
+          .download(resume.file_path);
+          
+        if (fallbackError) {
+          throw new Error(`Failed to download file from both buckets: ${fallbackError.message}`);
+        }
+        
+        // Create download link
+        const blob = new Blob([fallbackData], { type: 'application/octet-stream' });
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = resume.file_name;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(url);
+        
+        toast.success(`Downloaded "${resume.name}" successfully!`);
+        return;
+      }
+
+      // Create blob URL and trigger download
+      const blob = new Blob([data], { type: 'application/octet-stream' });
+      const url = window.URL.createObjectURL(blob);
+      
+      // Create temporary link and trigger download
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = resume.file_name;
+      document.body.appendChild(link);
+      link.click();
+      
+      // Cleanup
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+      
+      toast.success(`Downloaded "${resume.name}" successfully!`);
+    } catch (error: any) {
+      console.error('Download failed:', error);
+      toast.error('Failed to download resume: ' + error.message);
+    }
   };
 
   const resetUploadForm = () => {
