@@ -164,13 +164,19 @@ const Dashboard = () => {
                   </div>
                   <DropdownMenuSeparator className="bg-border" />
                   <DropdownMenuItem asChild>
-                    <button className="flex items-center w-full px-2 py-1.5 text-sm cursor-pointer text-popover-foreground hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none">
+                    <button 
+                      className="flex items-center w-full px-2 py-1.5 text-sm cursor-pointer text-popover-foreground hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none"
+                      onClick={() => navigate('/settings/profile')}
+                    >
                       <User className="h-4 w-4 mr-2" />
                       Profile Settings
                     </button>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
-                    <button className="flex items-center w-full px-2 py-1.5 text-sm cursor-pointer text-popover-foreground hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none">
+                    <button 
+                      className="flex items-center w-full px-2 py-1.5 text-sm cursor-pointer text-popover-foreground hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none"
+                      onClick={() => navigate('/settings/account')}
+                    >
                       <Settings className="h-4 w-4 mr-2" />
                       Account Settings
                     </button>
