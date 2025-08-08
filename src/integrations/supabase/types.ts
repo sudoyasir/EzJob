@@ -19,10 +19,10 @@ export type Database = {
           applied_date: string | null
           company_name: string
           created_at: string | null
-          documents: Json | null
           id: string
           location: string | null
           notes: string | null
+          response_date: string | null
           resume_id: string | null
           resume_url: string | null
           role: string
@@ -34,10 +34,10 @@ export type Database = {
           applied_date?: string | null
           company_name: string
           created_at?: string | null
-          documents?: Json | null
           id?: string
           location?: string | null
           notes?: string | null
+          response_date?: string | null
           resume_id?: string | null
           resume_url?: string | null
           role: string
@@ -49,10 +49,10 @@ export type Database = {
           applied_date?: string | null
           company_name?: string
           created_at?: string | null
-          documents?: Json | null
           id?: string
           location?: string | null
           notes?: string | null
+          response_date?: string | null
           resume_id?: string | null
           resume_url?: string | null
           role?: string

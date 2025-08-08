@@ -4,7 +4,7 @@ import type { Database } from '@/integrations/supabase/types';
 export type JobApplication = Database['public']['Tables']['job_applications']['Row'];
 export type JobApplicationInsert = Database['public']['Tables']['job_applications']['Insert'];
 export type JobApplicationUpdate = Database['public']['Tables']['job_applications']['Update'];
-export type JobApplicationStatus = Database['public']['Enums']['job_application_status'];
+export type JobApplicationStatus = 'applied' | 'interview' | 'offer' | 'rejected' | 'withdrawn';
 
 export class JobApplicationService {
   // Get all job applications for the current user
@@ -127,6 +127,7 @@ export class JobApplicationService {
     interviews: number;
     offers: number;
     responseRate: number;
+    averageResponseTime: string;
   }> {
     const applications = await this.getApplications();
     
@@ -138,12 +139,45 @@ export class JobApplicationService {
     ).length;
     
     const responseRate = total > 0 ? Math.round((responded / total) * 100) : 0;
+    const averageResponseTime = this.calculateAverageResponseTime(applications);
 
     return {
       total,
       interviews,
       offers,
       responseRate,
+      averageResponseTime,
     };
+  }
+
+  // Calculate average response time from applications
+  static calculateAverageResponseTime(applications: JobApplication[]): string {
+    // Filter applications that have both applied_date and response_date
+    const respondedApps = applications.filter(app => 
+      app.response_date && 
+      app.applied_date && 
+      (app.status === 'Interview' || app.status === 'Offer' || app.status === 'Rejected')
+    );
+    
+    if (respondedApps.length === 0) {
+      return "No data";
+    }
+    
+    const totalDays = respondedApps.reduce((sum, app) => {
+      const appliedDate = new Date(app.applied_date!);
+      const responseDate = new Date(app.response_date!);
+      const daysDiff = Math.ceil((responseDate.getTime() - appliedDate.getTime()) / (1000 * 60 * 60 * 24));
+      return sum + Math.max(0, daysDiff); // Ensure no negative days
+    }, 0);
+    
+    const averageDays = Math.round(totalDays / respondedApps.length);
+    
+    if (averageDays === 0) {
+      return "Same day";
+    } else if (averageDays === 1) {
+      return "1 day";
+    } else {
+      return `${averageDays} days`;
+    }
   }
 }

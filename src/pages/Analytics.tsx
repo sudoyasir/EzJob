@@ -17,6 +17,7 @@ const Analytics = () => {
     interviews: 0,
     offers: 0,
     responseRate: 0,
+    averageResponseTime: "No data",
   });
   const navigate = useNavigate();
 
@@ -43,7 +44,6 @@ const Analytics = () => {
   // Calculate additional metrics
   const conversionRate = stats.total > 0 ? ((stats.interviews / stats.total) * 100).toFixed(1) : 0;
   const offerRate = stats.interviews > 0 ? ((stats.offers / stats.interviews) * 100).toFixed(1) : 0;
-  const averageTimeToInterview = applications.length > 0 ? "5.2 days" : "N/A"; // This could be calculated based on actual data
 
   return (
     <div className="min-h-screen bg-background">
@@ -125,10 +125,10 @@ const Analytics = () => {
                 <div className="absolute inset-0 bg-gradient-to-br from-amber-400/10 to-amber-600/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                 <div className="relative z-10 flex items-center justify-between">
                   <div>
-                    <div className="text-3xl font-bold text-amber-700 dark:text-amber-300 mb-1">{averageTimeToInterview}</div>
+                    <div className="text-3xl font-bold text-amber-700 dark:text-amber-300 mb-1">{stats.averageResponseTime}</div>
                     <div className="text-sm font-medium text-amber-600 dark:text-amber-400">Avg. Response Time</div>
                     <div className="text-xs text-amber-500 dark:text-amber-400 mt-1 opacity-75">
-                      Estimated response time
+                      Based on actual response data
                     </div>
                   </div>
                   <div className="p-4 bg-amber-200 dark:bg-amber-800 rounded-2xl group-hover:scale-110 transition-transform duration-300 shadow-lg">

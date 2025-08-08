@@ -7,7 +7,6 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { DocumentUpload, UploadedDocument } from '@/components/ui/document-upload';
 import { ResumeSelector } from '@/components/resumes/ResumeSelector';
 import { CalendarIcon, Plus, FileText, AlertCircle } from 'lucide-react';
 import { format } from 'date-fns';
@@ -33,7 +32,6 @@ export const JobApplicationForm: React.FC<JobApplicationFormProps> = ({
   const { user } = useAuth();
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [documents, setDocuments] = useState<UploadedDocument[]>([]);
   const [submittedResumeInfo, setSubmittedResumeInfo] = useState<{name: string, id: string} | null>(null);
   const [formData, setFormData] = useState<{
     company_name: string;
@@ -41,6 +39,7 @@ export const JobApplicationForm: React.FC<JobApplicationFormProps> = ({
     location: string;
     status: 'Applied' | 'Interview' | 'Offer' | 'Rejected';
     applied_date: string;
+    response_date: string;
     notes: string;
     resume_id: string;
   }>({
@@ -49,10 +48,12 @@ export const JobApplicationForm: React.FC<JobApplicationFormProps> = ({
     location: '',
     status: 'Applied',
     applied_date: new Date().toISOString().split('T')[0],
+    response_date: '',
     notes: '',
     resume_id: '',
   });
   const [appliedDate, setAppliedDate] = useState<Date>(new Date());
+  const [responseDate, setResponseDate] = useState<Date | undefined>(undefined);
 
   useEffect(() => {
     if (application) {
@@ -62,10 +63,14 @@ export const JobApplicationForm: React.FC<JobApplicationFormProps> = ({
         location: application.location || '',
         status: (application.status as 'Applied' | 'Interview' | 'Offer' | 'Rejected') || 'Applied',
         applied_date: application.applied_date,
+        response_date: application.response_date || '',
         notes: application.notes || '',
         resume_id: application.resume_id || '',
       });
       setAppliedDate(new Date(application.applied_date));
+      if (application.response_date) {
+        setResponseDate(new Date(application.response_date));
+      }
     }
   }, [application]);
 
@@ -90,10 +95,10 @@ export const JobApplicationForm: React.FC<JobApplicationFormProps> = ({
       const applicationData = {
         ...formData,
         applied_date: appliedDate.toISOString().split('T')[0],
+        response_date: responseDate ? responseDate.toISOString().split('T')[0] : null,
         location: formData.location || null,
         notes: formData.notes || null,
         resume_id: formData.resume_id || null,
-        documents: documents.length > 0 ? JSON.stringify(documents) : null,
       };
 
       if (application) {
@@ -184,7 +189,7 @@ export const JobApplicationForm: React.FC<JobApplicationFormProps> = ({
           resume_id: '',
         });
         setAppliedDate(new Date());
-        setDocuments([]);
+        setResponseDate(undefined);
         setSubmittedResumeInfo(null);
       }
     } catch (error: any) {
@@ -290,6 +295,36 @@ export const JobApplicationForm: React.FC<JobApplicationFormProps> = ({
                 </PopoverContent>
               </Popover>
             </div>
+            
+            <div className="space-y-2">
+              <Label className="text-sm font-medium">Response Date</Label>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className={cn(
+                      "w-full h-10 justify-start text-left font-normal",
+                      !responseDate && "text-muted-foreground"
+                    )}
+                  >
+                    <CalendarIcon className="mr-2 h-4 w-4" />
+                    {responseDate ? format(responseDate, "PPP") : <span>No response yet</span>}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0" align="start">
+                  <Calendar
+                    mode="single"
+                    selected={responseDate}
+                    onSelect={setResponseDate}
+                    initialFocus
+                  />
+                </PopoverContent>
+              </Popover>
+              <p className="text-xs text-muted-foreground">
+                Set when you receive a response (interview, rejection, etc.)
+              </p>
+            </div>
           </div>
 
           {/* Resume Section - On its own line */}
@@ -319,14 +354,6 @@ export const JobApplicationForm: React.FC<JobApplicationFormProps> = ({
               className="resize-none"
             />
           </div>
-
-          {/* Document Upload Section */}
-          <DocumentUpload
-            onDocumentsChange={setDocuments}
-            initialDocuments={documents}
-            userId={user?.id || ""}
-            maxFiles={3}
-          />
 
           <div className="flex flex-col-reverse sm:flex-row gap-3 sm:justify-end pt-4 border-t">
             <Button 
