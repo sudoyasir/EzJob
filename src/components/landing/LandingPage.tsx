@@ -92,7 +92,7 @@ const LandingPage = () => {
             ) : (
               <div className="flex items-center space-x-3">
                 <Link to="/login">
-                  <Button variant="ghost" className="text-foreground md:hover:text-primary transition-all duration-300">
+                  <Button variant="ghost" className="text-foreground md:hover:bg-primary/10 md:hover:text-primary transition-all duration-300 font-medium">
                     Sign In
                   </Button>
                 </Link>

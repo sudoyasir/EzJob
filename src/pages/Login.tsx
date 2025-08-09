@@ -6,7 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import { Eye, EyeOff, Github } from "lucide-react";
+import { Eye, EyeOff, Github, ArrowLeft } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
 
@@ -67,6 +67,15 @@ const Login = () => {
   return (
     <div className="min-h-screen flex items-center justify-center bg-background">
       <div className="w-full max-w-md p-6">
+        <div className="absolute left-4 top-4 md:left-8 md:top-8">
+          <Link to="/">
+            <Button variant="ghost" size="sm" className="h-9 w-9 px-0">
+              <ArrowLeft className="h-4 w-4" />
+              <span className="sr-only">Go back</span>
+            </Button>
+          </Link>
+        </div>
+        
         <div className="absolute right-4 top-4 md:right-8 md:top-8">
           <ThemeToggle />
         </div>
@@ -99,9 +108,9 @@ const Login = () => {
                 type="button"
                 onClick={handleGoogleSignIn}
                 disabled={loading}
-                className="bg-background/50 md:hover:bg-background border-border text-foreground md:hover:text-accent-foreground transition-all duration-200"
+                className="group bg-background/50 md:hover:bg-blue-50 dark:md:hover:bg-blue-950/30 border-border md:hover:border-blue-300 dark:md:hover:border-blue-700 text-foreground md:hover:text-blue-700 dark:md:hover:text-blue-300 transition-all duration-300 md:hover:shadow-md"
               >
-                <svg className="h-5 w-5 mr-3" viewBox="0 0 24 24">
+                <svg className="h-5 w-5 mr-3 transition-transform duration-300 group-hover:scale-110" viewBox="0 0 24 24">
                   <path
                     fill="currentColor"
                     d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
@@ -124,11 +133,11 @@ const Login = () => {
               <Button
                 variant="outline"
                 type="button"
-                className="bg-background/50 md:hover:bg-background border-border text-foreground md:hover:text-accent-foreground transition-all duration-200"
+                className="group bg-background/50 md:hover:bg-gray-50 dark:md:hover:bg-gray-950/30 border-border md:hover:border-gray-300 dark:md:hover:border-gray-700 text-foreground md:hover:text-gray-700 dark:md:hover:text-gray-300 transition-all duration-300 md:hover:shadow-md"
                 onClick={handleGithubSignIn}
                 disabled={loading}
               >
-                <Github className="h-5 w-5 mr-3" />
+                <Github className="h-5 w-5 mr-3 transition-transform duration-300 group-hover:scale-110" />
                 Continue with GitHub
               </Button>
             </div>
@@ -171,7 +180,7 @@ const Login = () => {
                     type="button"
                     variant="ghost"
                     size="sm"
-                    className="absolute right-0 top-0 h-full px-3 py-2 md:hover:bg-transparent"
+                    className="absolute right-0 top-0 h-full px-3 py-2 text-muted-foreground md:hover:text-primary md:hover:bg-transparent transition-colors"
                     onClick={() => setShowPassword(!showPassword)}
                   >
                     {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}

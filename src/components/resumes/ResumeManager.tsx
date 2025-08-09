@@ -384,7 +384,7 @@ export default function ResumeManager({ embedded = false, onResumeUploaded, onCl
                 <span className="xs:hidden">Upload</span>
               </Button>
             </DialogTrigger>
-            <DialogContent className="mx-4 max-w-sm sm:mx-auto sm:max-w-md">
+            <DialogContent className="mx-auto max-w-sm sm:max-w-md custom-scrollbar rounded-xl">
               <DialogHeader>
                 <DialogTitle className="text-lg sm:text-xl">Upload New Resume</DialogTitle>
                 <DialogDescription className="text-sm">
@@ -613,7 +613,7 @@ export default function ResumeManager({ embedded = false, onResumeUploaded, onCl
                           <Trash2 className="h-4 w-4" />
                         </Button>
                       </AlertDialogTrigger>
-                      <AlertDialogContent className="mx-4 max-w-sm sm:mx-auto sm:max-w-lg">
+                      <AlertDialogContent className="mx-auto max-w-sm sm:max-w-lg custom-scrollbar rounded-xl">
                         <AlertDialogHeader>
                           <AlertDialogTitle className="text-base sm:text-lg">Delete Resume</AlertDialogTitle>
                           <AlertDialogDescription className="text-sm">
@@ -641,7 +641,7 @@ export default function ResumeManager({ embedded = false, onResumeUploaded, onCl
 
       {/* Edit Dialog */}
       <Dialog open={showEditDialog} onOpenChange={setShowEditDialog}>
-        <DialogContent className="mx-4 max-w-sm sm:mx-auto sm:max-w-lg">
+        <DialogContent className="mx-auto max-w-sm sm:max-w-lg custom-scrollbar rounded-xl">
           <DialogHeader>
             <DialogTitle className="text-lg sm:text-xl">Edit Resume</DialogTitle>
             <DialogDescription className="text-sm">

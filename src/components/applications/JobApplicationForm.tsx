@@ -177,7 +177,7 @@ export const JobApplicationForm: React.FC<JobApplicationFormProps> = ({
           </Button>
         )}
       </DialogTrigger>
-      <DialogContent className="mx-4 max-w-sm sm:mx-auto sm:max-w-2xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="mx-auto max-w-sm sm:max-w-2xl max-h-[90vh] overflow-y-auto custom-scrollbar rounded-xl">
         <DialogHeader>
           <DialogTitle className="text-lg sm:text-xl">
             {application ? 'Edit Application' : 'Add New Application'}

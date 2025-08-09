@@ -6,7 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { Eye, EyeOff, CheckCircle, AlertCircle, Lock } from "lucide-react";
+import { Eye, EyeOff, CheckCircle, AlertCircle, Lock, ArrowLeft } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
@@ -107,6 +107,13 @@ const ResetPassword = () => {
   if (!isValidSession) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center p-6">
+        <div className="fixed top-4 left-4 z-50">
+          <Button variant="ghost" size="sm" className="h-9 w-9 px-0" onClick={() => navigate("/login")}>
+            <ArrowLeft className="h-4 w-4" />
+            <span className="sr-only">Go back</span>
+          </Button>
+        </div>
+        
         <div className="fixed top-4 right-4 z-50">
           <ThemeToggle />
         </div>
@@ -135,6 +142,13 @@ const ResetPassword = () => {
 
   return (
     <div className="min-h-screen bg-background flex items-center justify-center p-6">
+      <div className="fixed top-4 left-4 z-50">
+        <Button variant="ghost" size="sm" className="h-9 w-9 px-0" onClick={() => navigate("/login")}>
+          <ArrowLeft className="h-4 w-4" />
+          <span className="sr-only">Go back</span>
+        </Button>
+      </div>
+      
       <div className="fixed top-4 right-4 z-50">
         <ThemeToggle />
       </div>
@@ -181,7 +195,7 @@ const ResetPassword = () => {
                   type="button"
                   variant="ghost"
                   size="sm"
-                  className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                  className="absolute right-0 top-0 h-full px-3 py-2 text-muted-foreground md:hover:text-primary md:hover:bg-transparent transition-colors"
                   onClick={() => setShowPassword(!showPassword)}
                 >
                   {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
@@ -208,7 +222,7 @@ const ResetPassword = () => {
                   type="button"
                   variant="ghost"
                   size="sm"
-                  className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                  className="absolute right-0 top-0 h-full px-3 py-2 text-muted-foreground md:hover:text-primary md:hover:bg-transparent transition-colors"
                   onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                 >
                   {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}

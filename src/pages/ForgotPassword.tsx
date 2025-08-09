@@ -38,6 +38,15 @@ const ForgotPassword = () => {
   return (
     <div className="min-h-screen flex items-center justify-center bg-background">
       <div className="w-full max-w-md p-6">
+        <div className="absolute left-4 top-4 md:left-8 md:top-8">
+          <Link to="/login">
+            <Button variant="ghost" size="sm" className="h-9 w-9 px-0">
+              <ArrowLeft className="h-4 w-4" />
+              <span className="sr-only">Go back</span>
+            </Button>
+          </Link>
+        </div>
+        
         <div className="absolute right-4 top-4 md:right-8 md:top-8">
           <ThemeToggle />
         </div>
