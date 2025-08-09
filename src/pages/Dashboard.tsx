@@ -10,6 +10,7 @@ import { useNavigate } from "react-router-dom";
 import { JobApplication, JobApplicationService } from "@/services/jobApplications";
 import { JobApplicationForm } from "@/components/applications/JobApplicationForm";
 import { ApplicationCard } from "@/components/applications/ApplicationCard";
+import { ApplicationFilters, FilterOptions } from "@/components/applications/ApplicationFilters";
 import { supabase } from "@/integrations/supabase/client";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { format } from "date-fns";
@@ -25,8 +26,11 @@ const Dashboard = () => {
     return (saved as 'list' | 'grid') || 'list';
   });
   const [applications, setApplications] = useState<JobApplication[]>([]);
+  const [filteredApplications, setFilteredApplications] = useState<JobApplication[]>([]);
+  const [currentFilters, setCurrentFilters] = useState<FilterOptions | null>(null);
   const [loading, setLoading] = useState(true);
   const [resumeInfoCache, setResumeInfoCache] = useState<Record<string, {name: string, is_default: boolean}>>({});
+  const [resumeOptions, setResumeOptions] = useState<Array<{ id: string; title: string; is_default: boolean }>>([]);
   const [stats, setStats] = useState({
     total: 0,
     interviews: 0,
@@ -62,7 +66,11 @@ const Dashboard = () => {
         JobApplicationService.getApplicationStats(),
       ]);
       setApplications(applicationsData);
+      setFilteredApplications(applicationsData); // Initialize filtered applications
       setStats(statsData);
+      
+      // Load resume options for filters
+      await loadResumeOptions();
       
       // Fetch resume info for applications that have resume_id
       const resumeIds = applicationsData
@@ -84,13 +92,13 @@ const Dashboard = () => {
     try {
       const { data, error } = await supabase
         .from('resumes')
-        .select('id, name, is_default')
+        .select('id, title, is_default')
         .in('id', resumeIds);
 
       if (error) throw error;
       
       const newResumeInfo = (data || []).reduce((acc: any, resume: any) => {
-        acc[resume.id] = { name: resume.name, is_default: resume.is_default };
+        acc[resume.id] = { name: resume.title, is_default: resume.is_default }; // Map title to name for ApplicationCard
         return acc;
       }, {} as Record<string, {name: string, is_default: boolean}>);
       
@@ -100,9 +108,30 @@ const Dashboard = () => {
     }
   };
 
+  const loadResumeOptions = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('resumes')
+        .select('id, title, is_default')
+        .order('is_default', { ascending: false })
+        .order('title', { ascending: true });
+
+      if (error) throw error;
+      
+      setResumeOptions(data || []);
+    } catch (error) {
+      console.error('Error fetching resume options:', error);
+    }
+  };
+
   useEffect(() => {
     loadApplications();
   }, []);
+
+  const handleFiltersChange = (filtered: JobApplication[], filters: FilterOptions) => {
+    setFilteredApplications(filtered);
+    setCurrentFilters(filters);
+  };
 
   const handleDeleteApplication = async (id: string) => {
     try {
@@ -114,7 +143,8 @@ const Dashboard = () => {
     }
   };
 
-  const filteredApplications = applications.filter(app =>
+  // Apply search filter on top of other filters
+  const searchFilteredApplications = filteredApplications.filter(app =>
     app.company_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
     app.role?.toLowerCase().includes(searchTerm.toLowerCase()) ||
     (app.location && app.location.toLowerCase().includes(searchTerm.toLowerCase()))
@@ -251,48 +281,61 @@ const Dashboard = () => {
               />
             )}
           </div>
-          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
+          
+          {/* Filters and View Toggle */}
+          <div className="flex flex-col lg:flex-row gap-4 lg:items-center lg:justify-between">
             {loading ? (
-              <>
-                <Skeleton className="h-10 w-full sm:w-24" />
-                <Skeleton className="h-10 w-full sm:w-20" />
-              </>
+              <div className="flex gap-3">
+                <Skeleton className="h-10 w-40" />
+                <Skeleton className="h-10 w-24" />
+              </div>
             ) : (
-              <>
-                {/* View Mode Toggle - Hidden on mobile */}
-                <div className="hidden sm:flex rounded-lg overflow-hidden bg-muted/20 p-1 w-auto">
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => setViewMode('list')}
-                    className={`rounded-md px-3 py-1.5 h-8 transition-all duration-200 ${
-                      viewMode === 'list' 
-                        ? 'bg-primary text-primary-foreground md:hover:bg-primary/90 shadow-sm' 
-                        : 'bg-transparent text-muted-foreground md:hover:bg-background md:hover:text-foreground'
-                    }`}
-                  >
-                    <List className="h-4 w-4" />
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => setViewMode('grid')}
-                    className={`rounded-md px-3 py-1.5 h-8 transition-all duration-200 ${
-                      viewMode === 'grid' 
-                        ? 'bg-primary text-primary-foreground md:hover:bg-primary/90 shadow-sm' 
-                        : 'bg-transparent text-muted-foreground md:hover:bg-background md:hover:text-foreground'
-                    }`}
-                  >
-                    <LayoutGrid className="h-4 w-4" />
-                  </Button>
-                </div>
-                <Button variant="outline" className="border-border text-foreground md:hover:bg-accent md:hover:text-accent-foreground w-full sm:w-auto">
-                  <Filter className="h-4 w-4 mr-2" />
-                  Filter
+              <ApplicationFilters
+                applications={applications}
+                onFiltersChange={handleFiltersChange}
+                resumeOptions={resumeOptions}
+                className="flex-1"
+              />
+            )}
+            
+            {/* View Mode Toggle - Desktop only */}
+            {!loading && (
+              <div className="hidden sm:flex rounded-lg overflow-hidden bg-muted/20 p-1 w-auto shrink-0">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setViewMode('list')}
+                  className={`rounded-md px-3 py-1.5 h-8 transition-all duration-200 ${
+                    viewMode === 'list' 
+                      ? 'bg-primary text-primary-foreground md:hover:bg-primary/90 shadow-sm' 
+                      : 'bg-transparent text-muted-foreground md:hover:bg-background md:hover:text-foreground'
+                  }`}
+                >
+                  <List className="h-4 w-4" />
                 </Button>
-              </>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setViewMode('grid')}
+                  className={`rounded-md px-3 py-1.5 h-8 transition-all duration-200 ${
+                    viewMode === 'grid' 
+                      ? 'bg-primary text-primary-foreground md:hover:bg-primary/90 shadow-sm' 
+                      : 'bg-transparent text-muted-foreground md:hover:bg-background md:hover:text-foreground'
+                  }`}
+                >
+                  <LayoutGrid className="h-4 w-4" />
+                </Button>
+              </div>
             )}
           </div>
+          
+          {/* Results count */}
+          {!loading && currentFilters && (
+            <div className="text-sm text-muted-foreground">
+              Showing {searchFilteredApplications.length} of {applications.length} applications
+              {searchTerm && ` matching "${searchTerm}"`}
+            </div>
+          )}
         </div>
 
         {/* Applications List */}
@@ -302,7 +345,7 @@ const Dashboard = () => {
               <ApplicationCardSkeleton key={i} />
             ))
           ) : (
-            filteredApplications.map((app) => (
+            searchFilteredApplications.map((app) => (
               <ApplicationCard
                 key={app.id}
                 application={app}
@@ -316,6 +359,27 @@ const Dashboard = () => {
         </div>
 
         {/* Empty State */}
+        {!loading && searchFilteredApplications.length === 0 && applications.length > 0 && (
+          <Card className="p-12 text-center bg-card border-border">
+            <div className="text-muted-foreground mb-4">
+              <Search className="h-12 w-12 mx-auto mb-4 opacity-50" />
+              <h3 className="text-lg font-semibold text-card-foreground">No applications found</h3>
+              <p className="text-sm">Try adjusting your search or filters</p>
+            </div>
+            <Button 
+              variant="outline" 
+              onClick={() => {
+                setSearchTerm('');
+                // Reset filters would be handled by the filter component
+              }}
+              className="mt-4"
+            >
+              Clear search and filters
+            </Button>
+          </Card>
+        )}
+
+        {/* No Applications Empty State */}
         {!loading && applications.length === 0 && (
           <Card className="p-12 text-center bg-card border-border">
             <div className="text-muted-foreground mb-4">

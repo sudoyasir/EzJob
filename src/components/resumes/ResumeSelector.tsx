@@ -11,14 +11,14 @@ import { formatFileSize } from "@/lib/fileUpload";
 
 interface Resume {
   id: string;
-  name: string;
-  description?: string;
+  title: string;
   file_name: string;
-  file_url: string;
   file_path: string;
-  file_size: number;
-  is_default: boolean;
+  file_size: number | null;
+  is_default: boolean | null;
   created_at: string;
+  updated_at: string;
+  user_id: string;
 }
 
 interface ResumeSelectorProps {
@@ -114,7 +114,7 @@ export function ResumeSelector({
         document.body.removeChild(link);
         window.URL.revokeObjectURL(url);
         
-        toast.success(`Downloaded "${resume.name}" successfully!`);
+        toast.success(`Downloaded "${resume.title}" successfully!`);
         return;
       }
 
@@ -133,7 +133,7 @@ export function ResumeSelector({
       document.body.removeChild(link);
       window.URL.revokeObjectURL(url);
       
-      toast.success(`Downloaded "${resume.name}" successfully!`);
+      toast.success(`Downloaded "${resume.title}" successfully!`);
     } catch (error: any) {
       console.error('Download failed:', error);
       toast.error('Failed to download resume: ' + error.message);
@@ -199,7 +199,7 @@ export function ResumeSelector({
                   <FileText className="h-4 w-4 text-primary shrink-0" />
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2">
-                      <span className="font-medium truncate text-sm">{resume.name}</span>
+                      <span className="font-medium truncate text-sm">{resume.title}</span>
                       {resume.is_default && (
                         <Badge variant="secondary" className="text-xs bg-yellow-100 text-yellow-800 px-1 py-0">
                           <Star className="h-2 w-2 mr-0.5 fill-current" />
@@ -208,7 +208,7 @@ export function ResumeSelector({
                       )}
                     </div>
                     <div className="text-xs text-muted-foreground truncate">
-                      {resume.file_name} • {formatFileSize(resume.file_size)}
+                      {resume.file_name} • {formatFileSize(resume.file_size || 0)}
                     </div>
                   </div>
                   {value === resume.id && (
@@ -225,10 +225,10 @@ export function ResumeSelector({
           <div className="flex items-center gap-3 p-4 bg-green-50 dark:bg-green-950/20 border border-green-200 dark:border-green-800 rounded-md">
             <div className="flex-1 min-w-0">
               <p className="text-sm font-medium text-green-800 dark:text-green-200 truncate">
-                {selectedResume.name}
+                {selectedResume.title}
               </p>
               <p className="text-xs text-green-600 dark:text-green-400 truncate">
-                {selectedResume.file_name} • {formatFileSize(selectedResume.file_size)}
+                {selectedResume.file_name} • {formatFileSize(selectedResume.file_size || 0)}
               </p>
             </div>
             <Button
@@ -273,7 +273,7 @@ export function ResumeSelector({
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 mb-1">
-                      <span className="font-medium truncate">{resume.name}</span>
+                      <span className="font-medium truncate">{resume.title}</span>
                       {resume.is_default && (
                         <Badge variant="secondary" className="text-xs bg-yellow-100 text-yellow-800 border-yellow-200">
                           <Star className="h-3 w-3 mr-1 fill-current" />
@@ -284,7 +284,7 @@ export function ResumeSelector({
                     <div className="flex gap-2 text-xs text-muted-foreground">
                       <span className="truncate max-w-[150px]">{resume.file_name}</span>
                       <span>•</span>
-                      <span>{formatFileSize(resume.file_size)}</span>
+                      <span>{formatFileSize(resume.file_size || 0)}</span>
                     </div>
                   </div>
                   {value === resume.id && (
@@ -316,7 +316,7 @@ export function ResumeSelector({
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 mb-1">
                     <h4 className="font-semibold text-green-800 dark:text-green-200 truncate">
-                      {selectedResume.name}
+                      {selectedResume.title}
                     </h4>
                     {selectedResume.is_default && (
                       <Badge className="bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300 border-yellow-200 dark:border-yellow-800 text-xs">
@@ -326,18 +326,12 @@ export function ResumeSelector({
                     )}
                   </div>
                   
-                  {selectedResume.description && (
-                    <p className="text-sm text-green-700 dark:text-green-300 mb-2 line-clamp-2">
-                      {selectedResume.description}
-                    </p>
-                  )}
-                  
                   <div className="flex flex-wrap gap-3 text-xs text-green-600 dark:text-green-400">
                     <span className="flex items-center gap-1">
                       <FileText className="h-3 w-3" />
                       {selectedResume.file_name}
                     </span>
-                    <span>{formatFileSize(selectedResume.file_size)}</span>
+                    <span>{formatFileSize(selectedResume.file_size || 0)}</span>
                     <span>Uploaded {new Date(selectedResume.created_at).toLocaleDateString()}</span>
                   </div>
                 </div>

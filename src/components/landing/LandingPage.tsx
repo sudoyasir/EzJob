@@ -91,7 +91,7 @@ const LandingPage = () => {
               </Link>
             ) : (
               <div className="flex items-center space-x-3">
-                <Link to="/login">
+                <Link to="/login" className="hidden sm:block">
                   <Button variant="ghost" className="text-foreground md:hover:bg-primary/10 md:hover:text-primary transition-all duration-300 font-medium">
                     Sign In
                   </Button>
@@ -118,7 +118,7 @@ const LandingPage = () => {
         <div className="max-w-5xl mx-auto">
           <div className="mb-6">
             <span className="inline-flex items-center px-4 py-2 rounded-full text-sm font-medium bg-primary/10 text-primary ring-1 ring-primary/20 mb-8">
-              🚀 Join 10,000+ successful job seekers
+              🚀 Join 10,000+ job seekers
             </span>
           </div>
           
@@ -138,7 +138,7 @@ const LandingPage = () => {
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-16 animate-fade-in">
             {user ? (
               <Link to="/dashboard">
-                <Button variant="hero" size="lg" className="w-full sm:w-auto bg-gradient-hero text-white shadow-glow md:hover:shadow-brand transition-all duration-300 md:hover:scale-105 px-8 py-4 text-lg font-semibold">
+                <Button variant="hero" size="lg" className="w-full sm:w-auto bg-gradient-hero text-white shadow-glow md:hover:shadow-brand transition-all duration-300 md:hover:scale-105 px-8 py-4 text-lg font-semibold flex items-center justify-center">
                   Go to Dashboard
                   <span className="ml-2">→</span>
                 </Button>
@@ -306,7 +306,7 @@ const LandingPage = () => {
           <div className="relative z-10">
             <div className="mb-6">
               <span className="inline-flex items-center px-2 py-2 rounded-full text-sm font-medium bg-primary/10 text-primary ring-1 ring-primary/20">
-                🚀 Ready to transform your career?
+                🚀 Ready to transform career?
               </span>
             </div>
             
@@ -323,7 +323,7 @@ const LandingPage = () => {
             <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
               {user ? (
                 <Link to="/dashboard" className="w-full sm:w-auto">
-                  <Button variant="hero" size="lg" className="w-full sm:w-auto bg-gradient-hero text-white shadow-glow hover:shadow-brand transition-all duration-300 hover:scale-105 px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-semibold">
+                  <Button variant="hero" size="lg" className="w-full sm:w-auto bg-gradient-hero text-white shadow-glow hover:shadow-brand transition-all duration-300 hover:scale-105 px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-semibold flex items-center justify-center">
                     Continue to Dashboard
                     <span className="ml-2">→</span>
                   </Button>

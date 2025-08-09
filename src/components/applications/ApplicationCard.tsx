@@ -204,14 +204,12 @@ export const ApplicationCard: React.FC<ApplicationCardProps> = ({
         </div>
 
         {/* Actions Section */}
-        <div className="flex items-center justify-between pt-4 sm:pt-5 border-t border-border/50">
-          {viewMode === 'list' && (
-            <div className="text-xs text-muted-foreground">
-              Updated {formatDistanceToNow(new Date(application.updated_at), { addSuffix: true })}
-            </div>
-          )}
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between pt-4 sm:pt-5 border-t border-border/50 gap-3">
+          <div className="text-xs text-muted-foreground text-center sm:text-left">
+            Updated {formatDistanceToNow(new Date(application.updated_at), { addSuffix: true })}
+          </div>
           
-          <div className={`flex items-center gap-2 sm:gap-3 ${viewMode === 'grid' ? 'w-full justify-center' : ''}`}>
+          <div className={`flex items-center gap-2 sm:gap-3 justify-center ${viewMode === 'grid' ? '' : 'sm:justify-end'}`}>
             <JobApplicationView
               application={application}
               trigger={
