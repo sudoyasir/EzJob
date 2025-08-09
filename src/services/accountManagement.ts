@@ -32,26 +32,11 @@ export class AccountManagementService {
       onProgress?.("Gathering profile data...");
       
       // Gather all user data
-      const [profileData, applicationsData, resumesData] = await Promise.all([
-        // Get profile data
-        supabase
-          .from('user_profiles')
-          .select('*')
-          .eq('id', user.id)
-          .single(),
-        
-        // Get job applications
-        supabase
-          .from('job_applications')
-          .select('*')
-          .eq('user_id', user.id),
-        
-        // Get resumes
-        supabase
-          .from('resumes')
-          .select('*')
-          .eq('user_id', user.id)
-      ]);
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', user.id)
+        .single();
 
       onProgress?.("Compiling export data...");
 
@@ -65,9 +50,9 @@ export class AccountManagementService {
           lastSignIn: user.last_sign_in_at,
           emailConfirmed: user.email_confirmed_at
         },
-        profile: profileData.data || {},
-        jobApplications: applicationsData.data || [],
-        resumes: resumesData.data || [],
+        profile: data || {},
+        jobApplications: [],
+        resumes: [],
         preferences: preferences,
         notifications: notifications
       };
@@ -126,7 +111,7 @@ export class AccountManagementService {
 
       // 3. Delete user profile completely
       await supabase
-        .from('user_profiles')
+        .from('profiles')
         .delete()
         .eq('id', user.id);
 

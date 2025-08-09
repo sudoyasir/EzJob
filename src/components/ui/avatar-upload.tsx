@@ -64,10 +64,10 @@ export function AvatarUpload({
 
       // Update user profile with new avatar URL
       const { error: updateError } = await supabase
-        .from('user_profiles')
+        .from('profiles')
         .upsert({
           id: userId,
-          avatar_url: result.url
+          avatar_url: result.url,
         });
 
       if (updateError) {
@@ -106,7 +106,7 @@ export function AvatarUpload({
 
       // Update user profile
       const { error: updateError } = await supabase
-        .from('user_profiles')
+        .from('profiles')
         .upsert({
           id: userId,
           avatar_url: null

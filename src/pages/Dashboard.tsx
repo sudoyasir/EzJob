@@ -122,7 +122,7 @@ const Dashboard = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-muted/10 to-background">
-      <Navbar currentStreak={7} longestStreak={12} />
+      <Navbar />
 
       <div className="container mx-auto px-4 sm:px-8 lg:px-12 py-8 sm:py-12">
         {/* Personal Greeting */}

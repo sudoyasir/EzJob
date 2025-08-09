@@ -37,7 +37,7 @@ const ProfileSettings = () => {
 
     try {
       const { data, error } = await supabase
-        .from('user_profiles')
+        .from('profiles')
         .select('*')
         .eq('id', user.id)
         .single();
@@ -48,7 +48,7 @@ const ProfileSettings = () => {
 
       if (data) {
         setProfile({
-          full_name: data.full_name || "",
+          full_name: data.first_name && data.last_name ? `${data.first_name} ${data.last_name}` : "",
           avatar_url: data.avatar_url || "",
         });
       } else {
@@ -69,12 +69,13 @@ const ProfileSettings = () => {
 
     setLoading(true);
     try {
-      // Save to user_profiles table
+      // Save to profiles table
       const { error: profileError } = await supabase
-        .from('user_profiles')
+        .from('profiles')
         .upsert({
           id: user.id,
-          full_name: profile.full_name,
+          first_name: profile.full_name.split(' ')[0] || "",
+          last_name: profile.full_name.split(' ').slice(1).join(' ') || "",
           avatar_url: profile.avatar_url,
         });
 
@@ -104,7 +105,7 @@ const ProfileSettings = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <Navbar currentStreak={7} longestStreak={12} />
+      <Navbar />
 
       <div className="container mx-auto px-4 sm:px-8 lg:px-12 py-8 max-w-4xl">
         {/* Back Button */}

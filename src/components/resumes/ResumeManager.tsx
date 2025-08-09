@@ -16,13 +16,12 @@ import { uploadFile, deleteFile, formatFileSize, validateDocumentFile } from "@/
 
 interface Resume {
   id: string;
-  name: string;
+  title: string;
   description?: string;
   file_name: string;
-  file_url: string;
   file_path: string;
-  file_size: number;
-  is_default: boolean;
+  file_size: number | null;
+  is_default: boolean | null;
   created_at: string;
   updated_at: string;
   user_id: string;
@@ -63,7 +62,7 @@ export default function ResumeManager({ embedded = false, onResumeUploaded, onCl
         .order('created_at', { ascending: false });
 
       if (error) throw error;
-      setResumes((data || []) as Resume[]);
+      setResumes(data || []);
     } catch (error: any) {
       toast.error('Failed to fetch resumes: ' + error.message);
     } finally {
@@ -169,13 +168,11 @@ export default function ResumeManager({ embedded = false, onResumeUploaded, onCl
         .from('resumes')
         .insert({
           user_id: user.id,
-          name: resumeName.trim(),
+          title: resumeName.trim(),
           description: resumeDescription?.trim() || null,
           file_name: selectedFile.name,
-          file_url: publicUrl,
           file_path: filePath,
           file_size: selectedFile.size,
-          file_type: fileType,
           is_default: resumes.length === 0, // First resume is default
         })
         .select()
@@ -183,7 +180,7 @@ export default function ResumeManager({ embedded = false, onResumeUploaded, onCl
 
       if (error) throw error;
 
-      const newResume = data as Resume;
+      const newResume = data;
       
       // If this is the first resume or manually set as default, update other resumes
       if (resumes.length === 0) {
@@ -239,7 +236,7 @@ export default function ResumeManager({ embedded = false, onResumeUploaded, onCl
   };
 
   const updateResume = async () => {
-    if (!editingResume || !editingResume.name.trim()) {
+    if (!editingResume || !editingResume.title.trim()) {
       toast.error('Please provide a resume name');
       return;
     }
@@ -248,14 +245,14 @@ export default function ResumeManager({ embedded = false, onResumeUploaded, onCl
       await supabase
         .from('resumes')
         .update({
-          name: editingResume.name.trim(),
+          title: editingResume.title.trim(),
           description: editingResume.description?.trim() || null,
         })
         .eq('id', editingResume.id);
 
       setResumes(prev => prev.map(resume => 
         resume.id === editingResume.id 
-          ? { ...resume, name: editingResume.name.trim(), description: editingResume.description?.trim() || null }
+          ? { ...resume, title: editingResume.title.trim(), description: editingResume.description?.trim() || null }
           : resume
       ));
 
@@ -323,7 +320,7 @@ export default function ResumeManager({ embedded = false, onResumeUploaded, onCl
         document.body.removeChild(link);
         window.URL.revokeObjectURL(url);
         
-        toast.success(`Downloaded "${resume.name}" successfully!`);
+        toast.success(`Downloaded "${resume.title}" successfully!`);
         return;
       }
 
@@ -342,7 +339,7 @@ export default function ResumeManager({ embedded = false, onResumeUploaded, onCl
       document.body.removeChild(link);
       window.URL.revokeObjectURL(url);
       
-      toast.success(`Downloaded "${resume.name}" successfully!`);
+      toast.success(`Downloaded "${resume.title}" successfully!`);
     } catch (error: any) {
       console.error('Download failed:', error);
       toast.error('Failed to download resume: ' + error.message);
@@ -526,7 +523,7 @@ export default function ResumeManager({ embedded = false, onResumeUploaded, onCl
                 <div className="flex items-start justify-between">
                   <div className="flex-1 min-w-0">
                     <CardTitle className="text-base sm:text-lg leading-6 truncate pr-2">
-                      {resume.name}
+                      {resume.title}
                     </CardTitle>
                     <CardDescription className="text-xs sm:text-sm mt-1 overflow-hidden text-ellipsis" style={{
                       display: '-webkit-box',
@@ -620,7 +617,7 @@ export default function ResumeManager({ embedded = false, onResumeUploaded, onCl
                         <AlertDialogHeader>
                           <AlertDialogTitle className="text-base sm:text-lg">Delete Resume</AlertDialogTitle>
                           <AlertDialogDescription className="text-sm">
-                            Are you sure you want to delete "{resume.name}"? This action cannot be undone.
+                            Are you sure you want to delete "{resume.title}"? This action cannot be undone.
                           </AlertDialogDescription>
                         </AlertDialogHeader>
                         <AlertDialogFooter className="flex-col-reverse gap-2 sm:flex-row">
@@ -658,8 +655,8 @@ export default function ResumeManager({ embedded = false, onResumeUploaded, onCl
                 <Label htmlFor="edit-name" className="text-sm">Resume Name *</Label>
                 <Input
                   id="edit-name"
-                  value={editingResume.name}
-                  onChange={(e) => setEditingResume(prev => prev ? { ...prev, name: e.target.value } : null)}
+                  value={editingResume.title}
+                  onChange={(e) => setEditingResume(prev => prev ? { ...prev, title: e.target.value } : null)}
                   className="mt-1 text-sm"
                 />
               </div>

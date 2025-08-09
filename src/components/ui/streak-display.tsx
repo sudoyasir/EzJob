@@ -4,7 +4,21 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Flame, Zap, Trophy, Star, Calendar, Target } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { getStreakLevel, getStreakEmoji, WeeklyActivity } from '@/hooks/useStreak';
+
+interface DayStatus {
+  date: Date;
+  completed: boolean;
+  isToday: boolean;
+  isFuture: boolean;
+}
+
+interface WeeklyActivity {
+  date: string;
+  completed: boolean;
+  isToday: boolean;
+  isFuture: boolean;
+  applicationsCount: number;
+}
 
 interface StreakDisplayProps {
   currentStreak: number;
@@ -117,7 +131,7 @@ export function StreakDisplay({
                       day.completed
                         ? "bg-orange-500 border-orange-500 shadow-sm"
                         : day.isToday
-                        ? "bg-orange-200 border-orange-400 animate-pulse"
+                        ? "bg-orange-200 border-orange-400 animate-slow-pulse"
                         : day.isFuture
                         ? "bg-gray-100 border-gray-200 dark:bg-gray-800 dark:border-gray-700"
                         : "bg-gray-200 border-gray-300 dark:bg-gray-700 dark:border-gray-600"
@@ -196,7 +210,7 @@ export function StreakDisplay({
                     day.completed
                       ? "bg-orange-500 border-orange-500 shadow-lg scale-110"
                       : day.isToday
-                      ? "bg-orange-200 border-orange-400 animate-pulse"
+                      ? "bg-orange-200 border-orange-400 animate-slow-pulse"
                       : day.isFuture
                       ? "bg-gray-100 border-gray-200 dark:bg-gray-800 dark:border-gray-700"
                       : "bg-gray-200 border-gray-300 dark:bg-gray-700 dark:border-gray-600"
@@ -230,19 +244,23 @@ export function StreakDisplay({
 }
 
 function getStreakLevel(streak: number): string {
-  if (streak >= 30) return 'Legend';
-  if (streak >= 21) return 'Master';
-  if (streak >= 14) return 'Expert';
-  if (streak >= 7) return 'Pro';
+  if (streak >= 100) return 'Legendary';
+  if (streak >= 50) return 'Master';
+  if (streak >= 30) return 'Expert';
+  if (streak >= 21) return 'Pro';
+  if (streak >= 14) return 'Advanced';
+  if (streak >= 7) return 'Committed';
   if (streak >= 3) return 'Rising';
   return 'Beginner';
 }
 
 function getStreakEmoji(streak: number): string {
-  if (streak >= 30) return '🏆';
-  if (streak >= 21) return '💎';
-  if (streak >= 14) return '⭐';
-  if (streak >= 7) return '🔥';
+  if (streak >= 100) return '🏆';
+  if (streak >= 50) return '💎';
+  if (streak >= 30) return '👑';
+  if (streak >= 21) return '⭐';
+  if (streak >= 14) return '🔥';
+  if (streak >= 7) return '�';
   if (streak >= 3) return '🌟';
   return '✨';
 }
