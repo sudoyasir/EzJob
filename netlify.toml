@@ -28,6 +28,14 @@
   [headers.values]
     Cache-Control = "public, max-age=31536000, immutable"
 
+# Special handling for OG image to help with WhatsApp
+[[headers]]
+  for = "/og.png"
+  [headers.values]
+    Cache-Control = "public, max-age=3600, must-revalidate"
+    Content-Type = "image/png"
+    X-Content-Type-Options = "nosniff"
+
 # Cache fonts
 [[headers]]
   for = "*.woff2"
