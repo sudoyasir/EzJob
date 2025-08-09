@@ -99,7 +99,7 @@ const Login = () => {
                 type="button"
                 onClick={handleGoogleSignIn}
                 disabled={loading}
-                className="bg-background/50 hover:bg-background border-border text-foreground hover:text-accent-foreground transition-all duration-200"
+                className="bg-background/50 md:hover:bg-background border-border text-foreground md:hover:text-accent-foreground transition-all duration-200"
               >
                 <svg className="h-5 w-5 mr-3" viewBox="0 0 24 24">
                   <path
@@ -124,8 +124,8 @@ const Login = () => {
               <Button
                 variant="outline"
                 type="button"
-                className="bg-background/50 hover:bg-background border-border text-foreground hover:text-accent-foreground transition-all duration-200"
-                onClick={handleGithubSignIn}
+                className="bg-background/50 md:hover:bg-background border-border text-foreground md:hover:text-accent-foreground transition-all duration-200"
+                onClick={handleGitHubSignIn}
                 disabled={loading}
               >
                 <Github className="h-5 w-5 mr-3" />
@@ -171,7 +171,7 @@ const Login = () => {
                     type="button"
                     variant="ghost"
                     size="sm"
-                    className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                    className="absolute right-0 top-0 h-full px-3 py-2 md:hover:bg-transparent"
                     onClick={() => setShowPassword(!showPassword)}
                   >
                     {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
@@ -183,7 +183,7 @@ const Login = () => {
                 <div className="text-right">
                   <Link 
                     to="/forgot-password" 
-                    className="text-sm text-primary hover:text-primary/80 transition-colors font-medium"
+                    className="text-sm text-primary md:hover:text-primary/80 transition-colors font-medium"
                   >
                     Forgot your password?
                   </Link>

@@ -168,6 +168,26 @@
     -moz-osx-font-smoothing: grayscale;
   }
 
+  /* Remove tap highlight on mobile devices */
+  * {
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+  }
+
+  /* Remove tap highlight for all interactive elements */
+  button,
+  a,
+  [role="button"],
+  [tabindex],
+  input,
+  textarea,
+  select,
+  [onclick],
+  .cursor-pointer {
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+  }
+
   /* Professional animations and effects */
   @keyframes shimmer {
     100% {

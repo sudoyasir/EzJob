@@ -17,7 +17,7 @@ export default function Resumes() {
             variant="ghost"
             size="sm"
             onClick={() => navigate('/dashboard')}
-            className="text-muted-foreground hover:text-foreground"
+            className="text-muted-foreground md:hover:text-foreground"
           >
             <ArrowLeft className="h-4 w-4 mr-2" />
             Back to Dashboard

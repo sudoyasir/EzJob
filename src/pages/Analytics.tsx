@@ -56,7 +56,7 @@ const Analytics = () => {
             variant="ghost"
             size="sm"
             onClick={() => navigate('/dashboard')}
-            className="text-muted-foreground hover:text-foreground"
+            className="text-muted-foreground md:hover:text-foreground"
           >
             <ArrowLeft className="h-4 w-4 mr-2" />
             Back to Dashboard
@@ -94,7 +94,7 @@ const Analytics = () => {
             ))
           ) : (
             <>
-              <Card className="p-6 bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-950/50 dark:to-blue-900/50 border-blue-200 dark:border-blue-800 hover:shadow-xl transition-all duration-300 hover:-translate-y-1 group relative overflow-hidden">
+              <Card className="p-6 bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-950/50 dark:to-blue-900/50 border-blue-200 dark:border-blue-800 md:hover:shadow-xl transition-all duration-300 md:hover:-translate-y-1 group relative overflow-hidden">
                 <div className="absolute inset-0 bg-gradient-to-br from-blue-400/10 to-blue-600/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                 <div className="relative z-10 flex items-center justify-between">
                   <div>
@@ -110,7 +110,7 @@ const Analytics = () => {
                 </div>
               </Card>
               
-              <Card className="p-6 bg-gradient-to-br from-emerald-50 to-emerald-100 dark:from-emerald-950/50 dark:to-emerald-900/50 border-emerald-200 dark:border-emerald-800 hover:shadow-xl transition-all duration-300 hover:-translate-y-1 group relative overflow-hidden">
+              <Card className="p-6 bg-gradient-to-br from-emerald-50 to-emerald-100 dark:from-emerald-950/50 dark:to-emerald-900/50 border-emerald-200 dark:border-emerald-800 md:hover:shadow-xl transition-all duration-300 md:hover:-translate-y-1 group relative overflow-hidden">
                 <div className="absolute inset-0 bg-gradient-to-br from-emerald-400/10 to-emerald-600/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                 <div className="relative z-10 flex items-center justify-between">
                   <div>
@@ -126,7 +126,7 @@ const Analytics = () => {
                 </div>
               </Card>
               
-              <Card className="p-6 bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-950/50 dark:to-purple-900/50 border-purple-200 dark:border-purple-800 hover:shadow-xl transition-all duration-300 hover:-translate-y-1 group relative overflow-hidden">
+              <Card className="p-6 bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-950/50 dark:to-purple-900/50 border-purple-200 dark:border-purple-800 md:hover:shadow-xl transition-all duration-300 md:hover:-translate-y-1 group relative overflow-hidden">
                 <div className="absolute inset-0 bg-gradient-to-br from-purple-400/10 to-purple-600/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                 <div className="relative z-10 flex items-center justify-between">
                   <div>
@@ -142,7 +142,7 @@ const Analytics = () => {
                 </div>
               </Card>
               
-              <Card className="p-6 bg-gradient-to-br from-amber-50 to-amber-100 dark:from-amber-950/50 dark:to-amber-900/50 border-amber-200 dark:border-amber-800 hover:shadow-xl transition-all duration-300 hover:-translate-y-1 group relative overflow-hidden">
+              <Card className="p-6 bg-gradient-to-br from-amber-50 to-amber-100 dark:from-amber-950/50 dark:to-amber-900/50 border-amber-200 dark:border-amber-800 md:hover:shadow-xl transition-all duration-300 md:hover:-translate-y-1 group relative overflow-hidden">
                 <div className="absolute inset-0 bg-gradient-to-br from-amber-400/10 to-amber-600/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                 <div className="relative z-10 flex items-center justify-between">
                   <div>
@@ -192,7 +192,7 @@ const Analytics = () => {
               <div className="space-y-3">
                 <Button 
                   onClick={() => navigate("/dashboard")}
-                  className="w-full sm:w-auto bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 shadow-lg hover:shadow-xl transition-all duration-300"
+                  className="w-full sm:w-auto bg-gradient-to-r from-primary to-accent md:hover:from-primary/90 md:hover:to-accent/90 shadow-lg md:hover:shadow-xl transition-all duration-300"
                   size="lg"
                 >
                   <Plus className="h-5 w-5 mr-2" />

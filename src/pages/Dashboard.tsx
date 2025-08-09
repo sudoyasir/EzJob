@@ -145,7 +145,7 @@ const Dashboard = () => {
                 </Button>
               }
             />
-            <Button variant="outline" className="border-border text-foreground hover:bg-accent hover:text-accent-foreground px-4 sm:px-6 py-2 sm:py-3 text-sm sm:text-base font-medium w-full sm:w-auto" onClick={() => navigate("/analytics")}>
+            <Button variant="outline" className="border-border text-foreground md:hover:bg-accent md:hover:text-accent-foreground px-4 sm:px-6 py-2 sm:py-3 text-sm sm:text-base font-medium w-full sm:w-auto" onClick={() => navigate("/analytics")}>
               <TrendingUp className="h-4 w-4 sm:h-5 sm:w-5 mr-2" />
               View Analytics
             </Button>
@@ -164,7 +164,7 @@ const Dashboard = () => {
                 variant="outline" 
                 size="sm"
                 onClick={() => navigate("/resumes")}
-                className="text-primary hover:bg-primary hover:text-primary-foreground transition-all duration-300 font-medium text-xs sm:text-sm w-full sm:w-auto"
+                className="text-primary md:hover:bg-primary md:hover:text-primary-foreground transition-all duration-300 font-medium text-xs sm:text-sm w-full sm:w-auto"
               >
                 <FileText className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
                 Manage Resumes
@@ -173,7 +173,7 @@ const Dashboard = () => {
                 variant="outline" 
                 size="sm"
                 onClick={() => navigate("/analytics")}
-                className="text-primary hover:bg-primary hover:text-primary-foreground transition-all duration-300 font-medium text-xs sm:text-sm w-full sm:w-auto"
+                className="text-primary md:hover:bg-primary md:hover:text-primary-foreground transition-all duration-300 font-medium text-xs sm:text-sm w-full sm:w-auto"
               >
                 <BarChart3 className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
                 Detailed Analytics
@@ -267,8 +267,8 @@ const Dashboard = () => {
                     onClick={() => setViewMode('list')}
                     className={`rounded-md px-3 py-1.5 h-8 transition-all duration-200 ${
                       viewMode === 'list' 
-                        ? 'bg-primary text-primary-foreground hover:bg-primary/90 shadow-sm' 
-                        : 'bg-transparent text-muted-foreground hover:bg-background hover:text-foreground'
+                        ? 'bg-primary text-primary-foreground md:hover:bg-primary/90 shadow-sm' 
+                        : 'bg-transparent text-muted-foreground md:hover:bg-background md:hover:text-foreground'
                     }`}
                   >
                     <List className="h-4 w-4" />
@@ -279,14 +279,14 @@ const Dashboard = () => {
                     onClick={() => setViewMode('grid')}
                     className={`rounded-md px-3 py-1.5 h-8 transition-all duration-200 ${
                       viewMode === 'grid' 
-                        ? 'bg-primary text-primary-foreground hover:bg-primary/90 shadow-sm' 
-                        : 'bg-transparent text-muted-foreground hover:bg-background hover:text-foreground'
+                        ? 'bg-primary text-primary-foreground md:hover:bg-primary/90 shadow-sm' 
+                        : 'bg-transparent text-muted-foreground md:hover:bg-background md:hover:text-foreground'
                     }`}
                   >
                     <LayoutGrid className="h-4 w-4" />
                   </Button>
                 </div>
-                <Button variant="outline" className="border-border text-foreground hover:bg-accent hover:text-accent-foreground w-full sm:w-auto">
+                <Button variant="outline" className="border-border text-foreground md:hover:bg-accent md:hover:text-accent-foreground w-full sm:w-auto">
                   <Filter className="h-4 w-4 mr-2" />
                   Filter
                 </Button>

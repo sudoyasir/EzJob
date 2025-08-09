@@ -65,16 +65,16 @@ const LandingPage = () => {
             </span>
           </div>
           <div className="hidden md:flex items-center space-x-8">
-            <a href="#features" className="text-muted-foreground hover:text-primary transition-all duration-300 font-medium">
+            <a href="#features" className="text-muted-foreground md:hover:text-primary transition-all duration-300 font-medium">
               Features
             </a>
-            <a href="#how-it-works" className="text-muted-foreground hover:text-primary transition-all duration-300 font-medium">
+            <a href="#how-it-works" className="text-muted-foreground md:hover:text-primary transition-all duration-300 font-medium">
               How it Works
             </a>
-            <a href="#testimonials" className="text-muted-foreground hover:text-primary transition-all duration-300 font-medium">
+            <a href="#testimonials" className="text-muted-foreground md:hover:text-primary transition-all duration-300 font-medium">
               Testimonials
             </a>
-            <a href="#contact" className="text-muted-foreground hover:text-primary transition-all duration-300 font-medium">
+            <a href="#contact" className="text-muted-foreground md:hover:text-primary transition-all duration-300 font-medium">
               Contact
             </a>
           </div>
@@ -85,19 +85,19 @@ const LandingPage = () => {
               <div className="w-24 h-10 bg-muted animate-pulse rounded-lg"></div>
             ) : user ? (
               <Link to="/dashboard">
-                <Button variant="default" className="bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 shadow-lg hover:shadow-xl transition-all duration-300">
+                <Button variant="default" className="bg-gradient-to-r from-primary to-accent md:hover:from-primary/90 md:hover:to-accent/90 shadow-lg md:hover:shadow-xl transition-all duration-300">
                   Dashboard
                 </Button>
               </Link>
             ) : (
               <div className="flex items-center space-x-3">
                 <Link to="/login">
-                  <Button variant="ghost" className="text-foreground hover:text-primary transition-all duration-300">
+                  <Button variant="ghost" className="text-foreground md:hover:text-primary transition-all duration-300">
                     Sign In
                   </Button>
                 </Link>
                 <Link to="/login">
-                  <Button className="bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 shadow-lg hover:shadow-xl transition-all duration-300">
+                  <Button className="bg-gradient-to-r from-primary to-accent md:hover:from-primary/90 md:hover:to-accent/90 shadow-lg md:hover:shadow-xl transition-all duration-300">
                     Get Started
                   </Button>
                 </Link>
@@ -138,7 +138,7 @@ const LandingPage = () => {
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-16 animate-fade-in">
             {user ? (
               <Link to="/dashboard">
-                <Button variant="hero" size="lg" className="w-full sm:w-auto bg-gradient-hero text-white shadow-glow hover:shadow-brand transition-all duration-300 hover:scale-105 px-8 py-4 text-lg font-semibold">
+                <Button variant="hero" size="lg" className="w-full sm:w-auto bg-gradient-hero text-white shadow-glow md:hover:shadow-brand transition-all duration-300 md:hover:scale-105 px-8 py-4 text-lg font-semibold">
                   Go to Dashboard
                   <span className="ml-2">→</span>
                 </Button>
@@ -146,12 +146,12 @@ const LandingPage = () => {
             ) : (
               <>
                 <Link to="/login">
-                  <Button variant="hero" size="lg" className="w-full sm:w-auto bg-gradient-hero text-white shadow-glow hover:shadow-brand transition-all duration-300 hover:scale-105 px-8 py-4 text-lg font-semibold">
+                  <Button variant="hero" size="lg" className="w-full sm:w-auto bg-gradient-hero text-white shadow-glow md:hover:shadow-brand transition-all duration-300 md:hover:scale-105 px-8 py-4 text-lg font-semibold">
                     Start Free Today
                     <span className="ml-2">→</span>
                   </Button>
                 </Link>
-                <Button variant="outline" size="lg" className="w-full sm:w-auto border-border text-foreground hover:bg-accent hover:text-accent-foreground transition-all duration-300 px-8 py-4 text-lg font-medium">
+                <Button variant="outline" size="lg" className="w-full sm:w-auto border-border text-foreground md:hover:bg-accent md:hover:text-accent-foreground transition-all duration-300 px-8 py-4 text-lg font-medium">
                   <span className="mr-2">▶</span>
                   Watch Demo
                 </Button>

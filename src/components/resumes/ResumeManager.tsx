@@ -403,7 +403,7 @@ export default function ResumeManager({ embedded = false, onResumeUploaded, onCl
                       ? 'border-primary bg-primary/10' 
                       : selectedFile 
                         ? 'border-green-300 bg-green-50' 
-                        : 'border-gray-300 hover:border-gray-400'
+                        : 'border-gray-300 md:hover:border-gray-400'
                   }`}
                   onDrop={handleDrop}
                   onDragOver={handleDragOver}
@@ -428,7 +428,7 @@ export default function ResumeManager({ embedded = false, onResumeUploaded, onCl
                       <Upload className="h-8 w-8 sm:h-12 sm:w-12 text-gray-400 mx-auto" />
                       <p className="text-gray-600 text-sm sm:text-base px-2">
                         <span className="hidden sm:inline">Drag and drop your resume here, or </span>
-                        <label className="text-primary hover:text-primary/80 cursor-pointer font-medium">
+                        <label className="text-primary md:hover:text-primary/80 cursor-pointer font-medium">
                           <span className="sm:hidden">Tap to </span>browse files
                           <input
                             type="file"
@@ -521,7 +521,7 @@ export default function ResumeManager({ embedded = false, onResumeUploaded, onCl
       ) : (
         <div className="grid gap-4 sm:gap-6 grid-cols-1 md:grid-cols-2">
           {resumes.map((resume) => (
-            <Card key={resume.id} className={`relative transition-all duration-200 hover:shadow-lg ${resume.is_default ? 'ring-2 ring-yellow-400 shadow-md' : 'hover:shadow-md'}`}>
+            <Card key={resume.id} className={`relative transition-all duration-200 md:hover:shadow-lg ${resume.is_default ? 'ring-2 ring-yellow-400 shadow-md' : 'md:hover:shadow-md'}`}>
               <CardHeader className="pb-3 sm:pb-4">
                 <div className="flex items-start justify-between">
                   <div className="flex-1 min-w-0">
@@ -574,7 +574,7 @@ export default function ResumeManager({ embedded = false, onResumeUploaded, onCl
                       variant="outline"
                       size="sm"
                       onClick={() => downloadResume(resume)}
-                      className="flex items-center justify-center p-2 hover:bg-primary hover:text-primary-foreground transition-colors"
+                      className="flex items-center justify-center p-2 md:hover:bg-primary md:hover:text-primary-foreground transition-colors"
                       title="Download"
                     >
                       <Download className="h-4 w-4" />
@@ -587,7 +587,7 @@ export default function ResumeManager({ embedded = false, onResumeUploaded, onCl
                         setEditingResume({ ...resume });
                         setShowEditDialog(true);
                       }}
-                      className="flex items-center justify-center p-2 hover:bg-secondary hover:text-secondary-foreground transition-colors"
+                      className="flex items-center justify-center p-2 md:hover:bg-secondary md:hover:text-secondary-foreground transition-colors"
                       title="Edit"
                     >
                       <Edit className="h-4 w-4" />
@@ -598,7 +598,7 @@ export default function ResumeManager({ embedded = false, onResumeUploaded, onCl
                         variant="ghost"
                         size="sm"
                         onClick={() => setAsDefault(resume.id)}
-                        className="flex items-center justify-center p-2 text-yellow-600 hover:text-yellow-700 hover:bg-yellow-50 transition-colors"
+                        className="flex items-center justify-center p-2 text-yellow-600 md:hover:text-yellow-700 md:hover:bg-yellow-50 transition-colors"
                         title="Set as Default"
                       >
                         <Star className="h-4 w-4" />
@@ -610,7 +610,7 @@ export default function ResumeManager({ embedded = false, onResumeUploaded, onCl
                         <Button 
                           variant="ghost" 
                           size="sm" 
-                          className="flex items-center justify-center p-2 text-destructive hover:text-destructive hover:bg-destructive/10 transition-colors"
+                          className="flex items-center justify-center p-2 text-destructive md:hover:text-destructive md:hover:bg-destructive/10 transition-colors"
                           title="Delete Resume"
                         >
                           <Trash2 className="h-4 w-4" />

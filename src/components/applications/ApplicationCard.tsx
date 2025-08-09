@@ -43,17 +43,17 @@ export const ApplicationCard: React.FC<ApplicationCardProps> = ({
   const getStatusColor = (status: string) => {
     switch (status?.toLowerCase()) {
       case 'applied':
-        return 'bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-950/20 dark:text-blue-300 dark:border-blue-800 hover:bg-blue-50 hover:text-blue-700 hover:border-blue-200 dark:hover:bg-blue-950/20 dark:hover:text-blue-300 dark:hover:border-blue-800';
+        return 'bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-950/20 dark:text-blue-300 dark:border-blue-800 md:hover:bg-blue-50 md:hover:text-blue-700 md:hover:border-blue-200 dark:md:hover:bg-blue-950/20 dark:md:hover:text-blue-300 dark:md:hover:border-blue-800';
       case 'interview':
-        return 'bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950/20 dark:text-emerald-300 dark:border-emerald-800 hover:bg-emerald-50 hover:text-emerald-700 hover:border-emerald-200 dark:hover:bg-emerald-950/20 dark:hover:text-emerald-300 dark:hover:border-emerald-800';
+        return 'bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950/20 dark:text-emerald-300 dark:border-emerald-800 md:hover:bg-emerald-50 md:hover:text-emerald-700 md:hover:border-emerald-200 dark:md:hover:bg-emerald-950/20 dark:md:hover:text-emerald-300 dark:md:hover:border-emerald-800';
       case 'offer':
-        return 'bg-green-50 text-green-700 border-green-200 dark:bg-green-950/20 dark:text-green-300 dark:border-green-800 hover:bg-green-50 hover:text-green-700 hover:border-green-200 dark:hover:bg-green-950/20 dark:hover:text-green-300 dark:hover:border-green-800';
+        return 'bg-green-50 text-green-700 border-green-200 dark:bg-green-950/20 dark:text-green-300 dark:border-green-800 md:hover:bg-green-50 md:hover:text-green-700 md:hover:border-green-200 dark:md:hover:bg-green-950/20 dark:md:hover:text-green-300 dark:md:hover:border-green-800';
       case 'rejected':
-        return 'bg-red-50 text-red-700 border-red-200 dark:bg-red-950/20 dark:text-red-300 dark:border-red-800 hover:bg-red-50 hover:text-red-700 hover:border-red-200 dark:hover:bg-red-950/20 dark:hover:text-red-300 dark:hover:border-red-800';
+        return 'bg-red-50 text-red-700 border-red-200 dark:bg-red-950/20 dark:text-red-300 dark:border-red-800 md:hover:bg-red-50 md:hover:text-red-700 md:hover:border-red-200 dark:md:hover:bg-red-950/20 dark:md:hover:text-red-300 dark:md:hover:border-red-800';
       case 'withdrawn':
-        return 'bg-gray-50 text-gray-700 border-gray-200 dark:bg-gray-950/20 dark:text-gray-300 dark:border-gray-800 hover:bg-gray-50 hover:text-gray-700 hover:border-gray-200 dark:hover:bg-gray-950/20 dark:hover:text-gray-300 dark:hover:border-gray-800';
+        return 'bg-gray-50 text-gray-700 border-gray-200 dark:bg-gray-950/20 dark:text-gray-300 dark:border-gray-800 md:hover:bg-gray-50 md:hover:text-gray-700 md:hover:border-gray-200 dark:md:hover:bg-gray-950/20 dark:md:hover:text-gray-300 dark:md:hover:border-gray-800';
       default:
-        return 'bg-gray-50 text-gray-700 border-gray-200 dark:bg-gray-950/20 dark:text-gray-300 dark:border-gray-800 hover:bg-gray-50 hover:text-gray-700 hover:border-gray-200 dark:hover:bg-gray-950/20 dark:hover:text-gray-300 dark:hover:border-gray-800';
+        return 'bg-gray-50 text-gray-700 border-gray-200 dark:bg-gray-950/20 dark:text-gray-300 dark:border-gray-800 md:hover:bg-gray-50 md:hover:text-gray-700 md:hover:border-gray-200 dark:md:hover:bg-gray-950/20 dark:md:hover:text-gray-300 dark:md:hover:border-gray-800';
     }
   };
 
@@ -218,7 +218,7 @@ export const ApplicationCard: React.FC<ApplicationCardProps> = ({
                 <Button 
                   variant="ghost" 
                   size="sm" 
-                  className="hover:bg-primary/10 hover:text-primary px-3 sm:px-4 py-2 h-9"
+                  className="md:hover:bg-primary/10 md:hover:text-primary px-3 sm:px-4 py-2 h-9"
                 >
                   <Eye className="h-4 w-4 mr-1.5" />
                   {viewMode === 'grid' ? '' : 'View'}
@@ -233,7 +233,7 @@ export const ApplicationCard: React.FC<ApplicationCardProps> = ({
                 <Button 
                   variant="ghost" 
                   size="sm" 
-                  className="hover:bg-blue-100 hover:text-blue-700 dark:hover:bg-blue-900/30 dark:hover:text-blue-300 px-3 sm:px-4 py-2 h-9"
+                  className="md:hover:bg-blue-100 md:hover:text-blue-700 dark:md:hover:bg-blue-900/30 dark:md:hover:text-blue-300 px-3 sm:px-4 py-2 h-9"
                 >
                   <Edit className="h-4 w-4 mr-1.5" />
                   {viewMode === 'grid' ? '' : 'Edit'}
@@ -246,7 +246,7 @@ export const ApplicationCard: React.FC<ApplicationCardProps> = ({
                 <Button 
                   variant="ghost" 
                   size="sm" 
-                  className="hover:bg-red-100 hover:text-red-700 dark:hover:bg-red-900/30 dark:hover:text-red-300 px-3 sm:px-4 py-2 h-9"
+                  className="md:hover:bg-red-100 md:hover:text-red-700 dark:md:hover:bg-red-900/30 dark:md:hover:text-red-300 px-3 sm:px-4 py-2 h-9"
                 >
                   <Trash2 className="h-4 w-4" />
                 </Button>
