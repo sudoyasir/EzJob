@@ -2,7 +2,7 @@
 
 Welcome to the comprehensive documentation for **EzJob** - the intelligent job application tracking platform.
 
-![EzJob Logo](https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?w=800&h=400&fit=crop&crop=center)
+![EzJob Logo](https://ezjob.sudoyasir.space/og.png)
 
 > **Less mess, more success** - Streamline your job search with intelligent tracking and analytics
 

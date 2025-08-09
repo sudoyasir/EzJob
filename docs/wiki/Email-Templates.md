@@ -51,7 +51,7 @@ font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica N
 ```html
 <div style="background-color: #f9fafb; padding: 20px 0;">
   <div style="max-width: 600px; margin: 0 auto; text-align: center;">
-    <img src="https://yourdomain.com/logo.png" alt="EzJob" style="height: 40px;">
+    <img src="https://ezjob.sudoyasir.space.com/logo.png" alt="EzJob" style="height: 40px;">
     <h1 style="color: #111827; font-size: 24px; margin: 20px 0 0 0;">EzJob</h1>
     <p style="color: #6b7280; margin: 5px 0 0 0;">Track Your Job Applications</p>
   </div>

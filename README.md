@@ -4,7 +4,7 @@
 
 <div align="center">
 
-![EzJob Banner](https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?w=800&h=400&fit=crop&crop=center)
+![EzJob Banner](https://ezjob.sudoyasir.space/og.png)
 
 [![Live Demo](https://img.shields.io/badge/🚀_Live_Demo-ezjob.sudoyasir.space-blue?style=for-the-badge)](https://ezjob.sudoyasir.space)
 [![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
