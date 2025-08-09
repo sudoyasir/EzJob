@@ -8,6 +8,7 @@ import { JobApplicationView } from './JobApplicationView';
 import { JobApplication } from '@/services/jobApplications';
 import { Edit, Eye, Trash2, MapPin, Calendar, Clock, FileText, Star, Building2 } from 'lucide-react';
 import { format, formatDistanceToNow } from 'date-fns';
+import { truncateFilename } from '@/lib/fileUpload';
 
 interface Resume {
   id: string;
@@ -178,8 +179,8 @@ export const ApplicationCard: React.FC<ApplicationCardProps> = ({
                   )}
                 </div>
                 {viewMode === 'list' && (
-                  <span className="text-xs text-green-600 dark:text-green-400 mt-0.5 block">
-                    {resumeInfo.file_name || 'Resume'}
+                  <span className="text-xs text-green-600 dark:text-green-400 mt-0.5 block truncate" title={resumeInfo.file_name}>
+                    {resumeInfo.file_name ? truncateFilename(resumeInfo.file_name, 35) : 'Resume'}
                   </span>
                 )}
               </div>

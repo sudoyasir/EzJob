@@ -134,6 +134,30 @@ export function formatFileSize(bytes: number): string {
 }
 
 /**
+ * Truncate filename intelligently while preserving extension
+ */
+export function truncateFilename(filename: string, maxLength: number = 30): string {
+  if (filename.length <= maxLength) return filename;
+  
+  const extension = filename.split('.').pop();
+  const nameWithoutExt = filename.substring(0, filename.lastIndexOf('.'));
+  
+  if (!extension) {
+    // No extension, just truncate
+    return filename.substring(0, maxLength - 3) + '...';
+  }
+  
+  const maxNameLength = maxLength - extension.length - 4; // 4 for "..." and "."
+  
+  if (maxNameLength <= 0) {
+    // Extension is too long, just show extension
+    return '...' + extension;
+  }
+  
+  return nameWithoutExt.substring(0, maxNameLength) + '...' + extension;
+}
+
+/**
  * Validate image file
  */
 export function validateImageFile(file: File): string | null {

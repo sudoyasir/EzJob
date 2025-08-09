@@ -12,15 +12,17 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
-import { uploadFile, deleteFile, formatFileSize, validateDocumentFile } from "@/lib/fileUpload";
+import { uploadFile, deleteFile, formatFileSize, validateDocumentFile, truncateFilename } from "@/lib/fileUpload";
 
 interface Resume {
   id: string;
   title: string;
   description?: string;
   file_name: string;
+  file_url: string;
   file_path: string;
   file_size: number | null;
+  file_type: string;
   is_default: boolean | null;
   created_at: string;
   updated_at: string;
@@ -134,7 +136,7 @@ export default function ResumeManager({ embedded = false, onResumeUploaded, onCl
         throw new Error(uploadResult.error);
       }
 
-      const { url: publicUrl, path: filePath } = uploadResult;
+      const { url: fileUrl, path: filePath } = uploadResult;
 
       // Determine file type from extension if file.type is empty
       const getFileType = (file: File): string => {
@@ -171,8 +173,10 @@ export default function ResumeManager({ embedded = false, onResumeUploaded, onCl
           title: resumeName.trim(),
           description: resumeDescription?.trim() || null,
           file_name: selectedFile.name,
+          file_url: fileUrl,
           file_path: filePath,
           file_size: selectedFile.size,
+          file_type: fileType,
           is_default: resumes.length === 0, // First resume is default
         })
         .select()
@@ -409,7 +413,9 @@ export default function ResumeManager({ embedded = false, onResumeUploaded, onCl
                   {selectedFile ? (
                     <div className="space-y-2">
                       <CheckCircle2 className="h-8 w-8 sm:h-12 sm:w-12 text-green-500 mx-auto" />
-                      <p className="font-medium text-green-700 text-sm sm:text-base truncate px-2">{selectedFile.name}</p>
+                      <p className="font-medium text-green-700 text-sm sm:text-base px-2 break-words text-center" title={selectedFile.name}>
+                        {truncateFilename(selectedFile.name, 45)}
+                      </p>
                       <p className="text-xs text-muted-foreground">{formatFileSize(selectedFile.size)}</p>
                       <Button 
                         variant="outline" 
@@ -546,7 +552,9 @@ export default function ResumeManager({ embedded = false, onResumeUploaded, onCl
               <CardContent className="space-y-3 sm:space-y-4">
                 <div className="flex items-center gap-2 text-xs sm:text-sm text-muted-foreground bg-muted/30 rounded-md p-2">
                   <FileText className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-primary shrink-0" />
-                  <span className="truncate font-medium">{resume.file_name}</span>
+                  <span className="font-medium min-w-0 max-w-full break-words" title={resume.file_name}>
+                    {truncateFilename(resume.file_name, 40)}
+                  </span>
                 </div>
                 
                 <div className="flex flex-col xs:flex-row xs:items-center xs:justify-between text-xs text-muted-foreground gap-1 xs:gap-2">

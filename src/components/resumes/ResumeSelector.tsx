@@ -7,7 +7,7 @@ import { FileText, Star, Download, Upload, CheckCircle2, AlertCircle, Check } fr
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
-import { formatFileSize } from "@/lib/fileUpload";
+import { formatFileSize, truncateFilename } from "@/lib/fileUpload";
 
 interface Resume {
   id: string;
@@ -201,14 +201,20 @@ export function ResumeSelector({
                     <div className="flex items-center gap-2">
                       <span className="font-medium truncate text-sm">{resume.title}</span>
                       {resume.is_default && (
-                        <Badge variant="secondary" className="text-xs bg-yellow-100 text-yellow-800 px-1 py-0">
+                        <Badge variant="secondary" className="text-xs bg-yellow-100 text-yellow-800 px-1 py-0 shrink-0">
                           <Star className="h-2 w-2 mr-0.5 fill-current" />
                           Default
                         </Badge>
                       )}
                     </div>
-                    <div className="text-xs text-muted-foreground truncate">
-                      {resume.file_name} • {formatFileSize(resume.file_size || 0)}
+                    <div className="text-xs text-muted-foreground">
+                      <div className="flex items-center gap-1 max-w-full">
+                        <span className="truncate" title={resume.file_name}>
+                          {truncateFilename(resume.file_name, 25)}
+                        </span>
+                        <span className="shrink-0">•</span>
+                        <span className="shrink-0">{formatFileSize(resume.file_size || 0)}</span>
+                      </div>
                     </div>
                   </div>
                   {value === resume.id && (
@@ -227,9 +233,15 @@ export function ResumeSelector({
               <p className="text-sm font-medium text-green-800 dark:text-green-200 truncate">
                 {selectedResume.title}
               </p>
-              <p className="text-xs text-green-600 dark:text-green-400 truncate">
-                {selectedResume.file_name} • {formatFileSize(selectedResume.file_size || 0)}
-              </p>
+              <div className="text-xs text-green-600 dark:text-green-400">
+                <div className="flex items-center gap-1 max-w-full">
+                  <span className="truncate" title={selectedResume.file_name}>
+                    {truncateFilename(selectedResume.file_name, 25)}
+                  </span>
+                  <span className="shrink-0">•</span>
+                  <span className="shrink-0">{formatFileSize(selectedResume.file_size || 0)}</span>
+                </div>
+              </div>
             </div>
             <Button
               type="button"
@@ -275,16 +287,18 @@ export function ResumeSelector({
                     <div className="flex items-center gap-2 mb-1">
                       <span className="font-medium truncate">{resume.title}</span>
                       {resume.is_default && (
-                        <Badge variant="secondary" className="text-xs bg-yellow-100 text-yellow-800 border-yellow-200">
+                        <Badge variant="secondary" className="text-xs bg-yellow-100 text-yellow-800 border-yellow-200 shrink-0">
                           <Star className="h-3 w-3 mr-1 fill-current" />
                           Default
                         </Badge>
                       )}
                     </div>
                     <div className="flex gap-2 text-xs text-muted-foreground">
-                      <span className="truncate max-w-[150px]">{resume.file_name}</span>
-                      <span>•</span>
-                      <span>{formatFileSize(resume.file_size || 0)}</span>
+                      <span className="truncate" title={resume.file_name}>
+                        {truncateFilename(resume.file_name, 30)}
+                      </span>
+                      <span className="shrink-0">•</span>
+                      <span className="shrink-0">{formatFileSize(resume.file_size || 0)}</span>
                     </div>
                   </div>
                   {value === resume.id && (
@@ -328,11 +342,13 @@ export function ResumeSelector({
                   
                   <div className="flex flex-wrap gap-3 text-xs text-green-600 dark:text-green-400">
                     <span className="flex items-center gap-1">
-                      <FileText className="h-3 w-3" />
-                      {selectedResume.file_name}
+                      <FileText className="h-3 w-3 shrink-0" />
+                      <span className="truncate" title={selectedResume.file_name}>
+                        {truncateFilename(selectedResume.file_name, 35)}
+                      </span>
                     </span>
-                    <span>{formatFileSize(selectedResume.file_size || 0)}</span>
-                    <span>Uploaded {new Date(selectedResume.created_at).toLocaleDateString()}</span>
+                    <span className="shrink-0">{formatFileSize(selectedResume.file_size || 0)}</span>
+                    <span className="shrink-0">Uploaded {new Date(selectedResume.created_at).toLocaleDateString()}</span>
                   </div>
                 </div>
               </div>
