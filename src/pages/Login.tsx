@@ -125,7 +125,7 @@ const Login = () => {
                 variant="outline"
                 type="button"
                 className="bg-background/50 md:hover:bg-background border-border text-foreground md:hover:text-accent-foreground transition-all duration-200"
-                onClick={handleGitHubSignIn}
+                onClick={handleGithubSignIn}
                 disabled={loading}
               >
                 <Github className="h-5 w-5 mr-3" />

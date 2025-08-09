@@ -12,6 +12,7 @@ import { CalendarIcon, Plus, FileText, AlertCircle } from 'lucide-react';
 import { format } from 'date-fns';
 import { JobApplication, JobApplicationInsert, JobApplicationService } from '@/services/jobApplications';
 import { useAuth } from '@/contexts/AuthContext';
+import { useStreakTrigger } from '@/contexts/StreakContext';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
@@ -28,6 +29,7 @@ export const JobApplicationForm: React.FC<JobApplicationFormProps> = ({
   trigger,
 }) => {
   const { user } = useAuth();
+  const { triggerUpdate } = useStreakTrigger();
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [submittedResumeInfo, setSubmittedResumeInfo] = useState<{name: string, id: string} | null>(null);
@@ -92,33 +94,36 @@ export const JobApplicationForm: React.FC<JobApplicationFormProps> = ({
       } else {
         await JobApplicationService.createApplication(applicationData);
         
+        // Trigger streak refresh for real-time updates
+        triggerUpdate();
+        
         // Fetch resume info for success message
         if (formData.resume_id) {
           try {
             const { data: resumeData, error: resumeError } = await supabase
               .from('resumes')
-              .select('name')
+              .select('title')
               .eq('id', formData.resume_id)
               .maybeSingle();
             
             if (!resumeError && resumeData) {
-              setSubmittedResumeInfo({ name: resumeData.name, id: formData.resume_id });
+              setSubmittedResumeInfo({ name: resumeData.title, id: formData.resume_id });
               toast.success(
-                `Application added successfully with resume "${(resumeData as any).name}"!`,
+                `Application added successfully with resume "${resumeData.title}"!`,
                 { duration: 5000 }
               );
             } else {
               // Fallback: try direct table query
               const { data: directData } = await (supabase as any)
                 .from('resumes')
-                .select('name')
+                .select('title')
                 .eq('id', formData.resume_id)
                 .single();
               
-              if (directData?.name) {
-                setSubmittedResumeInfo({ name: directData.name, id: formData.resume_id });
+              if (directData?.title) {
+                setSubmittedResumeInfo({ name: directData.title, id: formData.resume_id });
                 toast.success(
-                  `Application added successfully with resume "${directData.name}"!`,
+                  `Application added successfully with resume "${directData.title}"!`,
                   { duration: 5000 }
                 );
               } else {
@@ -147,6 +152,7 @@ export const JobApplicationForm: React.FC<JobApplicationFormProps> = ({
           location: '',
           status: 'Applied',
           applied_date: new Date().toISOString().split('T')[0],
+          response_date: '',
           notes: '',
           resume_id: '',
         });

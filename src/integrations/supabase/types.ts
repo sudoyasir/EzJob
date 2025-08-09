@@ -7,13 +7,46 @@ export type Json =
   | Json[]
 
 export type Database = {
-  // Allows to automatically instanciate createClient with right options
-  // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
-  __InternalSupabase: {
-    PostgrestVersion: "13.0.4"
-  }
   public: {
     Tables: {
+      daily_activities: {
+        Row: {
+          id: string
+          user_id: string
+          activity_date: string
+          applications_count: number
+          streak_maintained: boolean
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          activity_date: string
+          applications_count?: number
+          streak_maintained?: boolean
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          activity_date?: string
+          applications_count?: number
+          streak_maintained?: boolean
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "daily_activities_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
       job_applications: {
         Row: {
           applied_date: string | null
@@ -68,193 +101,211 @@ export type Database = {
             referencedRelation: "resumes"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "job_applications_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          }
         ]
       }
       profiles: {
         Row: {
+          avatar_url: string | null
           created_at: string | null
-          full_name: string | null
+          email: string | null
+          first_name: string | null
           id: string
-          phone_number: string | null
-          resume_url: string | null
+          last_name: string | null
+          phone: string | null
           updated_at: string | null
-          user_role: string | null
         }
         Insert: {
+          avatar_url?: string | null
           created_at?: string | null
-          full_name?: string | null
+          email?: string | null
+          first_name?: string | null
           id: string
-          phone_number?: string | null
-          resume_url?: string | null
+          last_name?: string | null
+          phone?: string | null
           updated_at?: string | null
-          user_role?: string | null
         }
         Update: {
+          avatar_url?: string | null
           created_at?: string | null
-          full_name?: string | null
+          email?: string | null
+          first_name?: string | null
           id?: string
-          phone_number?: string | null
-          resume_url?: string | null
+          last_name?: string | null
+          phone?: string | null
           updated_at?: string | null
-          user_role?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "profiles_id_fkey"
+            columns: ["id"]
+            isOneToOne: true
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          }
+        ]
       }
       resumes: {
         Row: {
           created_at: string
-          description: string | null
           file_name: string
           file_path: string
-          file_size: number
-          file_type: string
-          file_url: string
+          file_size: number | null
           id: string
           is_default: boolean | null
-          name: string
+          title: string
           updated_at: string
           user_id: string
         }
         Insert: {
           created_at?: string
-          description?: string | null
           file_name: string
           file_path: string
-          file_size: number
-          file_type: string
-          file_url: string
+          file_size?: number | null
           id?: string
           is_default?: boolean | null
-          name: string
+          title: string
           updated_at?: string
           user_id: string
         }
         Update: {
           created_at?: string
-          description?: string | null
           file_name?: string
           file_path?: string
-          file_size?: number
-          file_type?: string
-          file_url?: string
+          file_size?: number | null
           id?: string
           is_default?: boolean | null
-          name?: string
+          title?: string
           updated_at?: string
           user_id?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "resumes_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          }
+        ]
       }
-      security_events: {
+      streak_milestones: {
         Row: {
-          created_at: string | null
-          event_type: string
           id: string
-          ip_address: unknown | null
-          metadata: Json | null
-          success: boolean | null
-          user_agent: string | null
-          user_id: string | null
-        }
-        Insert: {
-          created_at?: string | null
-          event_type: string
-          id?: string
-          ip_address?: unknown | null
-          metadata?: Json | null
-          success?: boolean | null
-          user_agent?: string | null
-          user_id?: string | null
-        }
-        Update: {
-          created_at?: string | null
-          event_type?: string
-          id?: string
-          ip_address?: unknown | null
-          metadata?: Json | null
-          success?: boolean | null
-          user_agent?: string | null
-          user_id?: string | null
-        }
-        Relationships: []
-      }
-      user_profiles: {
-        Row: {
-          account_locked_until: string | null
-          avatar_url: string | null
-          bio: string | null
+          user_id: string
+          milestone_type: string
+          milestone_value: number
+          achieved_date: string
           created_at: string
-          full_name: string | null
-          github: string | null
-          id: string
-          last_failed_login: string | null
-          linkedin: string | null
-          location: string | null
-          login_attempts: number | null
-          phone: string | null
-          preferred_job_title: string | null
-          security_notifications: boolean | null
-          skills: string[] | null
-          totp_backup_codes: string[] | null
-          totp_secret_encrypted: string | null
-          updated_at: string
-          website: string | null
-          years_experience: number | null
         }
         Insert: {
-          account_locked_until?: string | null
-          avatar_url?: string | null
-          bio?: string | null
+          id?: string
+          user_id: string
+          milestone_type: string
+          milestone_value: number
+          achieved_date?: string
           created_at?: string
-          full_name?: string | null
-          github?: string | null
-          id: string
-          last_failed_login?: string | null
-          linkedin?: string | null
-          location?: string | null
-          login_attempts?: number | null
-          phone?: string | null
-          preferred_job_title?: string | null
-          security_notifications?: boolean | null
-          skills?: string[] | null
-          totp_backup_codes?: string[] | null
-          totp_secret_encrypted?: string | null
-          updated_at?: string
-          website?: string | null
-          years_experience?: number | null
         }
         Update: {
-          account_locked_until?: string | null
-          avatar_url?: string | null
-          bio?: string | null
-          created_at?: string
-          full_name?: string | null
-          github?: string | null
           id?: string
-          last_failed_login?: string | null
-          linkedin?: string | null
-          location?: string | null
-          login_attempts?: number | null
-          phone?: string | null
-          preferred_job_title?: string | null
-          security_notifications?: boolean | null
-          skills?: string[] | null
-          totp_backup_codes?: string[] | null
-          totp_secret_encrypted?: string | null
-          updated_at?: string
-          website?: string | null
-          years_experience?: number | null
+          user_id?: string
+          milestone_type?: string
+          milestone_value?: number
+          achieved_date?: string
+          created_at?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "streak_milestones_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
+      user_streaks: {
+        Row: {
+          id: string
+          user_id: string
+          current_streak: number
+          longest_streak: number
+          last_activity_date: string | null
+          streak_start_date: string | null
+          total_applications: number
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          current_streak?: number
+          longest_streak?: number
+          last_activity_date?: string | null
+          streak_start_date?: string | null
+          total_applications?: number
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          current_streak?: number
+          longest_streak?: number
+          last_activity_date?: string | null
+          streak_start_date?: string | null
+          total_applications?: number
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_streaks_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: true
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          }
+        ]
       }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      generate_backup_codes: {
-        Args: { user_id: string }
-        Returns: string[]
+      check_streak_milestones: {
+        Args: {
+          user_uuid: string
+          current_streak_val: number
+          total_apps: number
+        }
+        Returns: undefined
+      }
+      get_weekly_activity: {
+        Args: {
+          user_uuid: string
+        }
+        Returns: {
+          activity_date: string
+          applications_count: number
+          streak_maintained: boolean
+        }[]
+      }
+      initialize_user_streak: {
+        Args: {
+          user_uuid: string
+        }
+        Returns: undefined
+      }
+      reset_broken_streaks: {
+        Args: Record<PropertyKey, never>
+        Returns: undefined
       }
     }
     Enums: {
@@ -266,33 +317,27 @@ export type Database = {
   }
 }
 
-type DatabaseWithoutInternals = Omit<Database, "__InternalSupabase">
-
-type DefaultSchema = DatabaseWithoutInternals[Extract<keyof Database, "public">]
+type PublicSchema = Database[keyof Database]
 
 export type Tables<
-  DefaultSchemaTableNameOrOptions extends
-    | keyof (DefaultSchema["Tables"] & DefaultSchema["Views"])
-    | { schema: keyof DatabaseWithoutInternals },
-  TableName extends DefaultSchemaTableNameOrOptions extends {
-    schema: keyof DatabaseWithoutInternals
-  }
-    ? keyof (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
-        DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])
+  PublicTableNameOrOptions extends
+    | keyof (PublicSchema["Tables"] & PublicSchema["Views"])
+    | { schema: keyof Database },
+  TableName extends PublicTableNameOrOptions extends { schema: keyof Database }
+    ? keyof (Database[PublicTableNameOrOptions["schema"]]["Tables"] &
+        Database[PublicTableNameOrOptions["schema"]]["Views"])
     : never = never,
-> = DefaultSchemaTableNameOrOptions extends {
-  schema: keyof DatabaseWithoutInternals
-}
-  ? (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
-      DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])[TableName] extends {
+> = PublicTableNameOrOptions extends { schema: keyof Database }
+  ? (Database[PublicTableNameOrOptions["schema"]]["Tables"] &
+      Database[PublicTableNameOrOptions["schema"]]["Views"])[TableName] extends {
       Row: infer R
     }
     ? R
     : never
-  : DefaultSchemaTableNameOrOptions extends keyof (DefaultSchema["Tables"] &
-        DefaultSchema["Views"])
-    ? (DefaultSchema["Tables"] &
-        DefaultSchema["Views"])[DefaultSchemaTableNameOrOptions] extends {
+  : PublicTableNameOrOptions extends keyof (PublicSchema["Tables"] &
+        PublicSchema["Views"])
+    ? (PublicSchema["Tables"] &
+        PublicSchema["Views"])[PublicTableNameOrOptions] extends {
         Row: infer R
       }
       ? R
@@ -300,24 +345,20 @@ export type Tables<
     : never
 
 export type TablesInsert<
-  DefaultSchemaTableNameOrOptions extends
-    | keyof DefaultSchema["Tables"]
-    | { schema: keyof DatabaseWithoutInternals },
-  TableName extends DefaultSchemaTableNameOrOptions extends {
-    schema: keyof DatabaseWithoutInternals
-  }
-    ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
+  PublicTableNameOrOptions extends
+    | keyof PublicSchema["Tables"]
+    | { schema: keyof Database },
+  TableName extends PublicTableNameOrOptions extends { schema: keyof Database }
+    ? keyof Database[PublicTableNameOrOptions["schema"]]["Tables"]
     : never = never,
-> = DefaultSchemaTableNameOrOptions extends {
-  schema: keyof DatabaseWithoutInternals
-}
-  ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
+> = PublicTableNameOrOptions extends { schema: keyof Database }
+  ? Database[PublicTableNameOrOptions["schema"]]["Tables"][TableName] extends {
       Insert: infer I
     }
     ? I
     : never
-  : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema["Tables"]
-    ? DefaultSchema["Tables"][DefaultSchemaTableNameOrOptions] extends {
+  : PublicTableNameOrOptions extends keyof PublicSchema["Tables"]
+    ? PublicSchema["Tables"][PublicTableNameOrOptions] extends {
         Insert: infer I
       }
       ? I
@@ -325,24 +366,20 @@ export type TablesInsert<
     : never
 
 export type TablesUpdate<
-  DefaultSchemaTableNameOrOptions extends
-    | keyof DefaultSchema["Tables"]
-    | { schema: keyof DatabaseWithoutInternals },
-  TableName extends DefaultSchemaTableNameOrOptions extends {
-    schema: keyof DatabaseWithoutInternals
-  }
-    ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
+  PublicTableNameOrOptions extends
+    | keyof PublicSchema["Tables"]
+    | { schema: keyof Database },
+  TableName extends PublicTableNameOrOptions extends { schema: keyof Database }
+    ? keyof Database[PublicTableNameOrOptions["schema"]]["Tables"]
     : never = never,
-> = DefaultSchemaTableNameOrOptions extends {
-  schema: keyof DatabaseWithoutInternals
-}
-  ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
+> = PublicTableNameOrOptions extends { schema: keyof Database }
+  ? Database[PublicTableNameOrOptions["schema"]]["Tables"][TableName] extends {
       Update: infer U
     }
     ? U
     : never
-  : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema["Tables"]
-    ? DefaultSchema["Tables"][DefaultSchemaTableNameOrOptions] extends {
+  : PublicTableNameOrOptions extends keyof PublicSchema["Tables"]
+    ? PublicSchema["Tables"][PublicTableNameOrOptions] extends {
         Update: infer U
       }
       ? U
@@ -350,41 +387,14 @@ export type TablesUpdate<
     : never
 
 export type Enums<
-  DefaultSchemaEnumNameOrOptions extends
-    | keyof DefaultSchema["Enums"]
-    | { schema: keyof DatabaseWithoutInternals },
-  EnumName extends DefaultSchemaEnumNameOrOptions extends {
-    schema: keyof DatabaseWithoutInternals
-  }
-    ? keyof DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"]
+  PublicEnumNameOrOptions extends
+    | keyof PublicSchema["Enums"]
+    | { schema: keyof Database },
+  EnumName extends PublicEnumNameOrOptions extends { schema: keyof Database }
+    ? keyof Database[PublicEnumNameOrOptions["schema"]]["Enums"]
     : never = never,
-> = DefaultSchemaEnumNameOrOptions extends {
-  schema: keyof DatabaseWithoutInternals
-}
-  ? DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"][EnumName]
-  : DefaultSchemaEnumNameOrOptions extends keyof DefaultSchema["Enums"]
-    ? DefaultSchema["Enums"][DefaultSchemaEnumNameOrOptions]
+> = PublicEnumNameOrOptions extends { schema: keyof Database }
+  ? Database[PublicEnumNameOrOptions["schema"]]["Enums"][EnumName]
+  : PublicEnumNameOrOptions extends keyof PublicSchema["Enums"]
+    ? PublicSchema["Enums"][PublicEnumNameOrOptions]
     : never
-
-export type CompositeTypes<
-  PublicCompositeTypeNameOrOptions extends
-    | keyof DefaultSchema["CompositeTypes"]
-    | { schema: keyof DatabaseWithoutInternals },
-  CompositeTypeName extends PublicCompositeTypeNameOrOptions extends {
-    schema: keyof DatabaseWithoutInternals
-  }
-    ? keyof DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"]
-    : never = never,
-> = PublicCompositeTypeNameOrOptions extends {
-  schema: keyof DatabaseWithoutInternals
-}
-  ? DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"][CompositeTypeName]
-  : PublicCompositeTypeNameOrOptions extends keyof DefaultSchema["CompositeTypes"]
-    ? DefaultSchema["CompositeTypes"][PublicCompositeTypeNameOrOptions]
-    : never
-
-export const Constants = {
-  public: {
-    Enums: {},
-  },
-} as const

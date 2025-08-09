@@ -4,6 +4,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Flame, Zap, Trophy, Star, Calendar, Target } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { getStreakLevel, getStreakEmoji, WeeklyActivity } from '@/hooks/useStreak';
 
 interface StreakDisplayProps {
   currentStreak: number;
@@ -11,13 +12,7 @@ interface StreakDisplayProps {
   variant?: 'compact' | 'full' | 'minimal';
   showWeekly?: boolean;
   className?: string;
-}
-
-interface DayStatus {
-  date: Date;
-  completed: boolean;
-  isToday: boolean;
-  isFuture: boolean;
+  weeklyData?: WeeklyActivity[];
 }
 
 export function StreakDisplay({ 

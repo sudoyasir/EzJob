@@ -3,7 +3,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
-import { StreakDisplay } from "@/components/ui/streak-display";
+import { StreakDisplay } from "@/components/ui/streak-display-new";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Settings, LogOut, User, FileText, BarChart3, Flame, TrendingUp, Menu, Moon, Sun } from "lucide-react";
 import { useNavigate, useLocation } from "react-router-dom";
@@ -11,16 +11,13 @@ import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
 import { useState } from "react";
 import { useTheme } from "@/contexts/ThemeContext";
+import { useStreakContext } from "@/contexts/StreakContext";
 
 interface NavbarProps {
-  currentStreak?: number;
-  longestStreak?: number;
   showStreak?: boolean;
 }
 
 export const Navbar = ({ 
-  currentStreak = 7, 
-  longestStreak = 12, 
   showStreak = true 
 }: NavbarProps) => {
   const navigate = useNavigate();
@@ -28,6 +25,12 @@ export const Navbar = ({
   const { user, signOut } = useAuth();
   const { theme, setTheme } = useTheme();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  
+  // Get real streak data from context
+  const { streak, loading, error } = useStreakContext();
+  
+  // Fallback if streak data is not available
+  const safeStreak = streak || { current: 0, longest: 0 };
 
   const handleSignOut = async () => {
     try {
@@ -122,15 +125,13 @@ export const Navbar = ({
                       className="flex items-center space-x-1.5 px-2 py-1.5 md:hover:bg-accent/30 transition-all duration-200 group border-0 bg-transparent"
                     >
                       <Flame className="h-4 w-4 text-orange-500 group-hover:text-orange-400 transition-colors" />
-                      <span className="text-sm font-semibold text-foreground group-hover:text-accent-foreground">
-                        {currentStreak}
+                      <span className="text-lg font-bold text-foreground">
+                        {safeStreak.current}
                       </span>
                     </Button>
                   </PopoverTrigger>
                   <PopoverContent className="w-80 p-0" align="end" side="bottom">
                     <StreakDisplay 
-                      currentStreak={currentStreak} 
-                      longestStreak={longestStreak} 
                       variant="full"
                       showWeekly={true}
                       className="border-0 shadow-none"
@@ -151,15 +152,13 @@ export const Navbar = ({
                       className="flex items-center space-x-1.5 px-2 py-1.5 md:hover:bg-accent/30 transition-all duration-200 group border-0 bg-transparent"
                     >
                       <Flame className="h-4 w-4 text-orange-500 group-hover:text-orange-400 transition-colors" />
-                      <span className="text-sm font-semibold text-foreground group-hover:text-accent-foreground">
-                        {currentStreak}
+                      <span className="text-lg font-bold text-foreground">
+                        {safeStreak.current}
                       </span>
                     </Button>
                   </PopoverTrigger>
                   <PopoverContent className="w-80 p-0" align="end" side="bottom">
                     <StreakDisplay 
-                      currentStreak={currentStreak} 
-                      longestStreak={longestStreak} 
                       variant="full"
                       showWeekly={true}
                       className="border-0 shadow-none"
@@ -167,9 +166,7 @@ export const Navbar = ({
                   </PopoverContent>
                 </Popover>
               </div>
-            )}
-            
-            {/* Theme Toggle - Desktop only */}
+            )}            {/* Theme Toggle - Desktop only */}
             <div className="hidden md:block">
               <ThemeToggle />
             </div>

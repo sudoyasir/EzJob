@@ -73,6 +73,15 @@ export class JobApplicationService {
       throw new Error(`Failed to create application: ${error.message}`);
     }
 
+    // Trigger streak recalculation manually to ensure immediate update
+    // The database triggers should handle this, but we add this for extra reliability
+    try {
+      await supabase.rpc('initialize_user_streak', { user_uuid: user.id });
+    } catch (streakError) {
+      console.warn('Failed to update streak manually:', streakError);
+      // Don't throw here as the main operation succeeded
+    }
+
     return data;
   }
 
