@@ -89,67 +89,67 @@ export const ApplicationCard: React.FC<ApplicationCardProps> = ({
   const responseTime = calculateResponseTime();
 
   return (
-    <Card className={`p-4 sm:p-6 hover:shadow-lg transition-all duration-300 hover:-translate-y-0.5 border border-border/50 hover:border-border bg-card/50 backdrop-blur-sm ${
+    <Card className={`p-4 sm:p-5 lg:p-6 hover:shadow-lg transition-all duration-300 hover:-translate-y-0.5 border border-border/50 hover:border-border bg-card/50 backdrop-blur-sm ${
       viewMode === 'grid' ? 'h-fit' : ''
     }`}>
-      <div className="space-y-3 sm:space-y-4">
+      <div className="space-y-4 sm:space-y-5">
         {/* Header Section */}
         <div className="flex items-start justify-between">
           <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-3 mb-2">
-              <div className="p-2 rounded-lg bg-primary/10 border border-primary/20">
-                <Building2 className="h-5 w-5 text-primary" />
+            <div className="flex items-center gap-3 sm:gap-4 mb-3">
+              <div className="p-2 sm:p-2.5 rounded-lg bg-primary/10 border border-primary/20 shrink-0">
+                <Building2 className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
               </div>
               <div className="min-w-0 flex-1">
                 <h3 className={`font-bold text-foreground truncate ${
-                  viewMode === 'grid' ? 'text-lg' : 'text-xl'
+                  viewMode === 'grid' ? 'text-base sm:text-lg' : 'text-lg sm:text-xl'
                 }`}>
                   {application.role}
                 </h3>
-                <p className="text-muted-foreground font-medium">
+                <p className="text-muted-foreground font-medium text-sm sm:text-base mt-1">
                   {application.company_name}
                 </p>
               </div>
             </div>
             
             {application.location && (
-              <div className="flex items-center gap-1 text-sm text-muted-foreground mb-3">
-                <MapPin className="h-4 w-4" />
-                <span>{application.location}</span>
+              <div className="flex items-center gap-1.5 text-xs sm:text-sm text-muted-foreground mb-3">
+                <MapPin className="h-3 w-3 sm:h-4 sm:w-4 shrink-0" />
+                <span className="truncate">{application.location}</span>
               </div>
             )}
           </div>
           
-          <Badge className={`${getStatusColor(application.status)} px-3 py-1.5 text-sm font-medium border`}>
-            <span className="mr-2">{getStatusIcon(application.status)}</span>
+          <Badge className={`${getStatusColor(application.status)} px-2.5 sm:px-3 py-1.5 sm:py-2 text-xs sm:text-sm font-medium border shrink-0 ml-3`}>
+            <span className="mr-1.5 sm:mr-2">{getStatusIcon(application.status)}</span>
             {application.status}
           </Badge>
         </div>
 
         {/* Content Section */}
-        <div className="space-y-3">
+        <div className="space-y-3 sm:space-y-4">
           {/* Date Information */}
-          <div className={viewMode === 'grid' ? 'space-y-2' : 'grid grid-cols-1 sm:grid-cols-2 gap-3'}>
-            <div className="flex items-center gap-2 text-sm">
-              <div className="p-1.5 rounded bg-blue-100 dark:bg-blue-900/30">
-                <Calendar className="h-3.5 w-3.5 text-blue-600 dark:text-blue-400" />
+          <div className={viewMode === 'grid' ? 'space-y-3' : 'grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4'}>
+            <div className="flex items-center gap-2.5 text-xs sm:text-sm">
+              <div className="p-1.5 sm:p-2 rounded bg-blue-100 dark:bg-blue-900/30 shrink-0">
+                <Calendar className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-blue-600 dark:text-blue-400" />
               </div>
-              <div>
+              <div className="min-w-0 flex-1">
                 <span className="text-muted-foreground">Applied:</span>
-                <span className="ml-1 font-medium text-foreground">
+                <span className="ml-1.5 font-medium text-foreground">
                   {format(new Date(application.applied_date), viewMode === 'grid' ? "MMM dd" : "MMM dd, yyyy")}
                 </span>
               </div>
             </div>
             
             {application.response_date && (
-              <div className="flex items-center gap-2 text-sm">
-                <div className="p-1.5 rounded bg-emerald-100 dark:bg-emerald-900/30">
-                  <Clock className="h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400" />
+              <div className="flex items-center gap-2.5 text-xs sm:text-sm">
+                <div className="p-1.5 sm:p-2 rounded bg-emerald-100 dark:bg-emerald-900/30 shrink-0">
+                  <Clock className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-emerald-600 dark:text-emerald-400" />
                 </div>
-                <div>
+                <div className="min-w-0 flex-1">
                   <span className="text-muted-foreground">Response:</span>
-                  <span className="ml-1 font-medium text-foreground">
+                  <span className="ml-1.5 font-medium text-foreground">
                     {format(new Date(application.response_date), viewMode === 'grid' ? "MMM dd" : "MMM dd, yyyy")}
                   </span>
                   {responseTime && viewMode === 'list' && (
@@ -164,9 +164,9 @@ export const ApplicationCard: React.FC<ApplicationCardProps> = ({
 
           {/* Resume Information */}
           {resumeInfo && (
-            <div className="flex items-center gap-2 p-3 bg-green-50 dark:bg-green-950/20 border border-green-200 dark:border-green-800 rounded-lg">
-              <div className="p-1.5 rounded bg-green-100 dark:bg-green-900/30">
-                <FileText className="h-3.5 w-3.5 text-green-600 dark:text-green-400" />
+            <div className="flex items-center gap-2.5 p-3 sm:p-4 bg-green-50 dark:bg-green-950/20 border border-green-200 dark:border-green-800 rounded-lg">
+              <div className="p-1.5 sm:p-2 rounded bg-green-100 dark:bg-green-900/30 shrink-0">
+                <FileText className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-green-600 dark:text-green-400" />
               </div>
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2">
@@ -174,11 +174,11 @@ export const ApplicationCard: React.FC<ApplicationCardProps> = ({
                     {resumeInfo.name}
                   </span>
                   {resumeInfo.is_default && (
-                    <Star className="h-3 w-3 fill-current text-yellow-500" />
+                    <Star className="h-3 w-3 fill-current text-yellow-500 shrink-0" />
                   )}
                 </div>
                 {viewMode === 'list' && (
-                  <span className="text-xs text-green-600 dark:text-green-400">
+                  <span className="text-xs text-green-600 dark:text-green-400 mt-0.5 block">
                     {resumeInfo.file_name || 'Resume'}
                   </span>
                 )}
@@ -186,36 +186,41 @@ export const ApplicationCard: React.FC<ApplicationCardProps> = ({
             </div>
           )}
 
-          {/* Notes Preview - Only show in list view or if very short */}
-          {application.notes && (viewMode === 'list' || application.notes.length < 100) && (
-            <div className="p-3 bg-muted/30 rounded-lg border border-border/50">
+          {/* Notes Preview - Always show if notes exist */}
+          {application.notes && (
+            <div className="p-3 sm:p-4 bg-muted/30 rounded-lg border border-border/50">
               <p className={`text-sm text-muted-foreground leading-relaxed ${
-                viewMode === 'grid' ? 'line-clamp-1' : 'line-clamp-2'
+                viewMode === 'grid' ? 'line-clamp-2' : 'line-clamp-3'
               }`}>
                 {application.notes}
               </p>
+              {application.notes.length > 150 && (
+                <span className="text-xs text-muted-foreground/70 mt-1 block">
+                  {viewMode === 'grid' ? 'Click to view full note...' : 'View full note in details...'}
+                </span>
+              )}
             </div>
           )}
         </div>
 
         {/* Actions Section */}
-        <div className="flex items-center justify-between pt-4 border-t border-border/50">
+        <div className="flex items-center justify-between pt-4 sm:pt-5 border-t border-border/50">
           {viewMode === 'list' && (
             <div className="text-xs text-muted-foreground">
               Updated {formatDistanceToNow(new Date(application.updated_at), { addSuffix: true })}
             </div>
           )}
           
-          <div className={`flex items-center gap-2 ${viewMode === 'grid' ? 'w-full justify-center' : ''}`}>
+          <div className={`flex items-center gap-2 sm:gap-3 ${viewMode === 'grid' ? 'w-full justify-center' : ''}`}>
             <JobApplicationView
               application={application}
               trigger={
                 <Button 
                   variant="ghost" 
                   size="sm" 
-                  className="hover:bg-primary/10 hover:text-primary"
+                  className="hover:bg-primary/10 hover:text-primary px-3 sm:px-4 py-2 h-9"
                 >
-                  <Eye className="h-4 w-4 mr-1" />
+                  <Eye className="h-4 w-4 mr-1.5" />
                   {viewMode === 'grid' ? '' : 'View'}
                 </Button>
               }
@@ -228,9 +233,9 @@ export const ApplicationCard: React.FC<ApplicationCardProps> = ({
                 <Button 
                   variant="ghost" 
                   size="sm" 
-                  className="hover:bg-blue-100 hover:text-blue-700 dark:hover:bg-blue-900/30 dark:hover:text-blue-300"
+                  className="hover:bg-blue-100 hover:text-blue-700 dark:hover:bg-blue-900/30 dark:hover:text-blue-300 px-3 sm:px-4 py-2 h-9"
                 >
-                  <Edit className="h-4 w-4 mr-1" />
+                  <Edit className="h-4 w-4 mr-1.5" />
                   {viewMode === 'grid' ? '' : 'Edit'}
                 </Button>
               }
@@ -241,7 +246,7 @@ export const ApplicationCard: React.FC<ApplicationCardProps> = ({
                 <Button 
                   variant="ghost" 
                   size="sm" 
-                  className="hover:bg-red-100 hover:text-red-700 dark:hover:bg-red-900/30 dark:hover:text-red-300"
+                  className="hover:bg-red-100 hover:text-red-700 dark:hover:bg-red-900/30 dark:hover:text-red-300 px-3 sm:px-4 py-2 h-9"
                 >
                   <Trash2 className="h-4 w-4" />
                 </Button>

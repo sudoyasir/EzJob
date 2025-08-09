@@ -237,7 +237,7 @@ const Dashboard = () => {
         </div>
 
         {/* Search and Filters */}
-        <div className="flex flex-col gap-4 mb-6">
+        <div className="flex flex-col gap-4 sm:gap-6 mb-8 sm:mb-10">
           <div className="relative flex-1">
             <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
             {loading ? (
@@ -251,7 +251,7 @@ const Dashboard = () => {
               />
             )}
           </div>
-          <div className="flex flex-col sm:flex-row gap-2">
+          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
             {loading ? (
               <>
                 <Skeleton className="h-10 w-full sm:w-24" />
@@ -296,7 +296,7 @@ const Dashboard = () => {
         </div>
 
         {/* Applications List */}
-        <div className={viewMode === 'grid' ? 'grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6' : 'space-y-4'}>
+        <div className={viewMode === 'grid' ? 'grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 sm:gap-8' : 'space-y-4 sm:space-y-6'}>
           {loading ? (
             Array.from({ length: 3 }).map((_, i) => (
               <ApplicationCardSkeleton key={i} />

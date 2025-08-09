@@ -5,31 +5,27 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
-import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { AvatarUpload } from "@/components/ui/avatar-upload";
-
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { Navbar } from "@/components/ui/navbar";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { 
   ArrowLeft, 
   User, 
-  Settings, 
-  LogOut, 
+  Settings,
   Lock, 
   Trash2, 
   Eye, 
   EyeOff, 
   Bell,
-  Moon,
-  Sun,
-  Smartphone,
   Download,
   AlertTriangle,
   Save,
   BarChart3,
-  FileText
+  FileText,
+  Sun,
+  Moon,
+  Smartphone
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useTheme } from "@/contexts/ThemeContext";
@@ -55,7 +51,7 @@ interface UserPreferences {
 }
 
 const AccountSettings = () => {
-  const { user, signOut } = useAuth();
+  const { user } = useAuth();
   const { theme, setTheme } = useTheme();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
@@ -123,16 +119,6 @@ const AccountSettings = () => {
       setDataSummary(summary);
     } catch (error) {
       console.error('Failed to load data summary:', error);
-    }
-  };
-
-  const handleSignOut = async () => {
-    try {
-      await signOut();
-      toast.success("Signed out successfully");
-      navigate("/");
-    } catch (error: any) {
-      toast.error(error.message || "An unexpected error occurred");
     }
   };
 
@@ -256,83 +242,22 @@ const AccountSettings = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Navigation */}
-      <nav className="border-b bg-card/50 backdrop-blur-sm sticky top-0 z-50">
-        <div className="container mx-auto px-4 sm:px-8 lg:px-12 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-6">
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => navigate('/dashboard')}
-                className="text-muted-foreground hover:text-foreground"
-              >
-                <ArrowLeft className="h-4 w-4 mr-2" />
-                Back to Dashboard
-              </Button>
-              <div className="flex items-center space-x-2">
-                <img 
-                  src="/logo.png" 
-                  className="w-8 h-8 object-contain" 
-                  alt="EzJob Logo"
-                  onError={(e) => {
-                    e.currentTarget.style.display = 'none';
-                  }}
-                />
-                <span className="text-2xl font-bold text-primary">EzJob</span>
-              </div>
-            </div>
-            
-            <div className="flex items-center space-x-4">
-              <ThemeToggle />
-              
-              {/* User Profile Dropdown */}
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" className="relative h-10 w-10 rounded-full">
-                    <Avatar className="h-10 w-10">
-                      <AvatarImage 
-                        src={user?.user_metadata?.avatar_url} 
-                        alt={user?.user_metadata?.full_name || user?.email || "User"} 
-                      />
-                      <AvatarFallback className="bg-primary text-primary-foreground">
-                        {user?.user_metadata?.full_name 
-                          ? user.user_metadata.full_name.charAt(0).toUpperCase()
-                          : user?.email?.charAt(0).toUpperCase() || "U"
-                        }
-                      </AvatarFallback>
-                    </Avatar>
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent className="w-56 bg-popover border-border" align="end" forceMount>
-                  <div className="flex items-center justify-start gap-2 p-2">
-                    <div className="flex flex-col space-y-1 leading-none">
-                      <p className="font-medium text-sm text-popover-foreground">
-                        {user?.user_metadata?.full_name || "User"}
-                      </p>
-                      <p className="w-[200px] truncate text-xs text-muted-foreground">
-                        {user?.email}
-                      </p>
-                    </div>
-                  </div>
-                  <DropdownMenuSeparator className="bg-border" />
-                  <DropdownMenuItem asChild>
-                    <button 
-                      className="flex items-center w-full px-2 py-1.5 text-sm cursor-pointer text-destructive hover:text-destructive-foreground hover:bg-destructive focus:text-destructive-foreground focus:bg-destructive focus:outline-none transition-colors"
-                      onClick={handleSignOut}
-                    >
-                      <LogOut className="h-4 w-4 mr-2" />
-                      Sign Out
-                    </button>
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </div>
-          </div>
-        </div>
-      </nav>
+      <Navbar currentStreak={7} longestStreak={12} />
 
       <div className="container mx-auto px-4 sm:px-8 lg:px-12 py-6 sm:py-8 max-w-4xl">
+        {/* Back Button */}
+        <div className="mb-6">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => navigate('/dashboard')}
+            className="text-muted-foreground hover:text-foreground"
+          >
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            Back to Dashboard
+          </Button>
+        </div>
+
         {/* Header */}
         <div className="mb-8">
           <h1 className="text-3xl font-bold mb-2 bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">

@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Navbar } from "@/components/ui/navbar";
-import { TrendingUp, Users, Target, Calendar, Plus } from "lucide-react";
+import { TrendingUp, Users, Target, Calendar, Plus, ArrowLeft } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { JobApplication, JobApplicationService } from "@/services/jobApplications";
 import { DashboardCharts } from "@/components/charts/DashboardCharts";
@@ -49,9 +49,21 @@ const Analytics = () => {
     <div className="min-h-screen bg-background">
       <Navbar currentStreak={7} longestStreak={12} />
 
-            <div className="container mx-auto px-4 sm:px-8 lg:px-12 py-6 sm:py-8 max-w-7xl">
+      <div className="container mx-auto px-4 sm:px-8 lg:px-12 py-6 sm:py-8 max-w-7xl">
+        {/* Back Button */}
+        <div className="mb-6">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => navigate('/dashboard')}
+            className="text-muted-foreground hover:text-foreground"
+          >
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            Back to Dashboard
+          </Button>
+        </div>
+
         {/* Header */}
-                {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-6 sm:mb-8">
           <div className="mb-4 sm:mb-0">
             <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-2 bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent">

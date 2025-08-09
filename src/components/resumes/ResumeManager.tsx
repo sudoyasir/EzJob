@@ -376,18 +376,6 @@ export default function ResumeManager({ embedded = false, onResumeUploaded, onCl
           <p className="text-sm sm:text-base text-muted-foreground">Upload and manage your resume versions</p>
         </div>
         <div className="flex flex-col xs:flex-row items-stretch xs:items-center gap-2">
-          {!embedded && (
-            <Button
-              variant="outline"
-              onClick={() => navigate('/dashboard')}
-              className="flex items-center justify-center gap-2 order-2 xs:order-1"
-              size="sm"
-            >
-              <ArrowLeft className="h-4 w-4" />
-              <span className="hidden xs:inline">Back to Dashboard</span>
-              <span className="xs:hidden">Dashboard</span>
-            </Button>
-          )}
           <Dialog open={showUploadDialog} onOpenChange={(open) => {
             if (!open) resetUploadForm();
             setShowUploadDialog(open);
@@ -580,58 +568,52 @@ export default function ResumeManager({ embedded = false, onResumeUploaded, onCl
                 </div>
 
                 <div className="pt-3 sm:pt-4 border-t border-border">
-                  {/* Mobile-optimized Actions */}
-                  <div className="space-y-2 sm:space-y-3">
-                    {/* Primary Actions Row - Responsive */}
-                    <div className="flex flex-col xs:flex-row gap-2 justify-center ">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => downloadResume(resume)}
-                        className="flex items-center justify-center gap-1.5 hover:bg-primary hover:text-primary-foreground transition-colors flex-1 xs:flex-initial"
-                      >
-                        <Download className="h-3.5 w-3.5" />
-                        <span className="hidden xs:inline">Download</span>
-                        <span className="xs:hidden">Download</span>
-                      </Button>
-                      
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => {
-                          setEditingResume({ ...resume });
-                          setShowEditDialog(true);
-                        }}
-                        className="flex items-center justify-center gap-1.5 hover:bg-secondary hover:text-secondary-foreground transition-colors flex-1 xs:flex-initial"
-                      >
-                        <Edit className="h-3.5 w-3.5" />
-                        <span>Edit</span>
-                      </Button>
+                  {/* Single Row Actions - Icons Only */}
+                  <div className="flex items-center justify-center gap-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => downloadResume(resume)}
+                      className="flex items-center justify-center p-2 hover:bg-primary hover:text-primary-foreground transition-colors"
+                      title="Download"
+                    >
+                      <Download className="h-4 w-4" />
+                    </Button>
+                    
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => {
+                        setEditingResume({ ...resume });
+                        setShowEditDialog(true);
+                      }}
+                      className="flex items-center justify-center p-2 hover:bg-secondary hover:text-secondary-foreground transition-colors"
+                      title="Edit"
+                    >
+                      <Edit className="h-4 w-4" />
+                    </Button>
 
-                      {!resume.is_default && (
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => setAsDefault(resume.id)}
-                          className="flex items-center justify-center gap-1.5 text-yellow-600 hover:text-yellow-700 hover:bg-yellow-50 transition-colors flex-1 xs:flex-initial"
-                        >
-                          <Star className="h-3.5 w-3.5" />
-                          <span className="hidden xs:inline">Set Default</span>
-                          <span className="xs:hidden">Default</span>
-                        </Button>
-                      )}
-                    </div>
+                    {!resume.is_default && (
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => setAsDefault(resume.id)}
+                        className="flex items-center justify-center p-2 text-yellow-600 hover:text-yellow-700 hover:bg-yellow-50 transition-colors"
+                        title="Set as Default"
+                      >
+                        <Star className="h-4 w-4" />
+                      </Button>
+                    )}
 
-                    {/* Danger Zone - Full width on mobile */}
                     <AlertDialog>
                       <AlertDialogTrigger asChild>
                         <Button 
                           variant="ghost" 
                           size="sm" 
-                          className="w-full justify-center text-destructive hover:text-destructive hover:bg-destructive/10 transition-colors"
+                          className="flex items-center justify-center p-2 text-destructive hover:text-destructive hover:bg-destructive/10 transition-colors"
+                          title="Delete Resume"
                         >
-                          <Trash2 className="h-3.5 w-3.5 mr-1.5" />
-                          Delete Resume
+                          <Trash2 className="h-4 w-4" />
                         </Button>
                       </AlertDialogTrigger>
                       <AlertDialogContent className="mx-4 max-w-sm sm:mx-auto sm:max-w-lg">

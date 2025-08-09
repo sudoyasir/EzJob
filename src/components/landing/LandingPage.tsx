@@ -160,75 +160,75 @@ const LandingPage = () => {
           </div>
 
           {/* Hero Dashboard Preview */}
-          <div className="relative mx-auto max-w-6xl">
+          <div className="relative mx-auto max-w-6xl px-4">
             <div className="relative">
               {/* Main dashboard mockup */}
-              <div className="bg-card border border-border rounded-3xl shadow-card p-8 lg:p-12 animate-float relative">
+              <div className="bg-card border border-border rounded-2xl sm:rounded-3xl shadow-card p-4 sm:p-6 lg:p-12 animate-float relative overflow-hidden">
                 {/* Header */}
-                <div className="bg-background/90 dark:bg-card/90 rounded-2xl p-8 shadow-sm border border-border backdrop-blur-sm">
-                  <div className="flex items-center justify-between mb-6">
-                    <div className="flex items-center space-x-3">
-                      <div className="w-8 h-8 bg-gradient-primary rounded-lg shadow-sm"></div>
-                      <span className="font-bold text-xl text-foreground">EzJob Dashboard</span>
+                <div className="bg-background/90 dark:bg-card/90 rounded-xl sm:rounded-2xl p-4 sm:p-6 lg:p-8 shadow-sm border border-border backdrop-blur-sm">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 sm:mb-6 gap-3 sm:gap-0">
+                    <div className="flex items-center space-x-2 sm:space-x-3">
+                      <div className="w-6 h-6 sm:w-8 sm:h-8 bg-gradient-primary rounded-lg shadow-sm"></div>
+                      <span className="font-bold text-lg sm:text-xl text-foreground">EzJob Dashboard</span>
                     </div>
-                    <div className="flex items-center space-x-2">
-                      <div className="text-sm text-muted-foreground bg-muted/50 px-3 py-1 rounded-full">🔥 7 Day Streak</div>
-                      <div className="w-8 h-8 bg-primary/20 rounded-full flex items-center justify-center">
-                        <div className="w-4 h-4 bg-primary rounded-full"></div>
+                    <div className="flex items-center justify-between sm:justify-end space-x-2">
+                      <div className="text-xs sm:text-sm text-muted-foreground bg-muted/50 px-2 sm:px-3 py-1 rounded-full">🔥 7 Day Streak</div>
+                      <div className="w-6 h-6 sm:w-8 sm:h-8 bg-primary/20 rounded-full flex items-center justify-center">
+                        <div className="w-3 h-3 sm:w-4 sm:h-4 bg-primary rounded-full"></div>
                       </div>
                     </div>
                   </div>
                   
                   {/* Stats Row */}
-                  <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-                    <div className="bg-blue-50 dark:bg-blue-950/30 p-4 rounded-xl border border-blue-200 dark:border-blue-800">
-                      <div className="text-2xl font-bold text-blue-700 dark:text-blue-300">24</div>
-                      <div className="text-sm text-blue-600 dark:text-blue-400">Applications</div>
+                  <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-4 mb-4 sm:mb-6">
+                    <div className="bg-blue-50 dark:bg-blue-950/30 p-2 sm:p-3 lg:p-4 rounded-lg sm:rounded-xl border border-blue-200 dark:border-blue-800">
+                      <div className="text-lg sm:text-xl lg:text-2xl font-bold text-blue-700 dark:text-blue-300">24</div>
+                      <div className="text-xs sm:text-sm text-blue-600 dark:text-blue-400">Applications</div>
                     </div>
-                    <div className="bg-emerald-50 dark:bg-emerald-950/30 p-4 rounded-xl border border-emerald-200 dark:border-emerald-800">
-                      <div className="text-2xl font-bold text-emerald-700 dark:text-emerald-300">8</div>
-                      <div className="text-sm text-emerald-600 dark:text-emerald-400">Interviews</div>
+                    <div className="bg-emerald-50 dark:bg-emerald-950/30 p-2 sm:p-3 lg:p-4 rounded-lg sm:rounded-xl border border-emerald-200 dark:border-emerald-800">
+                      <div className="text-lg sm:text-xl lg:text-2xl font-bold text-emerald-700 dark:text-emerald-300">8</div>
+                      <div className="text-xs sm:text-sm text-emerald-600 dark:text-emerald-400">Interviews</div>
                     </div>
-                    <div className="bg-purple-50 dark:bg-purple-950/30 p-4 rounded-xl border border-purple-200 dark:border-purple-800">
-                      <div className="text-2xl font-bold text-purple-700 dark:text-purple-300">3</div>
-                      <div className="text-sm text-purple-600 dark:text-purple-400">Offers</div>
+                    <div className="bg-purple-50 dark:bg-purple-950/30 p-2 sm:p-3 lg:p-4 rounded-lg sm:rounded-xl border border-purple-200 dark:border-purple-800">
+                      <div className="text-lg sm:text-xl lg:text-2xl font-bold text-purple-700 dark:text-purple-300">3</div>
+                      <div className="text-xs sm:text-sm text-purple-600 dark:text-purple-400">Offers</div>
                     </div>
-                    <div className="bg-amber-50 dark:bg-amber-950/30 p-4 rounded-xl border border-amber-200 dark:border-amber-800">
-                      <div className="text-2xl font-bold text-amber-700 dark:text-amber-300">92%</div>
-                      <div className="text-sm text-amber-600 dark:text-amber-400">Response Rate</div>
+                    <div className="bg-amber-50 dark:bg-amber-950/30 p-2 sm:p-3 lg:p-4 rounded-lg sm:rounded-xl border border-amber-200 dark:border-amber-800">
+                      <div className="text-lg sm:text-xl lg:text-2xl font-bold text-amber-700 dark:text-amber-300">92%</div>
+                      <div className="text-xs sm:text-sm text-amber-600 dark:text-amber-400">Response Rate</div>
                     </div>
                   </div>
                   
                   {/* Application Cards */}
-                  <div className="space-y-4">
-                    <div className="flex items-center justify-between p-4 bg-muted/30 rounded-xl border border-border/50 hover:bg-muted/50 transition-colors">
-                      <div className="flex items-center space-x-4">
-                        <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center text-white font-bold text-lg">T</div>
-                        <div>
-                          <div className="font-semibold text-foreground">Senior Software Engineer</div>
-                          <div className="text-sm text-muted-foreground">TechCorp Inc. • San Francisco, CA</div>
+                  <div className="space-y-2 sm:space-y-3 lg:space-y-4">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between p-3 sm:p-4 bg-muted/30 rounded-lg sm:rounded-xl border border-border/50 hover:bg-muted/50 transition-colors gap-2 sm:gap-0">
+                      <div className="flex items-center space-x-3 sm:space-x-4 min-w-0 flex-1">
+                        <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center text-white font-bold text-sm sm:text-lg shrink-0">T</div>
+                        <div className="min-w-0 flex-1">
+                          <div className="font-semibold text-sm sm:text-base text-foreground truncate">Senior Software Engineer</div>
+                          <div className="text-xs sm:text-sm text-muted-foreground truncate">TechCorp Inc. • San Francisco, CA</div>
                         </div>
                       </div>
-                      <div className="flex items-center space-x-3">
-                        <div className="px-3 py-1 bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-300 rounded-full text-sm font-medium">
+                      <div className="flex items-center justify-between sm:justify-end space-x-2 sm:space-x-3 w-full sm:w-auto">
+                        <div className="px-2 sm:px-3 py-1 bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-300 rounded-full text-xs sm:text-sm font-medium">
                           Final Interview
                         </div>
-                        <div className="text-sm text-muted-foreground">2 days ago</div>
+                        <div className="text-xs sm:text-sm text-muted-foreground">2 days ago</div>
                       </div>
                     </div>
-                    <div className="flex items-center justify-between p-4 bg-muted/30 rounded-xl border border-border/50 hover:bg-muted/50 transition-colors">
-                      <div className="flex items-center space-x-4">
-                        <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-purple-600 rounded-lg flex items-center justify-center text-white font-bold text-lg">S</div>
-                        <div>
-                          <div className="font-semibold text-foreground">Frontend Developer</div>
-                          <div className="text-sm text-muted-foreground">StartupCo • Remote</div>
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between p-3 sm:p-4 bg-muted/30 rounded-lg sm:rounded-xl border border-border/50 hover:bg-muted/50 transition-colors gap-2 sm:gap-0">
+                      <div className="flex items-center space-x-3 sm:space-x-4 min-w-0 flex-1">
+                        <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-purple-500 to-purple-600 rounded-lg flex items-center justify-center text-white font-bold text-sm sm:text-lg shrink-0">S</div>
+                        <div className="min-w-0 flex-1">
+                          <div className="font-semibold text-sm sm:text-base text-foreground truncate">Frontend Developer</div>
+                          <div className="text-xs sm:text-sm text-muted-foreground truncate">StartupCo • Remote</div>
                         </div>
                       </div>
-                      <div className="flex items-center space-x-3">
-                        <div className="px-3 py-1 bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300 rounded-full text-sm font-medium">
+                      <div className="flex items-center justify-between sm:justify-end space-x-2 sm:space-x-3 w-full sm:w-auto">
+                        <div className="px-2 sm:px-3 py-1 bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300 rounded-full text-xs sm:text-sm font-medium">
                           Application Sent
                         </div>
-                        <div className="text-sm text-muted-foreground">1 week ago</div>
+                        <div className="text-xs sm:text-sm text-muted-foreground">1 week ago</div>
                       </div>
                     </div>
                   </div>
@@ -236,8 +236,8 @@ const LandingPage = () => {
               </div>
               
               {/* Floating elements */}
-              <div className="absolute -top-4 -right-4 w-16 h-16 bg-gradient-to-br from-primary to-accent rounded-full shadow-glow opacity-80 animate-pulse"></div>
-              <div className="absolute -bottom-6 -left-6 w-12 h-12 bg-gradient-to-br from-accent to-primary rounded-full shadow-glow opacity-60 animate-bounce"></div>
+              <div className="absolute -top-2 sm:-top-4 -right-2 sm:-right-4 w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-br from-primary to-accent rounded-full shadow-glow opacity-80 animate-pulse"></div>
+              <div className="absolute -bottom-3 sm:-bottom-6 -left-3 sm:-left-6 w-8 h-8 sm:w-12 sm:h-12 bg-gradient-to-br from-accent to-primary rounded-full shadow-glow opacity-60 animate-bounce"></div>
             </div>
           </div>
         </div>
@@ -305,7 +305,7 @@ const LandingPage = () => {
           
           <div className="relative z-10">
             <div className="mb-6">
-              <span className="inline-flex items-center px-4 py-2 rounded-full text-sm font-medium bg-primary/10 text-primary ring-1 ring-primary/20">
+              <span className="inline-flex items-center px-2 py-2 rounded-full text-sm font-medium bg-primary/10 text-primary ring-1 ring-primary/20">
                 🚀 Ready to transform your career?
               </span>
             </div>
@@ -322,38 +322,38 @@ const LandingPage = () => {
             
             <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
               {user ? (
-                <Link to="/dashboard">
-                  <Button variant="hero" size="lg" className="w-full sm:w-auto bg-gradient-hero text-white shadow-glow hover:shadow-brand transition-all duration-300 hover:scale-105 px-8 py-4 text-lg font-semibold">
+                <Link to="/dashboard" className="w-full sm:w-auto">
+                  <Button variant="hero" size="lg" className="w-full sm:w-auto bg-gradient-hero text-white shadow-glow hover:shadow-brand transition-all duration-300 hover:scale-105 px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-semibold">
                     Continue to Dashboard
                     <span className="ml-2">→</span>
                   </Button>
                 </Link>
               ) : (
                 <>
-                  <Link to="/login">
-                    <Button variant="hero" size="lg" className="w-full sm:w-auto bg-gradient-hero text-white shadow-glow hover:shadow-brand transition-all duration-300 hover:scale-105 px-8 py-4 text-lg font-semibold">
+                  <Link to="/login" className="w-full sm:w-auto">
+                    <Button variant="hero" size="lg" className="w-full sm:w-auto bg-gradient-hero text-white shadow-glow hover:shadow-brand transition-all duration-300 hover:scale-105 px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-semibold">
                       Start Your Journey Free
                       <span className="ml-2">→</span>
                     </Button>
                   </Link>
-                  <Button variant="outline" size="lg" className="w-full sm:w-auto border-border text-foreground hover:bg-accent hover:text-accent-foreground transition-all duration-300 px-8 py-4 text-lg font-medium">
+                  <Button variant="outline" size="lg" className="w-full sm:w-auto border-border text-foreground hover:bg-accent hover:text-accent-foreground transition-all duration-300 px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-medium">
                     Schedule a Demo
                   </Button>
                 </>
               )}
             </div>
             
-            <div className="flex items-center justify-center space-x-8 text-sm text-muted-foreground">
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-8 text-xs sm:text-sm text-muted-foreground">
               <div className="flex items-center space-x-2">
-                <CheckCircle className="h-4 w-4 text-emerald-500" />
+                <CheckCircle className="h-4 w-4 text-emerald-500 flex-shrink-0" />
                 <span>Free forever</span>
               </div>
               <div className="flex items-center space-x-2">
-                <CheckCircle className="h-4 w-4 text-emerald-500" />
+                <CheckCircle className="h-4 w-4 text-emerald-500 flex-shrink-0" />
                 <span>No credit card required</span>
               </div>
               <div className="flex items-center space-x-2">
-                <CheckCircle className="h-4 w-4 text-emerald-500" />
+                <CheckCircle className="h-4 w-4 text-emerald-500 flex-shrink-0" />
                 <span>Setup in 2 minutes</span>
               </div>
             </div>
@@ -461,12 +461,12 @@ const LandingPage = () => {
           </div>
           
           <div className="border-t border-border mt-12 pt-8 flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
-            <p className="text-muted-foreground text-sm">
+            <p className="text-muted-foreground text-sm text-center md:text-left">
               &copy; 2025 EzJob. All rights reserved. Built with ❤️ for job seekers worldwide.
             </p>
-            <div className="flex items-center space-x-6 text-sm text-muted-foreground">
-              <span>Made with React & Supabase</span>
-              <div className="flex items-center space-x-1">
+            <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-6 text-sm text-muted-foreground">
+              <span className="text-center sm:text-left">Made with React & Supabase</span>
+              <div className="flex items-center justify-center space-x-1">
                 <div className="w-2 h-2 bg-emerald-500 rounded-full"></div>
                 <span>All systems operational</span>
               </div>
