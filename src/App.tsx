@@ -17,6 +17,8 @@ import Resumes from "./pages/Resumes";
 import AccountSettings from "./pages/AccountSettings";
 import NotFound from "./pages/NotFound";
 
+import ResumeBuilder from "./pages/ResumeBuilder";
+
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -59,6 +61,11 @@ const App = () => (
                 <Route path="/settings" element={
                   <ProtectedRoute>
                     <AccountSettings />
+                  </ProtectedRoute>
+                } />
+                <Route path="/resume-builder" element={
+                  <ProtectedRoute>
+                    <ResumeBuilder />
                   </ProtectedRoute>
                 } />
                 {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
