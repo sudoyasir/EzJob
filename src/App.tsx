@@ -18,6 +18,7 @@ import AccountSettings from "./pages/AccountSettings";
 import NotFound from "./pages/NotFound";
 
 import ResumeBuilder from "./pages/ResumeBuilder";
+import ResumeDetails from "./pages/ResumeDetails"; // Assuming you have a ResumeDetails page
 
 const queryClient = new QueryClient();
 
@@ -61,6 +62,11 @@ const App = () => (
                 <Route path="/settings" element={
                   <ProtectedRoute>
                     <AccountSettings />
+                  </ProtectedRoute>
+                } />
+                <Route path="/resume-details" element={
+                  <ProtectedRoute>
+                    <ResumeDetails />
                   </ProtectedRoute>
                 } />
                 <Route path="/resume-builder" element={
