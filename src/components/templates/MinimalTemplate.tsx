@@ -1,4 +1,5 @@
 import { ResumeData, ResumeCustomization } from '@/types/resume';
+import { formatLinkedIn, formatPortfolio } from '@/utils/formatLinks';
 
 interface MinimalTemplateProps {
   data: ResumeData;
@@ -23,12 +24,39 @@ export const MinimalTemplate = ({ data, customization }: MinimalTemplateProps) =
           <h1 className="text-5xl font-light mb-4" style={{ color: customization.primaryColor }}>
             {personalInfo.fullName || 'Your Name'}
           </h1>
+          {personalInfo.summary && (
+            <p className="mt-2 text-base text-gray-700 font-medium leading-relaxed text-left">
+              {personalInfo.summary}
+            </p>
+          )}
           <div className="text-gray-600 space-y-1">
             {personalInfo.email && <p>{personalInfo.email}</p>}
             {personalInfo.phone && <p>{personalInfo.phone}</p>}
             {personalInfo.address && <p>{personalInfo.address}</p>}
-            {personalInfo.linkedin && <p>{personalInfo.linkedin}</p>}
-            {personalInfo.portfolio && <p>{personalInfo.portfolio}</p>}
+            {personalInfo.linkedin && (
+              <p>
+                <a
+                  href={personalInfo.linkedin}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-600 underline break-all"
+                >
+                  {formatLinkedIn(personalInfo.linkedin)}
+                </a>
+              </p>
+            )}
+            {personalInfo.portfolio && (
+              <p>
+                <a
+                  href={personalInfo.portfolio}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-600 underline break-all"
+                >
+                  {formatPortfolio(personalInfo.portfolio)}
+                </a>
+              </p>
+            )}
           </div>
         </header>
 

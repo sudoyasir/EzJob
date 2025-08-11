@@ -1,5 +1,6 @@
 import { ResumeData, ResumeCustomization } from '@/types/resume';
-import { Mail, Phone, MapPin, Linkedin, Globe, Calendar } from 'lucide-react';
+import { Mail, Phone, MapPin, Linkedin, Globe, Calendar, Briefcase, Book, Code, Award, User } from 'lucide-react';
+import { formatLinkedIn, formatPortfolio } from '@/utils/formatLinks';
 
 interface ModernTemplateProps {
   data: ResumeData;
@@ -8,7 +9,12 @@ interface ModernTemplateProps {
 
 export const ModernTemplate = ({ data, customization }: ModernTemplateProps) => {
   const { personalInfo, workExperience, education, skills, projects } = data;
-  const spacing = customization.spacing === 'compact' ? 'space-y-3' : customization.spacing === 'spacious' ? 'space-y-6' : 'space-y-4';
+  const spacing =
+    customization.spacing === 'compact'
+      ? 'space-y-3'
+      : customization.spacing === 'spacious'
+        ? 'space-y-6'
+        : 'space-y-4';
 
   const formatDate = (date: string) => {
     if (!date) return '';
@@ -16,6 +22,32 @@ export const ModernTemplate = ({ data, customization }: ModernTemplateProps) => 
     return d.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
   };
 
+  // Utility for rendering bullet list or paragraph
+  const renderDescription = (desc?: string | string[]) => {
+    if (!desc) return null;
+    if (Array.isArray(desc)) {
+      return (
+        <ul className="list-disc ml-5 text-gray-700 text-sm leading-relaxed mt-1">
+          {desc.map((point, i) => (
+            <li key={i}>{point}</li>
+          ))}
+        </ul>
+      );
+    }
+    return <p className="text-gray-700 text-sm leading-relaxed mt-1">{desc}</p>;
+  };
+
+  const SectionHeader = ({ icon: Icon, title }: { icon: any; title: string }) => (
+    <h2
+      className="text-xl font-bold mb-3 flex items-center gap-2 border-b pb-1"
+      style={{ color: customization.primaryColor, borderColor: customization.primaryColor + '40' }}
+    >
+      <Icon className="w-5 h-5" />
+      {title}
+    </h2>
+  );
+
+  // Single-column layout
   if (customization.layout === 'single-column') {
     return (
       <div className="w-full h-full p-8 bg-white text-gray-900">
@@ -49,28 +81,45 @@ export const ModernTemplate = ({ data, customization }: ModernTemplateProps) => 
               {personalInfo.linkedin && (
                 <div className="flex items-center gap-1">
                   <Linkedin className="w-4 h-4" />
-                  {personalInfo.linkedin}
+                  <a
+                    href={personalInfo.linkedin}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-600 underline break-all"
+                  >
+                    {formatLinkedIn(personalInfo.linkedin)}
+                  </a>
                 </div>
               )}
               {personalInfo.portfolio && (
                 <div className="flex items-center gap-1">
                   <Globe className="w-4 h-4" />
-                  {personalInfo.portfolio}
+                  <a
+                    href={personalInfo.portfolio}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-600 underline break-all"
+                  >
+                    {formatPortfolio(personalInfo.portfolio)}
+                  </a>
                 </div>
               )}
             </div>
+            {personalInfo.summary && (
+              <p className="mt-3 text-base text-gray-700 font-medium leading-relaxed text-center">
+                {personalInfo.summary}
+              </p>
+            )}
           </header>
 
           {/* Work Experience */}
           {workExperience.length > 0 && (
             <section>
-              <h2 className="text-xl font-bold mb-3" style={{ color: customization.primaryColor }}>
-                WORK EXPERIENCE
-              </h2>
+              <SectionHeader icon={Briefcase} title="Work Experience" />
               <div className={spacing}>
                 {workExperience.map((job) => (
-                  <div key={job.id}>
-                    <div className="flex justify-between items-start mb-2">
+                  <div key={job.id} className="pb-4 border-b border-gray-200 last:border-0">
+                    <div className="flex justify-between items-start">
                       <div>
                         <h3 className="font-semibold text-lg">{job.position}</h3>
                         <p className="text-gray-700 font-medium">{job.company}</p>
@@ -80,9 +129,7 @@ export const ModernTemplate = ({ data, customization }: ModernTemplateProps) => 
                         {formatDate(job.startDate)} - {job.current ? 'Present' : formatDate(job.endDate)}
                       </div>
                     </div>
-                    {job.description && (
-                      <p className="text-gray-700 text-sm leading-relaxed">{job.description}</p>
-                    )}
+                    {renderDescription(job.description)}
                   </div>
                 ))}
               </div>
@@ -92,9 +139,7 @@ export const ModernTemplate = ({ data, customization }: ModernTemplateProps) => 
           {/* Education */}
           {education.length > 0 && (
             <section>
-              <h2 className="text-xl font-bold mb-3" style={{ color: customization.primaryColor }}>
-                EDUCATION
-              </h2>
+              <SectionHeader icon={Book} title="Education" />
               <div className={spacing}>
                 {education.map((edu) => (
                   <div key={edu.id}>
@@ -118,17 +163,15 @@ export const ModernTemplate = ({ data, customization }: ModernTemplateProps) => 
           {/* Skills */}
           {skills.length > 0 && (
             <section>
-              <h2 className="text-xl font-bold mb-3" style={{ color: customization.primaryColor }}>
-                SKILLS
-              </h2>
+              <SectionHeader icon={Award} title="Skills" />
               <div className="flex flex-wrap gap-2">
                 {skills.map((skill) => (
                   <span
                     key={skill}
                     className="px-3 py-1 rounded-full text-sm font-medium"
-                    style={{ 
+                    style={{
                       backgroundColor: customization.primaryColor + '20',
-                      color: customization.primaryColor 
+                      color: customization.primaryColor,
                     }}
                   >
                     {skill}
@@ -141,12 +184,10 @@ export const ModernTemplate = ({ data, customization }: ModernTemplateProps) => 
           {/* Projects */}
           {projects.length > 0 && (
             <section>
-              <h2 className="text-xl font-bold mb-3" style={{ color: customization.primaryColor }}>
-                PROJECTS
-              </h2>
+              <SectionHeader icon={Code} title="Projects" />
               <div className={spacing}>
                 {projects.map((project) => (
-                  <div key={project.id}>
+                  <div key={project.id} className="pb-4 border-b border-gray-200 last:border-0">
                     <div className="flex justify-between items-start mb-2">
                       <h3 className="font-semibold text-lg">{project.name}</h3>
                       {project.link && (
@@ -155,18 +196,16 @@ export const ModernTemplate = ({ data, customization }: ModernTemplateProps) => 
                         </a>
                       )}
                     </div>
-                    {project.description && (
-                      <p className="text-gray-700 text-sm leading-relaxed mb-2">{project.description}</p>
-                    )}
+                    {renderDescription(project.description)}
                     {project.technologies.length > 0 && (
-                      <div className="flex flex-wrap gap-1">
+                      <div className="flex flex-wrap gap-1 mt-2">
                         {project.technologies.map((tech) => (
                           <span
                             key={tech}
                             className="px-2 py-1 rounded text-xs"
-                            style={{ 
+                            style={{
                               backgroundColor: customization.primaryColor + '15',
-                              color: customization.primaryColor 
+                              color: customization.primaryColor,
                             }}
                           >
                             {tech}
@@ -184,69 +223,81 @@ export const ModernTemplate = ({ data, customization }: ModernTemplateProps) => 
     );
   }
 
-  // Two-column layout
+  // Two-column layout (Enhanced)
   return (
     <div className="w-full h-full flex bg-white text-gray-900">
       {/* Left Column */}
-      <div className="w-1/3 p-6" style={{ backgroundColor: customization.primaryColor + '10' }}>
+      <div
+        className="w-1/3 p-6"
+        style={{ backgroundColor: customization.primaryColor + '08' }}
+      >
         <div className={spacing}>
-          {/* Contact Info */}
-          <section>
-            <h2 className="text-lg font-bold mb-3" style={{ color: customization.primaryColor }}>
-              CONTACT
-            </h2>
-            <div className="space-y-2 text-sm">
-              {personalInfo.email && (
-                <div className="flex items-center gap-2">
-                  <Mail className="w-4 h-4" style={{ color: customization.primaryColor }} />
-                  <span className="break-all">{personalInfo.email}</span>
-                </div>
-              )}
-              {personalInfo.phone && (
-                <div className="flex items-center gap-2">
-                  <Phone className="w-4 h-4" style={{ color: customization.primaryColor }} />
-                  <span>{personalInfo.phone}</span>
-                </div>
-              )}
-              {personalInfo.address && (
-                <div className="flex items-center gap-2">
-                  <MapPin className="w-4 h-4" style={{ color: customization.primaryColor }} />
-                  <span>{personalInfo.address}</span>
-                </div>
-              )}
-              {personalInfo.linkedin && (
-                <div className="flex items-center gap-2">
-                  <Linkedin className="w-4 h-4" style={{ color: customization.primaryColor }} />
-                  <span className="break-all">{personalInfo.linkedin}</span>
-                </div>
-              )}
-              {personalInfo.portfolio && (
-                <div className="flex items-center gap-2">
-                  <Globe className="w-4 h-4" style={{ color: customization.primaryColor }} />
-                  <span className="break-all">{personalInfo.portfolio}</span>
-                </div>
-              )}
-            </div>
-          </section>
+
+          {/* Contact */}
+          <SectionHeader icon={User} title="Contact" />
+          <div className="space-y-2 text-sm">
+            {personalInfo.email && (
+              <div className="flex items-center gap-2">
+                <Mail className="w-4 h-4" style={{ color: customization.primaryColor }} />
+                <span className="break-all">{personalInfo.email}</span>
+              </div>
+            )}
+            {personalInfo.phone && (
+              <div className="flex items-center gap-2">
+                <Phone className="w-4 h-4" style={{ color: customization.primaryColor }} />
+                <span>{personalInfo.phone}</span>
+              </div>
+            )}
+            {personalInfo.address && (
+              <div className="flex items-center gap-2">
+                <MapPin className="w-4 h-4" style={{ color: customization.primaryColor }} />
+                <span>{personalInfo.address}</span>
+              </div>
+            )}
+            {personalInfo.linkedin && (
+              <div className="flex items-center gap-2">
+                <Linkedin className="w-4 h-4" style={{ color: customization.primaryColor }} />
+                <a
+                  href={personalInfo.linkedin}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-600 underline break-all"
+                >
+                  {formatLinkedIn(personalInfo.linkedin)}
+                </a>
+              </div>
+            )}
+            {personalInfo.portfolio && (
+              <div className="flex items-center gap-2">
+                <Globe className="w-4 h-4" style={{ color: customization.primaryColor }} />
+                <a
+                  href={personalInfo.portfolio}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-600 underline break-all"
+                >
+                  {formatPortfolio(personalInfo.portfolio)}
+                </a>
+              </div>
+            )}
+          </div>
 
           {/* Skills */}
           {skills.length > 0 && (
             <section>
-              <h2 className="text-lg font-bold mb-3" style={{ color: customization.primaryColor }}>
-                SKILLS
-              </h2>
-              <div className="space-y-1">
+              <SectionHeader icon={Award} title="Skills" />
+              <div className="flex flex-wrap gap-2">
                 {skills.map((skill) => (
-                  <div
+                  <span
                     key={skill}
-                    className="px-2 py-1 rounded text-sm font-medium"
-                    style={{ 
+                    className="px-3 py-1 rounded-full text-sm font-medium"
+                    style={{
                       backgroundColor: customization.primaryColor + '20',
-                      color: customization.primaryColor 
+                      color: customization.primaryColor,
                     }}
                   >
                     {skill}
-                  </div>
+                  </span>
                 ))}
               </div>
             </section>
@@ -254,10 +305,8 @@ export const ModernTemplate = ({ data, customization }: ModernTemplateProps) => 
 
           {/* Education */}
           {education.length > 0 && (
-            <section>
-              <h2 className="text-lg font-bold mb-3" style={{ color: customization.primaryColor }}>
-                EDUCATION
-              </h2>
+            <>
+              <SectionHeader icon={Book} title="Education" />
               <div className="space-y-3">
                 {education.map((edu) => (
                   <div key={edu.id} className="text-sm">
@@ -271,7 +320,7 @@ export const ModernTemplate = ({ data, customization }: ModernTemplateProps) => 
                   </div>
                 ))}
               </div>
-            </section>
+            </>
           )}
         </div>
       </div>
@@ -281,21 +330,24 @@ export const ModernTemplate = ({ data, customization }: ModernTemplateProps) => 
         <div className={spacing}>
           {/* Header */}
           <header>
-            <h1 className="text-3xl font-bold mb-2" style={{ color: customization.primaryColor }}>
+            <h1 className="text-4xl font-bold mb-2 text-left" style={{ color: customization.primaryColor }}>
               {personalInfo.fullName || 'Your Name'}
             </h1>
+            {personalInfo.summary && (
+              <p className="mt-2 text-base text-gray-700 font-medium leading-relaxed text-left">
+                {personalInfo.summary}
+              </p>
+            )}
           </header>
 
           {/* Work Experience */}
           {workExperience.length > 0 && (
             <section>
-              <h2 className="text-xl font-bold mb-3" style={{ color: customization.primaryColor }}>
-                WORK EXPERIENCE
-              </h2>
+              <SectionHeader icon={Briefcase} title="Work Experience" />
               <div className={spacing}>
                 {workExperience.map((job) => (
-                  <div key={job.id}>
-                    <div className="flex justify-between items-start mb-2">
+                  <div key={job.id} className="pb-4 border-b border-gray-200 last:border-0">
+                    <div className="flex justify-between items-start">
                       <div>
                         <h3 className="font-semibold text-lg">{job.position}</h3>
                         <p className="text-gray-700 font-medium">{job.company}</p>
@@ -305,9 +357,7 @@ export const ModernTemplate = ({ data, customization }: ModernTemplateProps) => 
                         {formatDate(job.startDate)} - {job.current ? 'Present' : formatDate(job.endDate)}
                       </div>
                     </div>
-                    {job.description && (
-                      <p className="text-gray-700 text-sm leading-relaxed">{job.description}</p>
-                    )}
+                    {renderDescription(job.description)}
                   </div>
                 ))}
               </div>
@@ -317,12 +367,10 @@ export const ModernTemplate = ({ data, customization }: ModernTemplateProps) => 
           {/* Projects */}
           {projects.length > 0 && (
             <section>
-              <h2 className="text-xl font-bold mb-3" style={{ color: customization.primaryColor }}>
-                PROJECTS
-              </h2>
+              <SectionHeader icon={Code} title="Projects" />
               <div className={spacing}>
                 {projects.map((project) => (
-                  <div key={project.id}>
+                  <div key={project.id} className="pb-4 border-b border-gray-200 last:border-0">
                     <div className="flex justify-between items-start mb-2">
                       <h3 className="font-semibold text-lg">{project.name}</h3>
                       {project.link && (
@@ -331,18 +379,16 @@ export const ModernTemplate = ({ data, customization }: ModernTemplateProps) => 
                         </a>
                       )}
                     </div>
-                    {project.description && (
-                      <p className="text-gray-700 text-sm leading-relaxed mb-2">{project.description}</p>
-                    )}
+                    {renderDescription(project.description)}
                     {project.technologies.length > 0 && (
-                      <div className="flex flex-wrap gap-1">
+                      <div className="flex flex-wrap gap-1 mt-2">
                         {project.technologies.map((tech) => (
                           <span
                             key={tech}
                             className="px-2 py-1 rounded text-xs"
-                            style={{ 
+                            style={{
                               backgroundColor: customization.primaryColor + '15',
-                              color: customization.primaryColor 
+                              color: customization.primaryColor,
                             }}
                           >
                             {tech}

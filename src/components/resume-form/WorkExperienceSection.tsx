@@ -113,13 +113,15 @@ export const WorkExperienceSection = () => {
               <div className="flex items-center space-x-2 mb-4">
                 <Checkbox
                   id={`current-${experience.id}`}
-                  checked={experience.current}
+                  checked={!!experience.current}
                   onCheckedChange={(checked) => {
-                    updateExperience(experience.id, 'current', checked as boolean);
-                    if (checked) {
+                    const isChecked = checked === true || checked === 'on';
+                    updateExperience(experience.id, 'current', isChecked);
+                    if (isChecked) {
                       updateExperience(experience.id, 'endDate', '');
                     }
                   }}
+                  className='border-builder-border checked:bg-primary checked:border-primary'
                 />
                 <Label htmlFor={`current-${experience.id}`}>I currently work here</Label>
               </div>

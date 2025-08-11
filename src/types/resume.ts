@@ -5,6 +5,7 @@ export interface PersonalInfo {
   linkedin: string;
   portfolio: string;
   address: string;
+  summary?: string;
 }
 
 export interface WorkExperience {

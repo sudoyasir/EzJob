@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
+import html2pdf from 'html2pdf.js';
 import { motion } from 'framer-motion';
 import { ChevronLeft, Download, Palette, Type, Layout, Settings, CloudUpload } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -25,9 +26,18 @@ const ResumeBuilder = () => {
     spacing: 'normal'
   });
 
-  const handleDownloadPDF = () => {
-    // TODO: Implement PDF download logic
-    console.log('Downloading PDF...');
+  const resumeRef = useRef<HTMLDivElement>(null);
+
+  const handleDownloadPDF = async () => {
+    if (!resumeRef.current) return;
+    const opt = {
+      margin:       0,
+      filename:     'resume.pdf',
+      image:        { type: 'jpeg', quality: 0.98 },
+      html2canvas:  { scale: 2 },
+      jsPDF:        { unit: 'in', format: 'a4', orientation: 'portrait' }
+    };
+    await html2pdf().from(resumeRef.current).set(opt).save();
   };
 
   return (
@@ -39,7 +49,7 @@ const ResumeBuilder = () => {
             <div className="flex items-center gap-4">
               <Button
                 variant="outline"
-                onClick={() => navigate('/details')}
+                onClick={() => navigate('/resume-details')}
                 className="border-builder-border"
               >
                 <ChevronLeft className="mr-2 h-4 w-4" />
@@ -122,11 +132,13 @@ const ResumeBuilder = () => {
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.3 }}
             >
-              <ResumePreview
-                data={resumeData}
-                template={selectedTemplate}
-                customization={customization}
-              />
+              <div ref={resumeRef} id="resume-preview-html">
+                <ResumePreview
+                  data={resumeData}
+                  template={selectedTemplate}
+                  customization={customization}
+                />
+              </div>
             </motion.div>
           </div>
         </div>

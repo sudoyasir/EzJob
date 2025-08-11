@@ -51,6 +51,7 @@
     "embla-carousel-react": "^8.6.0",
     "express-rate-limit": "^8.0.1",
     "framer-motion": "^12.23.12",
+    "html2pdf.js": "^0.10.3",
     "input-otp": "^1.4.2",
     "lucide-react": "^0.462.0",
     "next-themes": "^0.3.0",

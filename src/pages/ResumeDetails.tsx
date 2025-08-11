@@ -11,6 +11,7 @@ import { ProjectsSection } from '@/components/resume-form/ProjectsSection';
 import { useResumeData } from '@/hooks/useResumeData';
 import { useNavigate } from 'react-router-dom';
 import { Navbar } from '@/components/ui/navbar';
+import { Textarea } from '@/components/ui/textarea';
 
 const sections = [
   { id: 'personal', title: 'Personal Information', icon: User, component: PersonalInfoSection },

@@ -1,5 +1,6 @@
 import { ResumeData, ResumeCustomization } from '@/types/resume';
 import { Mail, Phone, MapPin, Linkedin, Globe } from 'lucide-react';
+import { formatLinkedIn, formatPortfolio } from '@/utils/formatLinks';
 
 interface ClassicTemplateProps {
   data: ResumeData;
@@ -24,6 +25,11 @@ export const ClassicTemplate = ({ data, customization }: ClassicTemplateProps) =
           <h1 className="text-4xl font-bold mb-3 text-gray-900">
             {personalInfo.fullName || 'Your Name'}
           </h1>
+          {personalInfo.summary && (
+            <p className="my-4 text-base text-gray-700 leading-relaxed text-center">
+              {personalInfo.summary}
+            </p>
+          )}
           <div className="flex flex-wrap justify-center gap-6 text-sm text-gray-600">
             {personalInfo.email && (
               <div className="flex items-center gap-1">
@@ -49,13 +55,27 @@ export const ClassicTemplate = ({ data, customization }: ClassicTemplateProps) =
               {personalInfo.linkedin && (
                 <div className="flex items-center gap-1">
                   <Linkedin className="w-4 h-4" />
-                  {personalInfo.linkedin}
+                  <a
+                    href={personalInfo.linkedin}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-600 underline break-all"
+                  >
+                    {formatLinkedIn(personalInfo.linkedin)}
+                  </a>
                 </div>
               )}
               {personalInfo.portfolio && (
                 <div className="flex items-center gap-1">
                   <Globe className="w-4 h-4" />
-                  {personalInfo.portfolio}
+                  <a
+                    href={personalInfo.portfolio}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-600 underline break-all"
+                  >
+                    {formatPortfolio(personalInfo.portfolio)}
+                  </a>
                 </div>
               )}
             </div>

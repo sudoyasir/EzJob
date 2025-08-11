@@ -1,6 +1,7 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
 import { useResumeData } from '@/hooks/useResumeData';
 
 export const PersonalInfoSection = () => {
@@ -82,6 +83,16 @@ export const PersonalInfoSection = () => {
               className="border-builder-border focus:ring-primary"
             />
           </div>
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="summary">Professional Summary</Label>
+          <Textarea
+            id="summary"
+            value={resumeData.personalInfo.summary || ''}
+            onChange={e => updatePersonalInfo({ ...resumeData.personalInfo, summary: e.target.value })}
+            placeholder="A brief summary about yourself, your experience, or your career goals."
+            className="border-builder-border min-h-[80px] mb-4"
+          />
         </div>
       </CardContent>
     </Card>
